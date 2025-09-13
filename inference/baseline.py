@@ -1,18 +1,20 @@
 from huggingface_hub import InferenceClient
-from transformers import AutoTokenizer, pipeline, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 from huggingface_hub import login
-from logging_config import logger
-from config import CONFIG
-
 import numpy as np
 import torch
 import json
+import os
+
+from logging_config import logger
+from config import CONFIG
 
 
 def ask_baseline(file, model, experiment, client):
     """
-    Generic flow to ask LLM questions.
+    Generic flow to ask LLM questions with resume support.
+    If the process fails, it can pick up from the last completed index.
     """
 
     logger.info(f"Asking baseline model: {model}.")
@@ -20,8 +22,21 @@ def ask_baseline(file, model, experiment, client):
     with open(file, 'r') as f:
         data = json.load(f)
 
-    answers_list = []
-    for index, item in enumerate(data):
+    output_path = f"answers/{experiment}/{model}.json"
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    # Load existing progress if available
+    if os.path.exists(output_path):
+        with open(output_path, 'r') as f:
+            answers_list = json.load(f)
+        start_index = len(answers_list)
+        logger.info(f"Resuming from index {start_index}/{len(data)}.")
+    else:
+        answers_list = []
+        start_index = 0
+        logger.info("Starting fresh run.")
+
+    for index, item in enumerate(data[start_index:], start=start_index):
         logger.debug(f'Answering {index} out of {len(data)} questions.')
 
         try:
@@ -37,7 +52,7 @@ def ask_baseline(file, model, experiment, client):
             llm_response = response.choices[0].message.content.strip()
 
         except Exception as e:
-            logger.info(f"API call failed: {e}")
+            logger.info(f"API call failed at index {index}: {e}")
             llm_response = "API call failed."
 
         new_dict = {
@@ -50,7 +65,11 @@ def ask_baseline(file, model, experiment, client):
 
     with open(f"answers/{experiment}/{model}.json", 'w') as f:
         json.dump(answers_list, f, indent=4)
+        # Save progress incrementally
+        with open(output_path, 'w') as f:
+            json.dump(answers_list, f, indent=4)
 
+    logger.info("All questions processed.")
     return None
 
 
