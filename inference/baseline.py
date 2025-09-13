@@ -3,6 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 from huggingface_hub import login
 import numpy as np
+from openai import OpenAI
 import torch
 import json
 import os
@@ -37,7 +38,7 @@ def ask_baseline(file, model, experiment, client):
         logger.info("Starting fresh run.")
 
     for index, item in enumerate(data[start_index:], start=start_index):
-        logger.debug(f'Answering {index} out of {len(data)} questions.')
+        logger.info(f'Answering {index} out of {len(data)} questions.')
 
         try:
             response = client.chat.completions.create(
@@ -63,8 +64,6 @@ def ask_baseline(file, model, experiment, client):
         }
         answers_list.append(new_dict)
 
-    with open(f"answers/{experiment}/{model}.json", 'w') as f:
-        json.dump(answers_list, f, indent=4)
         # Save progress incrementally
         with open(output_path, 'w') as f:
             json.dump(answers_list, f, indent=4)
@@ -114,9 +113,9 @@ def ask_finetuned(file, base_model, adapter, experiment):
         inputs = tokenizer(prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
         logger.debug(f'Tokenized prompt for baseline fine-tuned: {inputs}')
         outputs = finetuned_model.generate(**inputs,
-                                           max_new_tokens=750,
+                                           max_new_tokens=CONFIG['max_new_tokens'],
                                            num_return_sequences=1,
-                                           temperature=0.1,
+                                           temperature=CONFIG['temperature'],
                                            eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"))
         text = tokenizer.decode(outputs[0], skip_special_tokens=True)
         output = text.split("assistant")[1]
@@ -156,18 +155,25 @@ class AskRag:
         """
         import faiss
 
+        client = OpenAI(api_key=CONFIG['open_ai_api_key'])
+
         logger.info("Asking RAG.")
         with open(self.documents_file, 'r') as file:
             data = json.load(file)
 
         documents = [document['answer'] for document in data if document['answer'] != ""]
-
-        retrieval_model = SentenceTransformer(CONFIG['retrieval_model'])
-        dimension = 384  # Embedding size of the sentence transformer
+        embedding_model = CONFIG['embedding_model']
+        dimension = 1536
         index = faiss.IndexFlatL2(dimension)  # L2 distance index
 
         logger.info("RAG has started to embed documents.")
-        doc_embeddings = retrieval_model.encode(documents)
+
+        response = client.embeddings.create(
+            model=embedding_model,
+            input=documents
+        )
+        doc_embeddings = [item.embedding for item in response.data]
+
         index.add(np.array(doc_embeddings))
         logger.info("RAG has finished to embed documents.")
 
