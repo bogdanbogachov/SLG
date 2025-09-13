@@ -4,41 +4,41 @@ from peft import PeftModel
 from huggingface_hub import login
 from logging_config import logger
 from config import CONFIG
-from sentence_transformers import SentenceTransformer
 
 import numpy as np
 import torch
 import json
 
 
-def ask(inference_model, file):
+def ask_baseline(file, model, experiment, client):
     """
     Generic flow to ask LLM questions.
     """
-    login(CONFIG['api_key'])
-    client = InferenceClient()
-    model = inference_model
-    tokenizer = AutoTokenizer.from_pretrained(inference_model)
+
+    logger.info(f"Asking baseline model: {model}.")
 
     with open(file, 'r') as f:
         data = json.load(f)
 
     answers_list = []
-    for item in data:
-        logger.debug('Iterating...')
-        messages = [
-            {"role": "system", "content": CONFIG['inference_prompt']},
-            {"role": "user", "content": item['question']}
-        ]
+    for index, item in enumerate(data):
+        logger.debug(f'Answering {index} out of {len(data)} questions.')
 
-        total = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        llm_response = client.text_generation(
-            total,
-            model=model,
-            max_new_tokens=CONFIG['max_new_tokens'],
-            seed=CONFIG['seed'],
-            temperature=CONFIG['temperature']
-        )
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": CONFIG['inference_prompt']},
+                    {"role": "user", "content": item['question']},
+                ],
+                max_tokens=CONFIG['max_new_tokens'],
+                temperature=CONFIG['temperature']
+            )
+            llm_response = response.choices[0].message.content.strip()
+
+        except Exception as e:
+            logger.info(f"API call failed: {e}")
+            llm_response = "API call failed."
 
         new_dict = {
             "chapter": item['chapter'],
@@ -48,18 +48,8 @@ def ask(inference_model, file):
         }
         answers_list.append(new_dict)
 
-    return answers_list
-
-
-def ask_baseline(file, model, experiment):
-    """
-    Generates a response by baseline model.
-    """
-    logger.info(f"Asking baseline model: {model}.")
-    answers = ask(model, file)
-
-    with open(f"answers/{experiment}/{model.split('/')[-1]}.json", 'w') as f:
-        json.dump(answers, f, indent=4)
+    with open(f"answers/{experiment}/{model}.json", 'w') as f:
+        json.dump(answers_list, f, indent=4)
 
     return None
 
