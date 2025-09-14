@@ -212,21 +212,40 @@ class AskRag:
 
     def generate_responses(self):
         """
-        Pass question and retreived docs to an LLM to aggregate a response.
+        Pass question and retrieved docs to an LLM to aggregate a response.
+        Supports resume on failure (continues where it left off).
         """
-
         with open(self.questions_file, 'r') as file:
             data = json.load(file)
 
-        answers_list = []
-        documents, index = self._retrieve_documents()
-        for i, item in enumerate(data):
-            retrieved_docs = self._retrieve_answers(query=item['question'],
-                                                    documents=documents,
-                                                    index=index,
-                                                    client=self.client,
-                                                    k=5
-                                                    )
+        output_path = f"answers/{self.experiment}/rag.json"
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+        # Load existing progress if available
+        if os.path.exists(output_path):
+            with open(output_path, 'r') as f:
+                answers_list = json.load(f)
+            start_index = len(answers_list)
+            logger.info(f"Resuming from index {start_index}/{len(data)}.")
+        else:
+            answers_list = []
+            start_index = 0
+            logger.info("Starting fresh run.")
+
+        # Build FAISS index once (not on every resume)
+        documents, faiss_index = self._retrieve_documents()
+
+        for i, item in enumerate(data[start_index:], start=start_index):
+            logger.info(f"Answering {i + 1}/{len(data)}")
+
+            retrieved_docs = self._retrieve_answers(
+                query=item['question'],
+                documents=documents,
+                faiss_index=faiss_index,
+                client=self.client,
+                k=5
+            )
+
             context = " ".join(retrieved_docs)
             input_text = f"Context: {context}\nQuestion: {item['question']}\nAnswer:"
 
@@ -241,9 +260,8 @@ class AskRag:
                     temperature=CONFIG['temperature']
                 )
                 llm_response = response.choices[0].message.content.strip()
-
             except Exception as e:
-                logger.info(f"API call failed at i: {i}. {e}")
+                logger.info(f"API call failed at index {i}: {e}")
                 llm_response = "API call failed."
 
             new_dict = {
@@ -254,10 +272,9 @@ class AskRag:
             }
             answers_list.append(new_dict)
 
-        os.makedirs(f"answers/{self.experiment}", exist_ok=True)
+            # Save progress incrementally
+            with open(output_path, 'w') as f:
+                json.dump(answers_list, f, indent=4)
 
-        with open(f"answers/{self.experiment}/rag.json", 'w') as f:
-            json.dump(answers_list, f, indent=4)
-
-        # Decode and return the response
+        logger.info("All questions processed.")
         return answers_list
