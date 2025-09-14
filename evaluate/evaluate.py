@@ -69,7 +69,7 @@ def calculate_meteor_score(reference, candidate):
 
 def get_embedding(text, client):
     response = client.embeddings.create(
-        model='text-embedding-3-small',
+        model=CONFIG['embedding_model'],
         input=text
     )
 
@@ -105,7 +105,7 @@ def calculate_ai_expert(reference, candidate, api_client):
 
     try:
         response = api_client.chat.completions.create(
-            model="gpt-4.1-nano-2025-04-14",
+            model=CONFIG["gpt_4_1_nano"],
             messages=[
                 {"role": "system", "content": ai_expert_prompt},
                 {"role": "user", "content": query_expert_prompt.format(text_1=reference, text_2=candidate)},

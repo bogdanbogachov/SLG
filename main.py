@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from openai import OpenAI
 
 from config import CONFIG
 
@@ -16,6 +17,7 @@ if __name__ == '__main__':
     parser.add_argument("--evaluate", type=bool, default=False)
     parser.add_argument("--infer_slg", type=bool, default=False)
     parser.add_argument("--infer_baseline", type=bool, default=False)
+    parser.add_argument("--infer_rag", type=bool, default=False)
     parser.add_argument("--infer_finetuned", type=bool, default=False)
     parser.add_argument("--download_models", type=bool, default=False)
     parser.add_argument("--finetune", type=bool, default=False)
@@ -65,7 +67,7 @@ if __name__ == '__main__':
         compute_overshadowing(prefix_length=5)
 
     # Experiments
-    experiment = 'j_1_mgn_1'
+    experiment = 'j_1_rag_1'
     # Finetune
     if args.finetune:
         from finetune import finetune
@@ -107,15 +109,20 @@ if __name__ == '__main__':
 
     # Infer baseline
     if args.infer_baseline:
-        from inference import ask_baseline, AskRag
+        from inference import ask_baseline
+        client = OpenAI(api_key=CONFIG['open_ai_api_key'])
         os.makedirs(f'answers/{experiment}', exist_ok=True)
-        ask_baseline(file='question_answer/qa_test.json', model=CONFIG['3_2_1b'], experiment=experiment)
-        ask_baseline(file='question_answer/qa_test.json', model=CONFIG['3_1_8b'], experiment=experiment)
-        ask_baseline(file='question_answer/qa_test.json', model=CONFIG['3_3_70b'], experiment=experiment)
+        ask_baseline(file='question_answer/qa_test.json', model=CONFIG['gpt_4_1'], experiment=experiment, client=client)
+
+    if args.infer_rag:
+        from inference import AskRag
+        client = OpenAI(api_key=CONFIG['open_ai_api_key'])
         rag = AskRag(
             documents_file='question_answer/qa_train.json',
             questions_file='question_answer/qa_test.json',
-            experiment=experiment)
+            experiment=experiment,
+            client=client
+        )
         rag.generate_responses()
 
     if args.infer_finetuned:

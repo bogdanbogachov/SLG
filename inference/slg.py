@@ -103,9 +103,9 @@ class SmallLanguageGraph:
         inputs = tokenizer(prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
         logger.debug(f'Tokenized prompt for expert: {inputs}')
         outputs = finetuned_model.generate(**inputs,
-                                           max_new_tokens=750,
+                                           max_new_tokens=CONFIG['max_new_tokens'],
                                            num_return_sequences=1,
-                                           temperature=0.1,
+                                           temperature=CONFIG['temperature'],
                                            eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"))
         text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 

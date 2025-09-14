@@ -206,7 +206,7 @@ class AskRag:
         response = client.embeddings.create(model=CONFIG['embedding_model'], input=query)
 
         query_embedding = np.array(response.data[0].embedding, dtype="float32").reshape(1, -1)
-        distances, indices = index.search(np.array(query_embedding), k)
+        distances, indices = index.search(query_embedding, k)
 
         return [documents[i] for i in indices[0]]
 
@@ -233,7 +233,7 @@ class AskRag:
             logger.info("Starting fresh run.")
 
         # Build FAISS index once (not on every resume)
-        documents, faiss_index = self._retrieve_documents()
+        documents, index = self._retrieve_documents()
 
         for i, item in enumerate(data[start_index:], start=start_index):
             logger.info(f"Answering {i + 1}/{len(data)}")
@@ -241,7 +241,7 @@ class AskRag:
             retrieved_docs = self._retrieve_answers(
                 query=item['question'],
                 documents=documents,
-                faiss_index=faiss_index,
+                index=index,
                 client=self.client,
                 k=5
             )
