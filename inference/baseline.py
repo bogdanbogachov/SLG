@@ -1,9 +1,7 @@
-from huggingface_hub import InferenceClient
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
-from huggingface_hub import login
 import numpy as np
-from openai import OpenAI
+import faiss
 import torch
 import json
 import os
@@ -144,18 +142,17 @@ class AskRag:
     """
     This is used to operate RAG.
     """
-    def __init__(self, documents_file, questions_file, experiment):
+    def __init__(self, documents_file, questions_file, experiment, client):
         self.documents_file = documents_file
         self.questions_file = questions_file
         self.experiment = experiment
+        self.client = client
 
-    def _retrieve_documents(self):
+    def _retrieve_documents(self, chunk_size=500, chunk_overlap=50):
         """
         Retrieves documents from passed in question-answer pairs file.
+        Splits long documents into chunks and embeds each chunk.
         """
-        import faiss
-
-        client = OpenAI(api_key=CONFIG['open_ai_api_key'])
 
         logger.info("Asking RAG.")
         with open(self.documents_file, 'r') as file:
@@ -163,31 +160,52 @@ class AskRag:
 
         documents = [document['answer'] for document in data if document['answer'] != ""]
         embedding_model = CONFIG['embedding_model']
+
         dimension = 1536
         index = faiss.IndexFlatL2(dimension)  # L2 distance index
 
-        logger.info("RAG has started to embed documents.")
+        def chunk_text(text, size=chunk_size, overlap=chunk_overlap):
+            words = text.split()
+            for j in range(0, len(words), size - overlap):
+                yield " ".join(words[j:j + size])
 
-        response = client.embeddings.create(
-            model=embedding_model,
-            input=documents
-        )
-        doc_embeddings = [item.embedding for item in response.data]
+        chunked_docs = []
+        doc_ids = []  # keep mapping to original document index
+        for doc_id, doc in enumerate(documents):
+            for chunk in chunk_text(doc):
+                chunked_docs.append(chunk)
+                doc_ids.append(doc_id)
 
-        index.add(np.array(doc_embeddings))
-        logger.info("RAG has finished to embed documents.")
+        logger.info(f"Prepared {len(chunked_docs)} chunks from {len(documents)} documents.")
 
-        return documents, index
+        batch_size = 100
+
+        for i in range(0, len(chunked_docs), batch_size):
+            batch = chunked_docs[i:i + batch_size]
+            response = self.client.embeddings.create(
+                model=embedding_model,
+                input=batch
+            )
+            batch_embeddings = np.array(
+                [item.embedding for item in response.data],
+                dtype="float32"
+            )
+            index.add(batch_embeddings)
+
+        logger.info("RAG has finished embedding chunks.")
+
+        # Return both original docs and chunks (with mapping)
+        return chunked_docs, index
 
     @staticmethod
-    def _retrieve_answers(query, documents, index, k=15):
+    def _retrieve_answers(query, documents, index, client, k=5):
         """
         Retrieval model.
         """
-        retrieval_model = SentenceTransformer(CONFIG['retrieval_model'])
 
-        query_embedding = retrieval_model.encode(query)
-        query_embedding = query_embedding.reshape(1, -1)
+        response = client.embeddings.create(model=CONFIG['embedding_model'], input=query)
+
+        query_embedding = np.array(response.data[0].embedding, dtype="float32").reshape(1, -1)
         distances, indices = index.search(np.array(query_embedding), k)
 
         return [documents[i] for i in indices[0]]
@@ -196,34 +214,37 @@ class AskRag:
         """
         Pass question and retreived docs to an LLM to aggregate a response.
         """
-        login(CONFIG['api_key'])
-        client = InferenceClient()
-        model = CONFIG['3_3_70b']
-        tokenizer = AutoTokenizer.from_pretrained(model)
 
         with open(self.questions_file, 'r') as file:
             data = json.load(file)
 
         answers_list = []
         documents, index = self._retrieve_documents()
-        for item in data:
-            retrieved_docs = self._retrieve_answers(query=item['question'], documents=documents, index=index)
+        for i, item in enumerate(data):
+            retrieved_docs = self._retrieve_answers(query=item['question'],
+                                                    documents=documents,
+                                                    index=index,
+                                                    client=self.client,
+                                                    k=5
+                                                    )
             context = " ".join(retrieved_docs)
             input_text = f"Context: {context}\nQuestion: {item['question']}\nAnswer:"
 
-            messages = [
-                {"role": "system", "content": CONFIG['rag_prompt']},
-                {"role": "user", "content": input_text}
-            ]
+            try:
+                response = self.client.chat.completions.create(
+                    model=CONFIG["gpt_4_1_nano"],
+                    messages=[
+                        {"role": "system", "content": CONFIG['rag_prompt']},
+                        {"role": "user", "content": input_text},
+                    ],
+                    max_tokens=CONFIG['max_new_tokens'],
+                    temperature=CONFIG['temperature']
+                )
+                llm_response = response.choices[0].message.content.strip()
 
-            total = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-            llm_response = client.text_generation(
-                total,
-                model=model,
-                max_new_tokens=CONFIG['max_new_tokens'],
-                seed=CONFIG['seed'],
-                temperature=CONFIG['temperature']
-            )
+            except Exception as e:
+                logger.info(f"API call failed at i: {i}. {e}")
+                llm_response = "API call failed."
 
             new_dict = {
                 "chapter": item['chapter'],
@@ -232,6 +253,8 @@ class AskRag:
                 "answer": llm_response
             }
             answers_list.append(new_dict)
+
+        os.makedirs(f"answers/{self.experiment}", exist_ok=True)
 
         with open(f"answers/{self.experiment}/rag.json", 'w') as f:
             json.dump(answers_list, f, indent=4)
