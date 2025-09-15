@@ -15,6 +15,7 @@ if __name__ == '__main__':
     parser.add_argument("--combine_all_qa", type=bool, default=False)
     parser.add_argument("--data_overlap_check", type=bool, default=False)
     parser.add_argument("--evaluate", type=bool, default=False)
+    parser.add_argument("--training_metrics", type=bool, default=False)
     parser.add_argument("--infer_slg", type=bool, default=False)
     parser.add_argument("--infer_baseline", type=bool, default=False)
     parser.add_argument("--infer_rag", type=bool, default=False)
@@ -67,7 +68,7 @@ if __name__ == '__main__':
         compute_overshadowing(prefix_length=5)
 
     # Experiments
-    experiment = 'j_1_rag_1'
+    experiment = 'j_1_rag_3'
     # Finetune
     if args.finetune:
         from finetune import finetune
@@ -161,16 +162,17 @@ if __name__ == '__main__':
             with open(f'experiments/{experiment}/metrics.json', 'w') as f:
                 json.dump(metrics_list, f, indent=4)
 
-        # Add train and eval loss to
-        training_metrics = pull_training_metrics(f'experiments/{experiment}')
+        if args.training_metrics:
+            # Add train and eval loss to
+            training_metrics = pull_training_metrics(f'experiments/{experiment}')
 
-        with open(f'experiments/{experiment}/metrics.json', "r") as f:
-            data = json.load(f)  # Load JSON as a Python list
+            with open(f'experiments/{experiment}/metrics.json', "r") as f:
+                data = json.load(f)  # Load JSON as a Python list
 
-        data.extend(training_metrics)
+            data.extend(training_metrics)
 
-        with open(f'experiments/{experiment}/metrics.json', "w") as f:
-            json.dump(data, f, indent=4)
+            with open(f'experiments/{experiment}/metrics.json', "w") as f:
+                json.dump(data, f, indent=4)
 
     # Build charts
     if args.charts:
