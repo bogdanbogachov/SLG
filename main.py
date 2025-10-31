@@ -27,13 +27,13 @@ if __name__ == '__main__':
 
     # Download models
     if args.download_models:
-        from download_llama import download, download_llama_3_1_8b
+        from download_llama.download import download, download_llama_3_1_8b
         download(model_name=CONFIG['3_2_1b'], save_directory='downloaded_3_2_1b')
         download_llama_3_1_8b(model_name=CONFIG['3_1_8b'], save_directory='downloaded_3_1_8b')
 
     # Question-answers
     if args.create_qa:
-        from question_answer import populate
+        from question_answer.question_answer_gen import populate
         from question_answer.srm_reader import read_doc
         from question_answer.om_reader import prepare_overhaul_manual
 
@@ -46,32 +46,32 @@ if __name__ == '__main__':
         populate(df_om, 'om_qa')
 
     if args.combine_all_qa:
-        from question_answer import combine_all_qa
+        from question_answer.question_answer_gen import combine_all_qa
         combine_all_qa()
 
 
     if args.inflate_overshadowing:
-        from question_answer import inflate_qa_answers_with_file_inputs
+        from question_answer.inflate_overshadowing import inflate_qa_answers_with_file_inputs
         inflate_qa_answers_with_file_inputs("question_answer/qa_original.json",
                                             "question_answer/inflating_material.json",
                                             "question_answer/qa.json")
 
 
     if args.split_qa:
-        from question_answer import split_qa_pairs_by_title, split_train_test
+        from question_answer.question_answer_gen import split_qa_pairs_by_title, split_train_test
         split_train_test('question_answer/qa.json')
         split_qa_pairs_by_title('question_answer/qa_train.json')
 
     # Measure data overlap
     if args.data_overlap_check:
-        from evaluate import compute_overshadowing
+        from evaluate.data_overlap import compute_overshadowing
         compute_overshadowing(prefix_length=5)
 
     # Experiments
     experiment = 'j_1_rag_3'
     # Finetune
     if args.finetune:
-        from finetune import finetune
+        from finetune.finetune import finetune
         os.makedirs('experiments', exist_ok=True)
         # Finetune SLG
         for file in os.listdir("question_answer/split_by_title"):
@@ -110,13 +110,13 @@ if __name__ == '__main__':
 
     # Infer baseline
     if args.infer_baseline:
-        from inference import ask_baseline
+        from inference.baseline import ask_baseline
         client = OpenAI(api_key=CONFIG['open_ai_api_key'])
         os.makedirs(f'answers/{experiment}', exist_ok=True)
         ask_baseline(file='question_answer/qa_test.json', model=CONFIG['gpt_4_1'], experiment=experiment, client=client)
 
     if args.infer_rag:
-        from inference import AskRag
+        from inference.baseline import AskRag
         client = OpenAI(api_key=CONFIG['open_ai_api_key'])
         rag = AskRag(
             documents_file='question_answer/qa_train.json',
@@ -127,7 +127,7 @@ if __name__ == '__main__':
         rag.generate_responses()
 
     if args.infer_finetuned:
-        from inference import ask_finetuned
+        from inference.baseline import ask_finetuned
         os.makedirs(f'answers/{experiment}', exist_ok=True)
         ask_finetuned(file='question_answer/qa_test.json',
                       base_model='downloaded_3_2_1b',
@@ -140,7 +140,7 @@ if __name__ == '__main__':
 
     # Infer slg
     if args.infer_slg:
-        from inference import SmallLanguageGraph
+        from inference.slg import SmallLanguageGraph
         os.makedirs(f'answers/{experiment}', exist_ok=True)
         slg = SmallLanguageGraph(experts_location=experiment, experiment=experiment)
         slg.ask_slg(
@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
     # Evaluate
     if args.evaluate:
-        from evaluate import load_data, evaluate, pull_training_metrics
+        from evaluate.evaluate import load_data, evaluate, pull_training_metrics
         metrics_list = []
         ground_truth_file = "question_answer/qa_test.json"
         for predictions_file in os.listdir(f"answers/{experiment}"):
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
     # Build charts
     if args.charts:
-        from evaluate import plot_finetuning_metrics
+        from evaluate.charts import plot_finetuning_metrics
 
         experiment_root = 'experiments'
 
