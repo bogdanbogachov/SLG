@@ -16,5 +16,4 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--infer_finetuned", type=bool, default=False)
     parser.add_argument("--download_models", type=bool, default=False)
     parser.add_argument("--finetune", type=bool, default=False)
-    parser.add_argument("--charts", type=bool, default=False)
     return parser
