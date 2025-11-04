@@ -1,10 +1,5 @@
 # API Keys - Set via environment variables (HF_API_KEY, TOGETHER_AI_API_KEY, OPENAI_API_KEY)
 
-# Generation parameters
-max_new_tokens: 750
-seed: 42
-temperature: 0.1
-
 # Question-answer creation prompts
 system_prompt: >
   You are an expert in Aerospace Engineering and you are tasked to read text and create questions for this text.
@@ -122,7 +117,16 @@ rag:
 
 # Generation constants
 generation:
+  max_new_tokens: 750
+  seed: 42
+  temperature: 0.1
   orchestrator_max_tokens: 10
+
+# Adapter names
+adapters:
+  finetuned_3_2_1b: 'finetuned_3_2_1b'
+  finetuned_3_1_8b: 'finetuned_3_1_8b'
+  orchestrator_3_2_1b: 'orchestrator_3_2_1b'
 
 # Default experiment name
 experiment: 'j_1_rag_3'
