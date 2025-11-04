@@ -1,6 +1,6 @@
 # API Keys - Set via environment variables (HF_API_KEY, TOGETHER_AI_API_KEY, OPENAI_API_KEY)
 
-# HF call model parameters
+# Generation parameters
 max_new_tokens: 750
 seed: 42
 temperature: 0.1
