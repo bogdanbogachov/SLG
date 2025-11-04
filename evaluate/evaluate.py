@@ -67,9 +67,21 @@ def calculate_meteor_score(reference, candidate):
     return score
 
 
-def get_embedding(text, client):
+def get_embedding(text: str, client) -> np.ndarray:
+    """
+    Get embedding for text using OpenAI API.
+    
+    Args:
+        text: Text to embed
+        client: OpenAI client instance
+        
+    Returns:
+        Embedding vector as numpy array
+    """
+    models_config = CONFIG['models']
+    embedding_model = models_config['embedding_model']
     response = client.embeddings.create(
-        model=CONFIG['embedding_model'],
+        model=embedding_model,
         input=text
     )
 
@@ -104,8 +116,9 @@ def calculate_ai_expert(reference, candidate, api_client):
     temperature = CONFIG['temperature']
 
     try:
+        models_config = CONFIG['models']
         response = api_client.chat.completions.create(
-            model=CONFIG["gpt_4_1_nano"],
+            model=models_config['gpt_4_1_nano'],
             messages=[
                 {"role": "system", "content": ai_expert_prompt},
                 {"role": "user", "content": query_expert_prompt.format(text_1=reference, text_2=candidate)},
