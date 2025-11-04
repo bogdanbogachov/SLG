@@ -7,6 +7,7 @@ def run_training(experiment: str):
     paths_config = CONFIG['paths']
     files_config = CONFIG['files']
     models_paths = paths_config['models']
+    adapters_config = CONFIG['adapters']
     
     experiments_dir = paths_config['experiments']
     split_by_title_dir = paths_config['split_by_title']
@@ -27,7 +28,7 @@ def run_training(experiment: str):
     # Orchestrator
     finetune(
         model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
-        adapter_name='orchestrator_3_2_1b',
+        adapter_name=adapters_config['orchestrator_3_2_1b'],
         data=files_config['qa_train'],
         experiment_number=experiment,
         orchestrator=True
@@ -36,14 +37,14 @@ def run_training(experiment: str):
     # Baselines
     finetune(
         model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
-        adapter_name='3_2_1b',
+        adapter_name=adapters_config['finetuned_3_2_1b'],
         data=files_config['qa_train'],
         experiment_number=experiment
     )
 
     finetune(
         model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_1_8b']),
-        adapter_name='3_1_8b',
+        adapter_name=adapters_config['finetuned_3_1_8b'],
         data=files_config['qa_train'],
         experiment_number=experiment
     )
