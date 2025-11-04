@@ -62,6 +62,7 @@ files:
   qa_test: 'question_answer/qa_test.json'
   srm_pdf: 'question_answer/srm.pdf'
   om_pdf: 'question_answer/om.pdf'
+  metrics: 'metrics.json'
 
 # Logging
 logging:
