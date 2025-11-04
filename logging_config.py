@@ -2,7 +2,7 @@
 import logging
 import os
 from typing import Optional
-from constants import DEFAULT_LOG_DIR, DEFAULT_LOG_FILE
+from config import CONFIG
 
 
 def setup_logger(
@@ -32,8 +32,9 @@ def setup_logger(
     ch.setLevel(logging.INFO)
     
     # Create a file handler with configurable path
-    log_dir = log_dir or DEFAULT_LOG_DIR
-    log_file = log_file or DEFAULT_LOG_FILE
+    logging_config = CONFIG['logging']
+    log_dir = log_dir or logging_config['log_dir']
+    log_file = log_file or logging_config['log_file']
     
     # Ensure log directory exists
     os.makedirs(log_dir, exist_ok=True)
