@@ -65,4 +65,3 @@ def create_system_message(content: str) -> Dict[str, str]:
         Message dictionary
     """
     return {"role": "system", "content": content}
-
