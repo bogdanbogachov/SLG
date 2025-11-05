@@ -1,4 +1,4 @@
-# eng_llm
+# SLG
 
 A fine-tuning and inference pipeline optimized for resource-constrained environments, capable of running on small GPUs (up to 4 GB VRAM) with distributed AI potential. The system implements **SLG (Small Language Graph)**, a multi-expert architecture where each expert is fine-tuned using LoRA adapters.
 ## Requirements
