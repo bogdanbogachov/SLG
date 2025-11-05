@@ -21,12 +21,14 @@ def generate(text):
             - a tuple with all generated questions.
     """
     api_key = CONFIG['api_key']
-    model_id = CONFIG['3_3_70b']
+    models_config = CONFIG['models']
+    model_id = models_config['3_3_70b']
     system_prompt = CONFIG['system_prompt']
     query_prompt = CONFIG["query_prompt"]
-    max_new_tokens = CONFIG['max_new_tokens']
-    seed = CONFIG['seed']
-    temperature = CONFIG['temperature']
+    generation_config = CONFIG['generation']
+    max_new_tokens = generation_config['max_new_tokens']
+    seed = generation_config['seed']
+    temperature = generation_config['temperature']
     tokenizer = AutoTokenizer.from_pretrained(model_id)
 
     login(api_key)
@@ -73,9 +75,10 @@ def generate_with_together_ai(text):
 
     system_prompt = CONFIG['system_prompt']
     query_prompt = CONFIG["query_prompt"]
-    max_new_tokens = CONFIG['max_new_tokens']
-    seed = CONFIG['seed']
-    temperature = CONFIG['temperature']
+    generation_config = CONFIG['generation']
+    max_new_tokens = generation_config['max_new_tokens']
+    seed = generation_config['seed']
+    temperature = generation_config['temperature']
 
     questions = tuple()
     # An average word has 4 letters, an average sentence has 20 words. Thus, I divide texts by 80 to get the number
