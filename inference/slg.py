@@ -1,13 +1,17 @@
+"""Small Language Graph (SLG) for multi-expert question answering."""
 from langgraph.graph import StateGraph, START, END
-from transformers import AutoTokenizer, pipeline, AutoModelForCausalLM
+from transformers import AutoTokenizer
 from config import CONFIG
 from logging_config import logger
-from peft import PeftModel
 import json
-import torch
 import os
 import functools
 import difflib
+from typing import Dict, Any, List
+
+from utils.model_loader import load_model_with_adapter, cleanup_model_memory
+from utils.prompt_utils import apply_chat_template, create_user_message
+from utils.path_utils import ensure_dir, get_slg_path
 
 
 class SmallLanguageGraph:
@@ -15,109 +19,125 @@ class SmallLanguageGraph:
         self.experts_location = experts_location
         self.experiment = experiment
 
-    def _categorize_task(self, prompt, experts):
+    def _categorize_task(self, prompt: str, experts: List[str]) -> str:
         """
-        Function to orchestrate questions.
+        Categorize a question and route it to an appropriate expert.
+        
+        Args:
+            prompt: The question prompt
+            experts: List of available expert names
+            
+        Returns:
+            Name of the expert to use
         """
-        messages = [
-            {"role": "user", "content": prompt}
-        ]
+        import torch
+        
+        messages = [create_user_message(prompt)]
 
         # Set the paths for your local model and adapter
-        base_model_path = 'downloaded_3_2_1b'
-        adapter_path = f"experiments/{self.experts_location}/finetuned_orchestrator_3_2_1b"
+        paths_config = CONFIG['paths']
+        models_paths = paths_config['models']
+        adapters_config = CONFIG['adapters']
+        base_model_path = os.path.join(
+            paths_config['downloaded_models'],
+            models_paths['3_2_1b']
+        )
+        experiments_dir = paths_config['experiments']
+        adapter_path = os.path.join(experiments_dir, self.experts_location, adapters_config['orchestrator_3_2_1b'])
 
-        # Load the tokenizer (from base model)
-        tokenizer = AutoTokenizer.from_pretrained(adapter_path, trust_remote_code=True)
-
-        # Load the base model from local storage
-        model = AutoModelForCausalLM.from_pretrained(
-            base_model_path,
-            torch_dtype=torch.float16,  # Uses FP16 for lower memory usage
-            device_map="auto"  # Ensures it loads to GPU automatically
+        # Load model with adapter using utility function
+        finetuned_model, tokenizer = load_model_with_adapter(
+            base_model_path=base_model_path,
+            adapter_path=adapter_path,
+            resize_token_embeddings=False
         )
 
-        # Apply the LoRA adapter on top
-        # model.resize_token_embeddings(len(tokenizer)) # make sure the raw model has the same embedding size as adapter
-        finetuned_model = PeftModel.from_pretrained(model, adapter_path)
+        try:
+            # Inference
+            formatted_prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=True)
+            inputs = tokenizer(formatted_prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
+            logger.debug(f'Tokenized prompt for orchestrator: {inputs}')
+            
+            generation_config = CONFIG['generation']
+            orchestrator_max_tokens = generation_config['orchestrator_max_tokens']
+            outputs = finetuned_model.generate(
+                **inputs,
+                max_new_tokens=orchestrator_max_tokens,
+                num_return_sequences=1,
+                temperature=generation_config['temperature'],
+                eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>")
+            )
+            text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            output = text.split("assistant")[1].strip() if "assistant" in text else text.strip()
+            output = output.replace(' ', '_').replace('/', '_').lower()
+            logger.info(f'Categorizer raw output: {output}')
 
-        # Ensure the model is fully on GPU
-        finetuned_model.to("cuda")
-
-        # Inference
-        prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = tokenizer(prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
-        logger.debug(f'Tokenized prompt for orchestrator: {inputs}')
-        outputs = finetuned_model.generate(**inputs,
-                                           max_new_tokens=10,
-                                           num_return_sequences=1,
-                                           temperature=0.1,
-                                           eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>")
-                                           )
-        text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        output = text.split("assistant")[1].strip()
-        output = output.replace(' ', '_').replace('/', '_').lower()
-        output = 'finetuned_' + output
-        logger.info(f'Categorizer raw output: {output}')
-
-        if output in experts:
-            logger.info(f'Categorizer output found in experts list: {output}')
-            return output
-        else:
-            closest_match = max(experts, key=lambda s: difflib.SequenceMatcher(None, output, s).ratio())
-            logger.info(f'Categorizer closest match with experts: {closest_match}')
-            return closest_match
+            if output in experts:
+                logger.info(f'Categorizer output found in experts list: {output}')
+                return output
+            else:
+                closest_match = max(experts, key=lambda s: difflib.SequenceMatcher(None, output, s).ratio())
+                logger.info(f'Categorizer closest match with experts: {closest_match}')
+                return closest_match
+        finally:
+            # Always cleanup memory
+            cleanup_model_memory(finetuned_model, tokenizer)
 
     @staticmethod
-    def _tuned_generate(prompt, adapter):
+    def _tuned_generate(prompt: str, adapter: str) -> str:
+        """
+        Generate a response using a fine-tuned expert model.
+        
+        Args:
+            prompt: The question prompt
+            adapter: Path to the adapter directory
+            
+        Returns:
+            Generated response text
+        """
         logger.info("Generating from tuned")
-        messages = [
-            # {"role": "system", "content": CONFIG['inference_prompt']},
-            {"role": "user", "content": prompt}
-        ]
+        messages = [create_user_message(prompt)]
 
         # Set the paths for your local model and adapter
-        base_model_path = 'downloaded_3_2_1b'
+        paths_config = CONFIG['paths']
+        models_paths = paths_config['models']
+        base_model_path = os.path.join(
+            paths_config['downloaded_models'],
+            models_paths['3_2_1b']
+        )
         adapter_path = adapter
         logger.info(f"Model used to infer: {adapter}")
 
-        # Load the tokenizer (from base model)
-        tokenizer = AutoTokenizer.from_pretrained(adapter_path, trust_remote_code=True)
-
-        # Load the base model from local storage
-        model = AutoModelForCausalLM.from_pretrained(
-            base_model_path,
-            torch_dtype=torch.float16,  # Uses FP16 for lower memory usage
-            device_map="auto"  # Ensures it loads to GPU automatically
+        # Load model with adapter using utility function
+        finetuned_model, tokenizer = load_model_with_adapter(
+            base_model_path=base_model_path,
+            adapter_path=adapter_path,
+            resize_token_embeddings=True  # SLG experts need this
         )
 
-        # Apply the LoRA adapter on top
-        model.resize_token_embeddings(len(tokenizer))  # make sure the raw model has the same embedding size as adapter
-        finetuned_model = PeftModel.from_pretrained(model, adapter_path)
+        try:
+            # Inference
+            formatted_prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=True)
+            inputs = tokenizer(formatted_prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
+            logger.debug(f'Tokenized prompt for expert: {inputs}')
+            
+            generation_config = CONFIG['generation']
+            outputs = finetuned_model.generate(
+                **inputs,
+                max_new_tokens=generation_config['max_new_tokens'],
+                num_return_sequences=1,
+                temperature=generation_config['temperature'],
+                eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>")
+            )
+            text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        # Ensure the model is fully on GPU
-        finetuned_model.to("cuda")
+            logger.debug(f"Output: {text}")
+            logger.info("Inference complete.")
 
-        # Inference
-        prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = tokenizer(prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
-        logger.debug(f'Tokenized prompt for expert: {inputs}')
-        outputs = finetuned_model.generate(**inputs,
-                                           max_new_tokens=CONFIG['max_new_tokens'],
-                                           num_return_sequences=1,
-                                           temperature=CONFIG['temperature'],
-                                           eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"))
-        text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-        logger.debug(f"Output: {text}")
-        logger.info("Inference complete.")
-
-        del model
-        del tokenizer
-        torch.cuda.empty_cache()
-        torch.cuda.ipc_collect()  # Helps defragment GPU memory
-
-        return text.split("assistant")[1]
+            return text.split("assistant")[1] if "assistant" in text else text
+        finally:
+            # Always cleanup memory
+            cleanup_model_memory(finetuned_model, tokenizer)
 
     # Step 2: Define Node Functions
     def _task_analysis_node(self, state):
@@ -130,7 +150,10 @@ class SmallLanguageGraph:
             # f"A friendly reminder, experts are as follows:\n {experts_list}"
             # f"Very important! Return only an expert name, nothing else!"
         )
-        experts_list_of_strings = [expert for expert in os.listdir(f'experiments/{self.experts_location}/slg')]
+        paths_config = CONFIG['paths']
+        experiments_dir = paths_config['experiments']
+        slg_path = get_slg_path(self.experts_location, experiments_dir)
+        experts_list_of_strings = [expert for expert in os.listdir(slg_path) if not expert.endswith('.json')]
         response = self._categorize_task(prompt, experts_list_of_strings)
         state["category"] = response.strip().lower()
         return state
@@ -139,15 +162,33 @@ class SmallLanguageGraph:
         """Damage classification expert node."""
         question = state["question"]
         prompt = question
+        paths_config = CONFIG['paths']
+        experiments_dir = paths_config['experiments']
+        slg_path = get_slg_path(self.experts_location, experiments_dir)
         state["answer"] = self._tuned_generate(
             prompt,
-            f"experiments/{self.experts_location}/slg/{model}"
+            os.path.join(slg_path, model)
         )
         return state
 
-    def _routing_function(self, state):
-        """Route based on the category identified in the task analysis."""
-        models = {folder_name: folder_name for folder_name in os.listdir(f'experiments/{self.experts_location}/slg')}
+    def _routing_function(self, state: Dict[str, Any]):
+        """
+        Route based on the category identified in the task analysis.
+        
+        Args:
+            state: Current graph state
+            
+        Returns:
+            Next node name or END
+        """
+        paths_config = CONFIG['paths']
+        experiments_dir = paths_config['experiments']
+        slg_path = get_slg_path(self.experts_location, experiments_dir)
+        models = {
+            folder_name: folder_name 
+            for folder_name in os.listdir(slg_path) 
+            if not folder_name.endswith('.json')
+        }
         category = state.get("category")
         return models.get(category, END)
 
@@ -155,22 +196,26 @@ class SmallLanguageGraph:
         logger.info("Building graph.")
         graph_builder = StateGraph(dict)
 
+        paths_config = CONFIG['paths']
+        experiments_dir = paths_config['experiments']
+        slg_path = get_slg_path(self.experts_location, experiments_dir)
+        
         logger.info("Adding nodes to the graph.")
         graph_builder.add_node("task_analysis", self._task_analysis_node)
-        for node in os.listdir(f'experiments/{self.experts_location}/slg'):
+        for node in os.listdir(slg_path):
             if not node.endswith(".json"):
                 logger.info(f"Adding node {node}.")
                 graph_builder.add_node(
                     node, functools.partial(
-                    self._expert_node_builder,
-                    model=node
+                        self._expert_node_builder,
+                        model=node
                     )
                 )
 
         logger.info("Adding edges to the graph.")
         graph_builder.add_edge(START, "task_analysis")
         graph_builder.add_conditional_edges("task_analysis", self._routing_function)
-        for edge in os.listdir(f'experiments/{self.experts_location}/slg'):
+        for edge in os.listdir(slg_path):
             if not edge.endswith(".json"):
                 logger.info(f"Adding edge {edge}.")
                 graph_builder.add_edge(edge, END)
@@ -181,16 +226,30 @@ class SmallLanguageGraph:
 
         return graph
 
-    # Step 4: Execute the Graph
-    def ask_slg(self, file):
-        """Run the graph for a user question."""
-        # Step 1: Read the original JSON file
+    def ask_slg(self, file: str) -> None:
+        """
+        Run the SLG graph for all questions in a file.
+        
+        Args:
+            file: Path to JSON file with questions
+        """
+        from utils.path_utils import validate_file_exists
+        
+        validate_file_exists(file)
+        
+        # Read the original JSON file
         with open(file, 'r') as f:
             data = json.load(f)
 
-        # Step 2: Process the data
+        # Ensure output directory exists
+        paths_config = CONFIG['paths']
+        output_dir = os.path.join(paths_config['answers'], self.experiment)
+        ensure_dir(output_dir)
+
+        # Process the data
         graph = self._build_graph()
-        answers_list = []
+        answers_list: List[Dict[str, Any]] = []
+        
         for item in data:
             logger.info(f"Inference of the title: {item['title']}")
             initial_state = {"question": item['question']}
@@ -205,7 +264,8 @@ class SmallLanguageGraph:
             answers_list.append(new_dict)
             logger.info(40*'-')
 
-        with open(f'answers/{self.experiment}/slg.json', 'w') as f:
+        output_path = os.path.join(output_dir, 'slg.json')
+        with open(output_path, 'w') as f:
             json.dump(answers_list, f, indent=4)
 
         return None
