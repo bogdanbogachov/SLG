@@ -62,7 +62,7 @@ files:
 # Logging
 logging:
   log_dir: 'logs'
-  log_file: 'eng_llm.log'
+  log_file: 'slg.log'
 
 # Models
 models:
