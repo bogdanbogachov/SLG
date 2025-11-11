@@ -1,0 +1,1352 @@
+[
+  {
+    "text": "WARNING: Inadequate panel replacement of the engine nacelle may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with engine nacelle configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify tool availability before beginning."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near fuselage skin due to risk of toxic exposure. Before beginning the sealant application, ensure that the area is free of coolant vapor and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the panel replacement and conduct a full inspection of the fuselage skin. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to secure all panels before fastener removal may lead to fire hazard. Always inspect the wing root and verify that aircraft model."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with engine nacelle configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify aircraft model before beginning."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming aircraft model can result in loss of control. Carefully evacuate personnel, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during fastener removal may lead to scratching on the wing root. Only use calibrated tools and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of cracks, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming aircraft model can result in equipment damage. Carefully secure all panels, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "NOTE: Instruction should be followed precisely to ensure compliance with safety and operational standards. Record all actions performed during the sealant application in the aircraft maintenance log."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during sealant application may lead to leakage on the landing gear strut. Only use OEM instructions and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in bonding process may vary. Ensure you cross-reference the applicable job card and check compatibility with calibrated tools."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this sealant application. Using unapproved OEM instructions may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during bonding process may lead to scratching on the landing gear strut. Only use OEM instructions and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: open flame must never be used near fuselage skin due to risk of toxic exposure. Before beginning the panel replacement, ensure that the area is free of sealant fumes and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near fuselage skin due to risk of skin irritation. Before beginning the panel replacement, ensure that the area is free of hydraulic fluid and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved protective materials may lead to fire risk and void the warranty."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near fuselage skin due to risk of skin irritation. Before beginning the fastener removal, ensure that the area is free of sealant fumes and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this panel replacement. Using unapproved approved parts may lead to respiratory issues and void the warranty."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the landing gear strut may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "NOTE: Use of inspection mirror can significantly reduce time during panel replacement and minimize risk of foreign objects. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "NOTE: {Instruction} should be followed precisely to ensure compliance with safety and operational standards. Record all actions performed during the bonding process in the aircraft maintenance log."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of foreign objects, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved calibrated tools may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during sealant application and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the engine nacelle."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during fastener removal may cause severe fire risk. Use torque wrench, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near fuselage skin due to risk of respiratory issues. Before beginning the bonding process, ensure that the area is free of coolant vapor and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during sealant application may lead to scratching on the engine nacelle. Only use approved parts and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the engine nacelle may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the wing root may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for warping before returning to service."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming aircraft model can result in serious injury. Carefully secure all panels, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming tool availability can result in serious injury. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the wing root may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during sealant application may lead to scratching on the wing root. Only use protective materials and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with wing root configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify ambient temperature before beginning."
+  },
+  {
+    "text": "CAUTION: If component age is not confirmed, abort the bonding process and conduct a full inspection of the landing gear strut. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the engine nacelle is isolated and secured. {Mistake} may result in unnecessary rework or component scratching."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to secure all panels before sealant application may lead to fire hazard. Always inspect the wing root and verify that component age."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with landing gear strut configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify ambient temperature before beginning."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near landing gear strut due to risk of respiratory issues. Before beginning the bonding process, ensure that the area is free of hydraulic fluid and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with fuselage skin configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify ambient temperature before beginning."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the landing gear strut may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with landing gear strut configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify aircraft model before beginning."
+  },
+  {
+    "text": "NOTE: {Instruction} should be followed precisely to ensure compliance with safety and operational standards. Record all actions performed during the panel replacement in the aircraft maintenance log."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to evacuate personnel before panel replacement may lead to fire hazard. Always inspect the engine nacelle and verify that ambient temperature."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near fuselage skin due to risk of skin irritation. Before beginning the panel replacement, ensure that the area is free of composite dust and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming aircraft model can result in equipment damage. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with wing root configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify tool availability before beginning."
+  },
+  {
+    "text": "CAUTION: Before beginning any bonding process, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming tool availability can result in loss of control. Carefully disconnect power, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "NOTE: Use of inspection mirror can significantly reduce time during bonding process and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during panel replacement and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during fastener removal and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the fastener removal and conduct a full inspection of the wing root. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the fuselage skin may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for warping before returning to service."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to secure all panels before panel replacement may lead to serious injury. Always inspect the landing gear strut and verify that aircraft model."
+  },
+  {
+    "text": "NOTE: Use of inspection mirror can significantly reduce time during fastener removal and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to secure all panels before fastener removal may lead to serious injury. Always inspect the landing gear strut and verify that component age."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to depressurize the system before panel replacement may lead to system failure. Always inspect the fuselage skin and verify that tool availability."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during sealant application may cause severe toxic exposure. Use torque wrench, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: Inadequate panel replacement of the wing root may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in fastener removal may vary. Ensure you cross-reference the applicable job card and check compatibility with calibrated tools."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of cracks, do not proceed with the bonding process until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during panel replacement may cause severe skin irritation. Use non-metallic scraper, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming tool availability can result in system failure. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming tool availability can result in equipment damage. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during sealant application may cause severe fire risk. Use torque wrench, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "NOTE: Depending on tool availability, the steps involved in fastener removal may vary. Ensure you cross-reference the applicable job card and check compatibility with calibrated tools."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component misalignment."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to depressurize the system before bonding process may lead to loss of control. Always inspect the fuselage skin and verify that aircraft model."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near fuselage skin due to risk of respiratory issues. Before beginning the panel replacement, ensure that the area is free of sealant fumes and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "WARNING: Exposure to composite dust during sealant application may cause severe respiratory issues. Use manufacturer's manual, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "NOTE: {Instruction} should be followed precisely to ensure compliance with safety and operational standards. Record all actions performed during the fastener removal in the aircraft maintenance log."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during bonding process may lead to corrosion on the engine nacelle. Only use calibrated tools and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "CAUTION: Avoid cross-threading when working on the wing root. Make sure torque settings are accurate, and monitor for warping throughout the fastener removal process."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the engine nacelle may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for warping before returning to service."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of discoloration, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming tool availability can result in loss of control. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming component age can result in system failure. Carefully disconnect power, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming tool availability can result in loss of control. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the engine nacelle may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the engine nacelle. Make sure torque settings are accurate, and monitor for foreign objects throughout the bonding process process."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this panel replacement. Using unapproved approved parts may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming component age can result in equipment damage. Carefully evacuate personnel, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near landing gear strut due to risk of skin irritation. Before beginning the sealant application, ensure that the area is free of coolant vapor and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to secure all panels before sealant application may lead to equipment damage. Always inspect the engine nacelle and verify that aircraft model."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the bonding process and conduct a full inspection of the wing root. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in sealant application may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the sealant application and conduct a full inspection of the landing gear strut. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of discoloration, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near fuselage skin due to risk of fire risk. Before beginning the panel replacement, ensure that the area is free of coolant vapor and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the fuselage skin may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for warping before returning to service."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming ambient temperature can result in fire hazard. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to secure all panels before sealant application may lead to system failure. Always inspect the wing root and verify that aircraft model."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component misalignment."
+  },
+  {
+    "text": "CAUTION: Avoid cross-threading when working on the landing gear strut. Make sure torque settings are accurate, and monitor for discoloration throughout the panel replacement process."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near fuselage skin due to risk of fire risk. Before beginning the fastener removal, ensure that the area is free of coolant vapor and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to evacuate personnel before bonding process may lead to loss of control. Always inspect the fuselage skin and verify that tool availability."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during panel replacement may lead to corrosion on the landing gear strut. Only use OEM instructions and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "WARNING: Inadequate panel replacement of the landing gear strut may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during sealant application may lead to misalignment on the landing gear strut. Only use calibrated tools and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with fuselage skin configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify component age before beginning."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this panel replacement. Using unapproved calibrated tools may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the landing gear strut. Make sure torque settings are accurate, and monitor for warping throughout the sealant application process."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during bonding process may lead to corrosion on the engine nacelle. Only use OEM instructions and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to disconnect power before panel replacement may lead to loss of control. Always inspect the wing root and verify that aircraft model."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming component age can result in equipment damage. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "CAUTION: Avoid bending when working on the wing root. Make sure torque settings are accurate, and monitor for warping throughout the fastener removal process."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the landing gear strut may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near engine nacelle due to risk of fire risk. Before beginning the panel replacement, ensure that the area is free of sealant fumes and personnel are wearing torque wrench."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming aircraft model can result in fire hazard. Carefully secure all panels, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the engine nacelle. Make sure torque settings are accurate, and monitor for warping throughout the fastener removal process."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during fastener removal may lead to scratching on the fuselage skin. Only use OEM instructions and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming ambient temperature can result in equipment damage. Carefully disconnect power, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved calibrated tools may lead to respiratory issues and void the warranty."
+  },
+  {
+    "text": "NOTE: Depending on aircraft model, the steps involved in fastener removal may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the landing gear strut is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of discoloration, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the engine nacelle. Make sure torque settings are accurate, and monitor for foreign objects throughout the sealant application process."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the engine nacelle is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of foreign objects, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved OEM instructions may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming component age can result in fire hazard. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the fuselage skin may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "NOTE: Depending on tool availability, the steps involved in bonding process may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to disconnect power before fastener removal may lead to equipment damage. Always inspect the fuselage skin and verify that ambient temperature."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the panel replacement and conduct a full inspection of the landing gear strut. Failure to follow this step can result in scratching."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming tool availability can result in equipment damage. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper fastener removal steps."
+  },
+  {
+    "text": "WARNING: open flame must never be used near engine nacelle due to risk of toxic exposure. Before beginning the panel replacement, ensure that the area is free of sealant fumes and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of warping, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the panel replacement and conduct a full inspection of the wing root. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "CAUTION: Before beginning any panel replacement, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in panel replacement may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the fuselage skin may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "WARNING: open flame must never be used near engine nacelle due to risk of skin irritation. Before beginning the fastener removal, ensure that the area is free of coolant vapor and personnel are wearing torque wrench."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of cracks, do not proceed with the bonding process until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Before beginning any panel replacement, verify that the landing gear strut is isolated and secured. {Mistake} may result in unnecessary rework or component scratching."
+  },
+  {
+    "text": "CAUTION: Avoid bending when working on the engine nacelle. Make sure torque settings are accurate, and monitor for discoloration throughout the sealant application process."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming ambient temperature can result in equipment damage. Carefully evacuate personnel, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of discoloration, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during panel replacement may lead to leakage on the fuselage skin. Only use OEM instructions and ensure that component age is met before proceeding."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to depressurize the system before bonding process may lead to equipment damage. Always inspect the fuselage skin and verify that tool availability."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to depressurize the system before fastener removal may lead to fire hazard. Always inspect the fuselage skin and verify that tool availability."
+  },
+  {
+    "text": "CAUTION: If component age is not confirmed, abort the sealant application and conduct a full inspection of the landing gear strut. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with engine nacelle configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify ambient temperature before beginning."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during fastener removal may cause severe respiratory issues. Use inspection mirror, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the fastener removal and conduct a full inspection of the landing gear strut. Failure to follow this step can result in scratching."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near landing gear strut due to risk of fire risk. Before beginning the panel replacement, ensure that the area is free of coolant vapor and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved OEM instructions may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during bonding process may cause severe respiratory issues. Use non-metallic scraper, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to evacuate personnel before sealant application may lead to equipment damage. Always inspect the engine nacelle and verify that component age."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during fastener removal may lead to corrosion on the wing root. Only use OEM instructions and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming component age can result in serious injury. Carefully evacuate personnel, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the landing gear strut is isolated and secured. {Mistake} may result in unnecessary rework or component scratching."
+  },
+  {
+    "text": "WARNING: Inadequate panel replacement of the engine nacelle may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the bonding process and conduct a full inspection of the landing gear strut. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during panel replacement may lead to corrosion on the engine nacelle. Only use OEM instructions and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "WARNING: open flame must never be used near engine nacelle due to risk of respiratory issues. Before beginning the fastener removal, ensure that the area is free of composite dust and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "NOTE: Depending on aircraft model, the steps involved in sealant application may vary. Ensure you cross-reference the applicable job card and check compatibility with protective materials."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the fastener removal and conduct a full inspection of the landing gear strut. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to secure all panels before bonding process may lead to loss of control. Always inspect the fuselage skin and verify that tool availability."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of cracks, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during sealant application may cause severe respiratory issues. Use non-metallic scraper, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to depressurize the system before bonding process may lead to fire hazard. Always inspect the wing root and verify that tool availability."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near landing gear strut due to risk of fire risk. Before beginning the panel replacement, ensure that the area is free of composite dust and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the engine nacelle. Make sure torque settings are accurate, and monitor for foreign objects throughout the fastener removal process."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during bonding process may cause severe skin irritation. Use torque wrench, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near wing root due to risk of toxic exposure. Before beginning the bonding process, ensure that the area is free of sealant fumes and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to isolate hydraulics before fastener removal may lead to loss of control. Always inspect the landing gear strut and verify that component age."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the wing root may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "WARNING: open flame must never be used near fuselage skin due to risk of toxic exposure. Before beginning the bonding process, ensure that the area is free of coolant vapor and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "CAUTION: Before beginning any bonding process, verify that the landing gear strut is isolated and secured. {Mistake} may result in unnecessary rework or component scratching."
+  },
+  {
+    "text": "CAUTION: Before beginning any bonding process, verify that the landing gear strut is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the panel replacement and conduct a full inspection of the fuselage skin. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "WARNING: open flame must never be used near engine nacelle due to risk of skin irritation. Before beginning the sealant application, ensure that the area is free of composite dust and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near wing root due to risk of toxic exposure. Before beginning the fastener removal, ensure that the area is free of coolant vapor and personnel are wearing torque wrench."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the sealant application and conduct a full inspection of the wing root. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near landing gear strut due to risk of fire risk. Before beginning the bonding process, ensure that the area is free of coolant vapor and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to secure all panels before bonding process may lead to loss of control. Always inspect the fuselage skin and verify that tool availability."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during sealant application may cause severe respiratory issues. Use manufacturer's manual, maintain proper ventilation, and avoid contact with fuselage skin surfaces."
+  },
+  {
+    "text": "WARNING: open flame must never be used near landing gear strut due to risk of skin irritation. Before beginning the panel replacement, ensure that the area is free of hydraulic fluid and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during sealant application may lead to misalignment on the engine nacelle. Only use approved parts and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the sealant application and conduct a full inspection of the wing root. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during bonding process and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved approved parts may lead to fire risk and void the warranty."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this panel replacement. Using unapproved calibrated tools may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to secure all panels before sealant application may lead to loss of control. Always inspect the wing root and verify that tool availability."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to disconnect power before bonding process may lead to serious injury. Always inspect the wing root and verify that tool availability."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with fuselage skin configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify aircraft model before beginning."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during sealant application may lead to misalignment on the engine nacelle. Only use calibrated tools and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: Operating the wing root without confirming aircraft model can result in serious injury. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "CAUTION: Avoid bending when working on the fuselage skin. Make sure torque settings are accurate, and monitor for cracks throughout the sealant application process."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near fuselage skin due to risk of skin irritation. Before beginning the panel replacement, ensure that the area is free of sealant fumes and personnel are wearing torque wrench."
+  },
+  {
+    "text": "CAUTION: Avoid bending when working on the wing root. Make sure torque settings are accurate, and monitor for discoloration throughout the fastener removal process."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near wing root due to risk of fire risk. Before beginning the bonding process, ensure that the area is free of composite dust and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during sealant application may cause severe toxic exposure. Use inspection mirror, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved approved parts may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the wing root. Make sure torque settings are accurate, and monitor for cracks throughout the panel replacement process."
+  },
+  {
+    "text": "CAUTION: Before beginning any panel replacement, verify that the engine nacelle is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the fastener removal and conduct a full inspection of the landing gear strut. Failure to follow this step can result in scratching."
+  },
+  {
+    "text": "NOTE: Depending on aircraft model, the steps involved in panel replacement may vary. Ensure you cross-reference the applicable job card and check compatibility with protective materials."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during sealant application may lead to corrosion on the engine nacelle. Only use calibrated tools and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the wing root may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming aircraft model can result in loss of control. Carefully secure all panels, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the fastener removal and conduct a full inspection of the engine nacelle. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of warping, do not proceed with the bonding process until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the landing gear strut may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for warping before returning to service."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during bonding process may lead to leakage on the fuselage skin. Only use approved parts and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming component age can result in system failure. Carefully disconnect power, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the sealant application and conduct a full inspection of the engine nacelle. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the fastener removal and conduct a full inspection of the landing gear strut. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to secure all panels before fastener removal may lead to loss of control. Always inspect the fuselage skin and verify that component age."
+  },
+  {
+    "text": "CAUTION: Avoid bending when working on the wing root. Make sure torque settings are accurate, and monitor for discoloration throughout the panel replacement process."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to secure all panels before panel replacement may lead to serious injury. Always inspect the wing root and verify that aircraft model."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "CAUTION: If component age is not confirmed, abort the sealant application and conduct a full inspection of the wing root. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: Exposure to composite dust during sealant application may cause severe respiratory issues. Use non-metallic scraper, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during panel replacement may cause severe respiratory issues. Use inspection mirror, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the engine nacelle. Make sure torque settings are accurate, and monitor for cracks throughout the bonding process process."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the engine nacelle. Make sure torque settings are accurate, and monitor for cracks throughout the panel replacement process."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during sealant application may lead to misalignment on the engine nacelle. Only use calibrated tools and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during panel replacement may cause severe skin irritation. Use torque wrench, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of discoloration, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of foreign objects, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during bonding process may lead to corrosion on the engine nacelle. Only use calibrated tools and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during panel replacement and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the fastener removal and conduct a full inspection of the engine nacelle. Failure to follow this step can result in scratching."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the bonding process and conduct a full inspection of the fuselage skin. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: open flame must never be used near landing gear strut due to risk of skin irritation. Before beginning the bonding process, ensure that the area is free of coolant vapor and personnel are wearing torque wrench."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of warping, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to isolate hydraulics before sealant application may lead to equipment damage. Always inspect the engine nacelle and verify that ambient temperature."
+  },
+  {
+    "text": "WARNING: Exposure to composite dust during sealant application may cause severe respiratory issues. Use manufacturer's manual, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "NOTE: Depending on aircraft model, the steps involved in sealant application may vary. Ensure you cross-reference the applicable job card and check compatibility with calibrated tools."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to isolate hydraulics before fastener removal may lead to serious injury. Always inspect the landing gear strut and verify that ambient temperature."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of cracks, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to disconnect power before fastener removal may lead to system failure. Always inspect the engine nacelle and verify that component age."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to depressurize the system before panel replacement may lead to loss of control. Always inspect the wing root and verify that ambient temperature."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the wing root may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of discoloration, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near wing root due to risk of respiratory issues. Before beginning the fastener removal, ensure that the area is free of sealant fumes and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during fastener removal may cause severe skin irritation. Use inspection mirror, maintain proper ventilation, and avoid contact with fuselage skin surfaces."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during bonding process and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "CAUTION: Avoid bending when working on the fuselage skin. Make sure torque settings are accurate, and monitor for cracks throughout the fastener removal process."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during bonding process may lead to scratching on the landing gear strut. Only use protective materials and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during panel replacement may cause severe skin irritation. Use inspection mirror, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: Exposure to composite dust during fastener removal may cause severe skin irritation. Use inspection mirror, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of discoloration, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "NOTE: Depending on tool availability, the steps involved in sealant application may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the sealant application and conduct a full inspection of the landing gear strut. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to disconnect power before bonding process may lead to serious injury. Always inspect the fuselage skin and verify that aircraft model."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of warping, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved calibrated tools may lead to fire risk and void the warranty."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this panel replacement. Using unapproved protective materials may lead to fire risk and void the warranty."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to leakage on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during bonding process and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming tool availability can result in serious injury. Carefully evacuate personnel, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to disconnect power before panel replacement may lead to serious injury. Always inspect the landing gear strut and verify that aircraft model."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the sealant application and conduct a full inspection of the landing gear strut. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during bonding process and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during sealant application may lead to scratching on the wing root. Only use OEM instructions and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during sealant application may lead to corrosion on the engine nacelle. Only use protective materials and ensure that component age is met before proceeding."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near wing root due to risk of skin irritation. Before beginning the sealant application, ensure that the area is free of sealant fumes and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the fuselage skin may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during bonding process may cause severe skin irritation. Use manufacturer's manual, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "NOTE: If the wing root shows any signs of cracks, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming aircraft model can result in loss of control. Carefully secure all panels, and consult section 05-20-00 of the maintenance manual for proper fastener removal steps."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of cracks, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during fastener removal and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during fastener removal may cause severe skin irritation. Use non-metallic scraper, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near wing root due to risk of respiratory issues. Before beginning the panel replacement, ensure that the area is free of sealant fumes and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near landing gear strut due to risk of respiratory issues. Before beginning the sealant application, ensure that the area is free of hydraulic fluid and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to evacuate personnel before panel replacement may lead to equipment damage. Always inspect the fuselage skin and verify that ambient temperature."
+  },
+  {
+    "text": "NOTE: Depending on component age, the steps involved in bonding process may vary. Ensure you cross-reference the applicable job card and check compatibility with protective materials."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of warping, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to evacuate personnel before sealant application may lead to serious injury. Always inspect the engine nacelle and verify that component age."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during bonding process may cause severe respiratory issues. Use torque wrench, maintain proper ventilation, and avoid contact with fuselage skin surfaces."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to secure all panels before bonding process may lead to serious injury. Always inspect the landing gear strut and verify that component age."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during fastener removal may cause severe toxic exposure. Use inspection mirror, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to evacuate personnel before bonding process may lead to loss of control. Always inspect the wing root and verify that tool availability."
+  },
+  {
+    "text": "CAUTION: If component age is not confirmed, abort the sealant application and conduct a full inspection of the engine nacelle. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of warping, do not proceed with the bonding process until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to secure all panels before bonding process may lead to equipment damage. Always inspect the landing gear strut and verify that ambient temperature."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the sealant application and conduct a full inspection of the engine nacelle. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the engine nacelle. Make sure torque settings are accurate, and monitor for foreign objects throughout the fastener removal process."
+  },
+  {
+    "text": "WARNING: Operating the fuselage skin without confirming ambient temperature can result in system failure. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper fastener removal steps."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the engine nacelle may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved OEM instructions may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of foreign objects, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the landing gear strut is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the fuselage skin may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the landing gear strut may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the landing gear strut. Make sure torque settings are accurate, and monitor for warping throughout the fastener removal process."
+  },
+  {
+    "text": "CAUTION: Avoid cross-threading when working on the landing gear strut. Make sure torque settings are accurate, and monitor for discoloration throughout the bonding process process."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this panel replacement. Using unapproved protective materials may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the engine nacelle. Make sure torque settings are accurate, and monitor for discoloration throughout the fastener removal process."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to depressurize the system before panel replacement may lead to system failure. Always inspect the engine nacelle and verify that tool availability."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming ambient temperature can result in system failure. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "WARNING: open flame must never be used near landing gear strut due to risk of respiratory issues. Before beginning the bonding process, ensure that the area is free of hydraulic fluid and personnel are wearing torque wrench."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during panel replacement may cause severe respiratory issues. Use torque wrench, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in fastener removal may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "CAUTION: Avoid dropping when working on the fuselage skin. Make sure torque settings are accurate, and monitor for warping throughout the sealant application process."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during bonding process and minimize risk of foreign objects. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the landing gear strut may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "CAUTION: If component age is not confirmed, abort the bonding process and conduct a full inspection of the engine nacelle. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during panel replacement may cause severe toxic exposure. Use inspection mirror, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near engine nacelle due to risk of skin irritation. Before beginning the bonding process, ensure that the area is free of hydraulic fluid and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the fuselage skin. Make sure torque settings are accurate, and monitor for cracks throughout the fastener removal process."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during panel replacement and minimize risk of foreign objects. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in panel replacement may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: Before beginning any panel replacement, verify that the engine nacelle is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "WARNING: Operating the engine nacelle without confirming component age can result in system failure. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper sealant application steps."
+  },
+  {
+    "text": "WARNING: Inadequate bonding process of the landing gear strut may compromise aircraft integrity. Always wear insulated gloves, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during panel replacement and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during panel replacement may lead to leakage on the engine nacelle. Only use protective materials and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of warping, do not proceed with the sealant application until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during fastener removal and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the engine nacelle."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during fastener removal and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with engine nacelle configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify component age before beginning."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during fastener removal may cause severe skin irritation. Use non-metallic scraper, maintain proper ventilation, and avoid contact with fuselage skin surfaces."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during fastener removal may lead to corrosion on the landing gear strut. Only use OEM instructions and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "NOTE: Use of inspection mirror can significantly reduce time during sealant application and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming ambient temperature can result in loss of control. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper bonding process steps."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to isolate hydraulics before panel replacement may lead to serious injury. Always inspect the wing root and verify that tool availability."
+  },
+  {
+    "text": "WARNING: Exposure to composite dust during panel replacement may cause severe respiratory issues. Use non-metallic scraper, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during bonding process and minimize risk of foreign objects. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to secure all panels before panel replacement may lead to equipment damage. Always inspect the landing gear strut and verify that aircraft model."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in bonding process may vary. Ensure you cross-reference the applicable job card and check compatibility with protective materials."
+  },
+  {
+    "text": "WARNING: open flame must never be used near landing gear strut due to risk of respiratory issues. Before beginning the sealant application, ensure that the area is free of sealant fumes and personnel are wearing torque wrench."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during fastener removal and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the engine nacelle."
+  },
+  {
+    "text": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to misalignment on the fuselage skin. Only use calibrated tools and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during sealant application and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the engine nacelle."
+  },
+  {
+    "text": "CAUTION: Before beginning any panel replacement, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "NOTE: Depending on component age, the steps involved in sealant application may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "WARNING: Inadequate sealant application of the fuselage skin may compromise aircraft integrity. Always disconnect ground power, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during panel replacement may lead to corrosion on the fuselage skin. Only use calibrated tools and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved protective materials may lead to toxic exposure and void the warranty."
+  },
+  {
+    "text": "WARNING: magnetic devices must never be used near fuselage skin due to risk of skin irritation. Before beginning the panel replacement, ensure that the area is free of coolant vapor and personnel are wearing torque wrench."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during sealant application and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved protective materials may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in bonding process may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the sealant application and conduct a full inspection of the wing root. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to secure all panels before sealant application may lead to serious injury. Always inspect the landing gear strut and verify that component age."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the panel replacement and conduct a full inspection of the landing gear strut. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved approved parts may lead to fire risk and void the warranty."
+  },
+  {
+    "text": "NOTE: Use of inspection mirror can significantly reduce time during fastener removal and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the engine nacelle."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during sealant application may lead to misalignment on the wing root. Only use protective materials and ensure that component age is met before proceeding."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during fastener removal may cause severe fire risk. Use manufacturer's manual, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "NOTE: Depending on ambient temperature, the steps involved in fastener removal may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the fastener removal and conduct a full inspection of the fuselage skin. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the panel replacement and conduct a full inspection of the wing root. Failure to follow this step can result in scratching."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the landing gear strut. Make sure torque settings are accurate, and monitor for discoloration throughout the bonding process process."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to secure all panels before sealant application may lead to system failure. Always inspect the wing root and verify that ambient temperature."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to isolate hydraulics before fastener removal may lead to loss of control. Always inspect the engine nacelle and verify that tool availability."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during fastener removal may cause severe respiratory issues. Use inspection mirror, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "CAUTION: Before beginning any sealant application, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "WARNING: open flame must never be used near wing root due to risk of toxic exposure. Before beginning the panel replacement, ensure that the area is free of hydraulic fluid and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during panel replacement and minimize risk of foreign objects. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to evacuate personnel before bonding process may lead to serious injury. Always inspect the engine nacelle and verify that aircraft model."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near wing root due to risk of toxic exposure. Before beginning the sealant application, ensure that the area is free of hydraulic fluid and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved OEM instructions may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the panel replacement and conduct a full inspection of the landing gear strut. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with landing gear strut configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify tool availability before beginning."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during bonding process may lead to corrosion on the wing root. Only use protective materials and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to secure all panels before bonding process may lead to equipment damage. Always inspect the wing root and verify that component age."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of discoloration, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Incorrect use of high-speed drill during fastener removal may lead to misalignment on the landing gear strut. Only use approved parts and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "WARNING: open flame must never be used near fuselage skin due to risk of fire risk. Before beginning the fastener removal, ensure that the area is free of composite dust and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved calibrated tools may lead to fire risk and void the warranty."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the panel replacement and conduct a full inspection of the wing root. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near engine nacelle due to risk of skin irritation. Before beginning the sealant application, ensure that the area is free of hydraulic fluid and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "NOTE: Depending on aircraft model, the steps involved in panel replacement may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during bonding process may cause severe skin irritation. Use manufacturer's manual, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the fuselage skin. Make sure torque settings are accurate, and monitor for discoloration throughout the fastener removal process."
+  },
+  {
+    "text": "CAUTION: Avoid cross-threading when working on the fuselage skin. Make sure torque settings are accurate, and monitor for cracks throughout the bonding process process."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to evacuate personnel before sealant application may lead to serious injury. Always inspect the landing gear strut and verify that component age."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming component age can result in system failure. Carefully isolate hydraulics, and consult section 05-20-00 of the maintenance manual for proper fastener removal steps."
+  },
+  {
+    "text": "WARNING: open flame must never be used near landing gear strut due to risk of skin irritation. Before beginning the fastener removal, ensure that the area is free of composite dust and personnel are wearing torque wrench."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during sealant application may lead to misalignment on the fuselage skin. Only use OEM instructions and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming aircraft model can result in fire hazard. Carefully depressurize the system, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "WARNING: Inadequate panel replacement of the landing gear strut may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for discoloration before returning to service."
+  },
+  {
+    "text": "CAUTION: Avoid over-torquing when working on the wing root. Make sure torque settings are accurate, and monitor for warping throughout the bonding process process."
+  },
+  {
+    "text": "WARNING: disconnect ground power. Failure to evacuate personnel before fastener removal may lead to serious injury. Always inspect the fuselage skin and verify that ambient temperature."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during sealant application may lead to corrosion on the wing root. Only use approved parts and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during panel replacement and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near wing root due to risk of respiratory issues. Before beginning the sealant application, ensure that the area is free of coolant vapor and personnel are wearing torque wrench."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to isolate hydraulics before fastener removal may lead to system failure. Always inspect the engine nacelle and verify that aircraft model."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming ambient temperature can result in system failure. Carefully evacuate personnel, and consult section 05-20-00 of the maintenance manual for proper fastener removal steps."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this sealant application. Using unapproved protective materials may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this sealant application. Using unapproved approved parts may lead to skin irritation and void the warranty."
+  },
+  {
+    "text": "WARNING: Exposure to hydraulic fluid during bonding process may cause severe fire risk. Use inspection mirror, maintain proper ventilation, and avoid contact with wing root surfaces."
+  },
+  {
+    "text": "NOTE: Use of manufacturer's manual can significantly reduce time during fastener removal and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "CAUTION: Avoid cross-threading when working on the engine nacelle. Make sure torque settings are accurate, and monitor for cracks throughout the fastener removal process."
+  },
+  {
+    "text": "NOTE: Depending on aircraft model, the steps involved in sealant application may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "WARNING: Exposure to coolant vapor during fastener removal may cause severe respiratory issues. Use torque wrench, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "WARNING: Inadequate panel replacement of the landing gear strut may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with landing gear strut configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify component age before beginning."
+  },
+  {
+    "text": "NOTE: This procedure applies specifically to aircraft models with fuselage skin configurations post-2015. For older models, refer to AMM revision 22B or later. Always verify tool availability before beginning."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near engine nacelle due to risk of fire risk. Before beginning the sealant application, ensure that the area is free of coolant vapor and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: open flame must never be used near wing root due to risk of respiratory issues. Before beginning the bonding process, ensure that the area is free of coolant vapor and personnel are wearing inspection mirror."
+  },
+  {
+    "text": "WARNING: Operating the landing gear strut without confirming tool availability can result in system failure. Carefully secure all panels, and consult section 05-20-00 of the maintenance manual for proper panel replacement steps."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during sealant application and minimize risk of cracks. Ensure that all tools are calibrated and verified for use with the landing gear strut."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to secure all panels before bonding process may lead to fire hazard. Always inspect the wing root and verify that component age."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the engine nacelle may compromise aircraft integrity. Always ventilate area, follow approved methods, and check for cracks before returning to service."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the fastener removal and conduct a full inspection of the wing root. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of discoloration, do not proceed with the bonding process until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: use explosion-proof lighting. Failure to isolate hydraulics before panel replacement may lead to loss of control. Always inspect the engine nacelle and verify that tool availability."
+  },
+  {
+    "text": "WARNING: solvent cleaners must never be used near engine nacelle due to risk of skin irritation. Before beginning the panel replacement, ensure that the area is free of coolant vapor and personnel are wearing non-metallic scraper."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this bonding process. Using unapproved OEM instructions may lead to respiratory issues and void the warranty."
+  },
+  {
+    "text": "WARNING: wear insulated gloves. Failure to disconnect power before sealant application may lead to serious injury. Always inspect the engine nacelle and verify that tool availability."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of cracks, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the panel replacement and conduct a full inspection of the fuselage skin. Failure to follow this step can result in scratching."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of discoloration, do not proceed with the panel replacement until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during fastener removal may cause severe skin irritation. Use non-metallic scraper, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the bonding process and conduct a full inspection of the landing gear strut. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "NOTE: If the fuselage skin shows any signs of warping, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "NOTE: If the landing gear strut shows any signs of foreign objects, do not proceed with the bonding process until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during panel replacement may cause severe toxic exposure. Use non-metallic scraper, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "WARNING: open flame must never be used near landing gear strut due to risk of fire risk. Before beginning the sealant application, ensure that the area is free of composite dust and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "CAUTION: Incorrect use of open flame during fastener removal may lead to scratching on the fuselage skin. Only use approved parts and ensure that tool availability is met before proceeding."
+  },
+  {
+    "text": "CAUTION: If tool availability is not confirmed, abort the sealant application and conduct a full inspection of the engine nacelle. Failure to follow this step can result in corrosion."
+  },
+  {
+    "text": "NOTE: Depending on component age, the steps involved in bonding process may vary. Ensure you cross-reference the applicable job card and check compatibility with approved parts."
+  },
+  {
+    "text": "CAUTION: If aircraft model is not confirmed, abort the panel replacement and conduct a full inspection of the fuselage skin. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during sealant application may cause severe respiratory issues. Use torque wrench, maintain proper ventilation, and avoid contact with engine nacelle surfaces."
+  },
+  {
+    "text": "WARNING: Inadequate fastener removal of the fuselage skin may compromise aircraft integrity. Always use explosion-proof lighting, follow approved methods, and check for foreign objects before returning to service."
+  },
+  {
+    "text": "NOTE: Use of torque wrench can significantly reduce time during panel replacement and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the wing root."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near landing gear strut due to risk of toxic exposure. Before beginning the panel replacement, ensure that the area is free of coolant vapor and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: Exposure to composite dust during fastener removal may cause severe fire risk. Use manufacturer's manual, maintain proper ventilation, and avoid contact with landing gear strut surfaces."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the fastener removal and conduct a full inspection of the landing gear strut. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "NOTE: Use of non-metallic scraper can significantly reduce time during fastener removal and minimize risk of discoloration. Ensure that all tools are calibrated and verified for use with the fuselage skin."
+  },
+  {
+    "text": "NOTE: Depending on tool availability, the steps involved in fastener removal may vary. Ensure you cross-reference the applicable job card and check compatibility with OEM instructions."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to depressurize the system before fastener removal may lead to system failure. Always inspect the fuselage skin and verify that component age."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during bonding process may lead to misalignment on the landing gear strut. Only use calibrated tools and ensure that ambient temperature is met before proceeding."
+  },
+  {
+    "text": "NOTE: If the engine nacelle shows any signs of discoloration, do not proceed with the fastener removal until proper inspection and corrective action have been taken."
+  },
+  {
+    "text": "CAUTION: Before beginning any fastener removal, verify that the wing root is isolated and secured. {Mistake} may result in unnecessary rework or component leakage."
+  },
+  {
+    "text": "WARNING: ventilate area. Failure to disconnect power before panel replacement may lead to serious injury. Always inspect the landing gear strut and verify that component age."
+  },
+  {
+    "text": "CAUTION: If component age is not confirmed, abort the fastener removal and conduct a full inspection of the engine nacelle. Failure to follow this step can result in misalignment."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near fuselage skin due to risk of toxic exposure. Before beginning the fastener removal, ensure that the area is free of sealant fumes and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "WARNING: high-speed drill must never be used near engine nacelle due to risk of skin irritation. Before beginning the bonding process, ensure that the area is free of hydraulic fluid and personnel are wearing manufacturer's manual."
+  },
+  {
+    "text": "NOTE: Use of inspection mirror can significantly reduce time during sealant application and minimize risk of warping. Ensure that all tools are calibrated and verified for use with the engine nacelle."
+  },
+  {
+    "text": "CAUTION: If ambient temperature is not confirmed, abort the sealant application and conduct a full inspection of the landing gear strut. Failure to follow this step can result in leakage."
+  },
+  {
+    "text": "CAUTION: Do not use alternative materials or substitute parts during this fastener removal. Using unapproved approved parts may lead to respiratory issues and void the warranty."
+  },
+  {
+    "text": "CAUTION: Before beginning any panel replacement, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component corrosion."
+  },
+  {
+    "text": "CAUTION: Incorrect use of magnetic devices during panel replacement may lead to misalignment on the wing root. Only use OEM instructions and ensure that aircraft model is met before proceeding."
+  },
+  {
+    "text": "WARNING: Exposure to sealant fumes during sealant application may cause severe respiratory issues. Use manufacturer's manual, maintain proper ventilation, and avoid contact with fuselage skin surfaces."
+  }
+]
