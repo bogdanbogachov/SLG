@@ -11,11 +11,15 @@
 #SBATCH --gpus-per-node=1
 
 module load python/3.11.5
-
-# Activate venv
+module load rust
+module load gcc cuda/12.2
 module load scipy-stack
 module load gcc arrow
+
+# Activate venv
 source venv/bin/activate
+
+# Export a dummy variable for Open AI API
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
