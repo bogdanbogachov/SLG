@@ -1,6 +1,5 @@
 """Configuration management with environment variable support."""
 from pydantic import BaseModel
-from logging_config import logger
 from exceptions import ConfigError
 import yaml
 import os
@@ -25,7 +24,6 @@ class Config(BaseModel):
             ConfigError: If config file cannot be loaded
         """
         try:
-            logger.info("Loading config file: %s", config_file)
             with open(config_file, encoding="utf-8") as f:
                 parameters = yaml.safe_load(f)
                 
@@ -45,7 +43,6 @@ class Config(BaseModel):
                         f"Please export it before running the application."
                     )
                 parameters[config_key] = value
-                logger.info(f"Loaded {config_key} from environment variable {env_var}")
             
             return parameters
             

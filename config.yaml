@@ -129,4 +129,4 @@ adapters:
   orchestrator_3_2_1b: 'orchestrator_3_2_1b'
 
 # Default experiment name
-experiment: 'j_1_rag_3'
+experiment: 'branches_comparison_cleaning'
