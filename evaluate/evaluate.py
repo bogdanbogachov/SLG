@@ -112,8 +112,8 @@ def calculate_ai_expert(reference, candidate, api_client):
     """
     ai_expert_prompt = CONFIG['ai_expert_prompt']
     query_expert_prompt = CONFIG["query_expert_prompt"]
-    max_new_tokens = CONFIG['max_new_tokens']
-    temperature = CONFIG['temperature']
+    max_new_tokens = CONFIG['generation']['max_new_tokens']
+    temperature = CONFIG['generation']['temperature']
 
     try:
         models_config = CONFIG['models']
