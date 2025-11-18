@@ -1,5 +1,8 @@
 # API Keys - Set via environment variables (HF_API_KEY, TOGETHER_AI_API_KEY, OPENAI_API_KEY)
 
+# Default experiment name
+experiment: 'branches_comparison_cleaning'
+
 # Question-answer creation prompts
 system_prompt: >
   You are an expert in Aerospace Engineering and you are tasked to read text and create questions for this text.
@@ -127,6 +130,3 @@ adapters:
   finetuned_3_2_1b: 'finetuned_3_2_1b'
   finetuned_3_1_8b: 'finetuned_3_1_8b'
   orchestrator_3_2_1b: 'orchestrator_3_2_1b'
-
-# Default experiment name
-experiment: 'branches_comparison_cleaning'

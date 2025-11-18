@@ -1,7 +1,6 @@
 """Inference functions for baseline, RAG, and fine-tuned models."""
 from transformers import AutoTokenizer
 import numpy as np
-import faiss
 import torch
 import json
 import os
@@ -187,6 +186,9 @@ class AskRag:
         Retrieves documents from passed in question-answer pairs file.
         Splits long documents into chunks and embeds each chunk.
         """
+
+        import faiss
+
         rag_config = CONFIG['rag']
         if chunk_size is None:
             chunk_size = rag_config['chunk_size']
