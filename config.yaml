@@ -1,0 +1,131 @@
+# API Keys - Set via environment variables (HF_API_KEY, TOGETHER_AI_API_KEY, OPENAI_API_KEY)
+
+# Default experiment name
+experiment: 'branches_comparison_cleaning'
+
+# Question-answer creation prompts
+system_prompt: >
+  You are an expert in Aerospace Engineering and you are tasked to read text and create questions for this text.
+query_prompt: >
+  # Please create a question for the following text: {text}.
+  # Adhere to the following rules:
+  - make sure to include context in the question,
+  - make the text used to create the question has an answer to the created question,
+  - don't specify the answer in your response,
+  - if text is all in capital letters and consists of not more than 8 words, it is most likely a title, 
+  - here is list of previously created questions:
+  {questions}, make sure the new question differs from the previous ones.
+  
+  # Return only the created question.
+
+# AI expert evaluation prompt
+ai_expert_prompt: >
+  You are an expert in Aerospace Engineering and you are tasked to read two texts and make a verdict if the second
+  text is similar enough to be considered the same.
+query_expert_prompt: >
+  # Please read the following 2 texts:
+  - {text_1}
+  - {text_2}
+  # Please evaluate how similar the second text is to the first one.
+  # When evaluating, be very critical. If you see minor discrepancies, consider texts not similar to each other.
+  # Please return "1" if similar and "0" if not. Don't ever return anything else but these two binary ints: 1 or 0!
+
+# Inference prompts
+inference_prompt: You are an excellent assistant in Aerospace Engineering!
+
+# Rag prompt
+rag_prompt: >
+  Please provide an answer to the following query based on the provide context. Don't change the original text,
+  unless it is required to adjust numbers (rivet sizes, diameters, etc.)
+
+# Paths
+paths:
+  experiments: 'experiments'
+  answers: 'answers'
+  question_answer: 'question_answer'
+  checkpoints: 'checkpoints'
+  downloaded_models: 'downloaded_models'
+  models:
+    3_2_1b: 'downloaded_3_2_1b'
+    3_1_8b: 'downloaded_3_1_8b'
+  split_by_title: 'question_answer/split_by_title'
+  charts: 'experiments/charts'
+
+# Files
+files:
+  qa_original: 'question_answer/qa_original.json'
+  qa_inflating_material: 'question_answer/inflating_material.json'
+  qa: 'question_answer/qa.json'
+  qa_train: 'question_answer/qa_train.json'
+  qa_test: 'question_answer/qa_test.json'
+  srm_pdf: 'question_answer/srm.pdf'
+  om_pdf: 'question_answer/om.pdf'
+  metrics: 'metrics.json'
+
+# Logging
+logging:
+  log_dir: 'logs'
+
+# Models
+models:
+  gpt_4_1: "gpt-4.1-2025-04-14"
+  embedding_model: "text-embedding-3-small"
+  gpt_4_1_nano: "gpt-4.1-nano-2025-04-14"
+  3_2_1b: "meta-llama/Llama-3.2-1B-Instruct"
+  3_1_8b: "meta-llama/Llama-3.1-8B-Instruct"
+  3_3_70b: "meta-llama/Llama-3.3-70B-Instruct"
+  task_categorizer: "meta-llama/Llama-3.1-8B-Instruct"
+
+# Training hyperparameters
+training:
+  num_epochs: 10
+  learning_rate: 0.001
+  label_smoothing_factor: 0.01
+  weight_decay: 0.001
+  warmup_ratio: 0.05
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  gradient_accumulation_steps: 2
+  max_grad_norm: 1
+  logging_steps: 50
+  save_total_limit: 4
+  early_stopping_patience: 3
+  
+  # LoRA parameters
+  lora:
+    alpha: 128
+    dropout: 0.05
+    r: 16
+  
+  # Orchestrator-specific parameters
+  orchestrator:
+    learning_rate: 0.001
+    label_smoothing_factor: 0.01
+
+# Data processing constants
+data:
+  test_split_ratio: 0.20
+  max_length: 1024
+  num_questions_per_text: 28
+  prefix_length: 5
+
+# RAG/Embedding constants
+rag:
+  embedding_dimension: 1536
+  chunk_size: 500
+  chunk_overlap: 50
+  batch_size: 100
+  k_retrievals: 5
+
+# Generation constants
+generation:
+  max_new_tokens: 750
+  seed: 42
+  temperature: 0.1
+  orchestrator_max_tokens: 10
+
+# Adapter names
+adapters:
+  finetuned_3_2_1b: 'finetuned_3_2_1b'
+  finetuned_3_1_8b: 'finetuned_3_1_8b'
+  orchestrator_3_2_1b: 'orchestrator_3_2_1b'

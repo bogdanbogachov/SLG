@@ -1,9 +1,4 @@
-from huggingface_hub import InferenceClient
-from transformers import AutoTokenizer
-from huggingface_hub import login
-from sklearn.model_selection import train_test_split
-from collections import defaultdict
-from together import Together
+from openai import OpenAI
 import json
 import time
 import os
@@ -16,66 +11,18 @@ def generate(text):
     """
         Generates questions for ground truth texts.
         Args:
-            - number of questions to generate.
+            - text: The text to generate questions for.
         Returns:
             - a tuple with all generated questions.
     """
-    api_key = CONFIG['api_key']
-    model_id = CONFIG['3_3_70b']
+    client = OpenAI(api_key=CONFIG['open_ai_api_key'])
+    
+    models_config = CONFIG['models']
     system_prompt = CONFIG['system_prompt']
     query_prompt = CONFIG["query_prompt"]
-    max_new_tokens = CONFIG['max_new_tokens']
-    seed = CONFIG['seed']
-    temperature = CONFIG['temperature']
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
-
-    login(api_key)
-    client = InferenceClient()
-
-    questions = tuple()
-    # An average word has 4 letters, an average sentence has 20 words. Thus, I divide texts by 80 to get the number
-    # of sentences. The hypothesis behind this is that each sentence should have a question.
-    # number_of_questions = max(1, math.ceil(int(len(text)/(4*20))))
-    number_of_questions = 28 # 28 was empirically proven to be enough questions
-    logger.info(f"Number of questions: {number_of_questions}")
-    for i in range(0, number_of_questions):
-        logger.info(f"Working on question # {i}")
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": query_prompt.format(text=text, questions=questions)}
-        ]
-
-        # apply the chat template to the messages
-        total = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        llm_response = client.text_generation(
-            total,
-            model=model_id,
-            max_new_tokens=max_new_tokens,
-            seed=seed,
-            temperature=temperature
-        )
-        questions += (llm_response, )
-
-        time.sleep(1) # Sleep for 1 second to avoid an API crash
-
-    return questions
-
-
-def generate_with_together_ai(text):
-    """
-        Generates questions for ground truth texts.
-        Args:
-            - number of questions to generate.
-        Returns:
-            - a tuple with all generated questions.
-    """
-    client = Together(api_key=CONFIG['together_ai_api_key'])
-
-    system_prompt = CONFIG['system_prompt']
-    query_prompt = CONFIG["query_prompt"]
-    max_new_tokens = CONFIG['max_new_tokens']
-    seed = CONFIG['seed']
-    temperature = CONFIG['temperature']
+    generation_config = CONFIG['generation']
+    max_new_tokens = generation_config['max_new_tokens']
+    temperature = generation_config['temperature']
 
     questions = tuple()
     # An average word has 4 letters, an average sentence has 20 words. Thus, I divide texts by 80 to get the number
@@ -86,20 +33,16 @@ def generate_with_together_ai(text):
     for i in range(0, number_of_questions):
         logger.info(f"Working on question # {i}")
         response = client.chat.completions.create(
-            model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
-            messages = [
+            model=models_config['gpt_4_1_nano'],
+            messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": query_prompt.format(text=text, questions=questions)}
             ],
             max_tokens=max_new_tokens,
-            temperature=temperature,
-            seed=seed
+            temperature=temperature
         )
-        llm_response = response.choices[0].message.content
-
+        llm_response = response.choices[0].message.content.strip()
         questions += (llm_response,)
-
-        time.sleep(1)  # Sleep for 1 second to avoid an API crash
 
     return questions
 
@@ -153,7 +96,7 @@ def populate(df, qa_file_name):
     for index, row in df.iterrows():
         if index >= index_to_start_qa_gen:
             logger.info(f"Working on text # {index}")
-            questions = generate_with_together_ai(row['text'])
+            questions = generate(row['text'])
             for i, question in enumerate(questions):
                 new_data = {
                     'chapter': row['chapter'],
@@ -179,76 +122,5 @@ def populate(df, qa_file_name):
                     json_file.truncate()  # Remove any leftover content
 
             logger.info(40*'-')
-
-    return None
-
-
-def combine_all_qa():
-    folder_path = './question_answer'
-
-    all_qa = []
-
-    for filename in os.listdir(folder_path):
-        if 'qa' in filename and filename.endswith('.json'):
-            file_path = os.path.join(folder_path, filename)
-            with open(file_path, 'r', encoding='utf-8') as f:
-                try:
-                    data = json.load(f)
-                    all_qa.extend(data)
-                except Exception as e:
-                    logger.info(f"Error reading {filename}: {e}")
-
-    with open(os.path.join(folder_path, 'qa.json'), 'w', encoding='utf-8') as out_file:
-        json.dump(all_qa, out_file, indent=4)
-
-    return None
-
-
-def split_train_test(data_file):
-    # Load JSON file
-    logger.info(f"Splitting {data_file} into train and test sets.")
-    with open(data_file, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    # Delete all instances where title == answer
-    data = [entry for entry in data if entry.get("title") != entry.get("answer")]
-
-    # Split data into train and test sets (80% train, 20% test)
-    train_data, test_data = train_test_split(data, test_size=0.2, random_state=42)
-
-    # Save train and test data
-    with open("question_answer/qa_train.json", "w", encoding="utf-8") as f:
-        json.dump(train_data, f, indent=4)
-
-    with open("question_answer/qa_test.json", "w", encoding="utf-8") as f:
-        json.dump(test_data, f, indent=4)
-
-    logger.info("Train and test splitting is complete.")
-
-    return None
-
-
-def split_qa_pairs_by_title(data_file):
-    # Load the JSON data
-    logger.info(f"Splitting {data_file} by title.")
-    with open(data_file, "r", encoding="utf-8") as file:
-        data = json.load(file)
-
-    # Group entries by unique "title"
-    grouped_data = defaultdict(list)
-    for entry in data:
-        grouped_data[entry["title"]].append(entry)
-
-    # Save each group as a separate JSON file
-    for title, entries in grouped_data.items():
-        # Create a valid filename by replacing spaces and special characters
-        title = title.replace(' ', '_').replace('/', '_').replace('\n', '_').lower()
-        filename = f"{title}.json"
-
-        os.makedirs('question_answer/split_by_title', exist_ok=True)
-        with open(f"question_answer/split_by_title/{filename}", "w", encoding="utf-8") as file:
-            json.dump(entries, file, indent=4, ensure_ascii=False)
-
-    logger.info(f"Title splitting is complete.")
 
     return None

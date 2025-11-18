@@ -4,7 +4,7 @@ from logging_config import logger
 import os
 
 
-def download(model_name, save_directory):
+def download_llama_3_2_1b(model_name, save_directory):
     logger.info(f"Downloading {model_name}...")
 
 

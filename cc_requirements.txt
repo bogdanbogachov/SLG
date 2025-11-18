@@ -17,12 +17,11 @@ colorama==0.4.6
 datasets==3.2.0
 dill==0.3.8
 distro==1.9.0
-faiss-cpu==1.9.0.post1
 filelock==3.13.1
 fire==0.7.0
 frozenlist==1.5.0
 fsspec==2024.9.0
-grpcio==1.70.0
+grpcio==1.73.0
 h11==0.14.0
 httpcore==1.0.7
 httpx==0.28.1
@@ -51,7 +50,6 @@ multidict==6.1.0
 multiprocess==0.70.16
 networkx==3.2.1
 nltk==3.9.1
-numpy==1.26.3
 orjson==3.10.13
 packaging==24.2
 pandas==2.2.3
@@ -62,12 +60,10 @@ propcache==0.2.1
 protobuf==5.29.3
 psutil==6.1.1
 pyaml==25.1.0
-pyarrow==19.0.0
 pycryptodomex==3.21.0
 pydantic==2.10.4
 pydantic_core==2.27.2
 Pygments==2.19.1
-PyMuPDF==1.25.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.2
@@ -79,7 +75,7 @@ rich==13.9.4
 rouge_score==0.1.2
 safetensors==0.5.0
 scikit-learn==1.6.0
-scipy==1.15.0
+scipy==1.15.1
 six==1.17.0
 sniffio==1.3.1
 sympy==1.13.1

@@ -1,3 +1,4 @@
+"""Fine-tuning module for language models."""
 import torch
 import os
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
@@ -7,64 +8,74 @@ from trl import SFTTrainer
 from transformers import EarlyStoppingCallback
 
 from logging_config import logger
+from config import CONFIG
+from utils.path_utils import ensure_dir
+from utils.model_loader import load_base_model_and_tokenizer
+from utils.prompt_utils import apply_chat_template
 
 
-def finetune(model_to_tune, adapter_name, data, experiment_number, slg=False, orchestrator=False):
-    logger.info(f"Finetuning {adapter_name}.")
-
+def finetune(
+    model_to_tune: str,
+    adapter_name: str,
+    data: str,
+    experiment_number: str,
+    slg: bool = False,
+    orchestrator: bool = False
+) -> None:
+    """
+    Fine-tune a language model with LoRA.
+    
+    Args:
+        model_to_tune: Path to the base model directory
+        adapter_name: Name for the adapter
+        data: Path to JSON data file
+        experiment_number: Experiment identifier
+        slg: Whether this is for SLG (Small Language Graph)
+        orchestrator: Whether this is an orchestrator model
+    """
     if not torch.cuda.is_available():
         raise RuntimeError("No GPU found! Please ensure you have a CUDA-compatible GPU.")
 
-    device = "cuda"
+    # Load model and tokenizer using utility function
+    model, tokenizer = load_base_model_and_tokenizer(model_to_tune)
 
-    model = AutoModelForCausalLM.from_pretrained(
-        model_to_tune,
-        torch_dtype=torch.float16,
-    ).to(device)
+    # Load dataset
+    dataset = load_dataset("json", data_files=data, split="train")
+    logger.debug(f"Dataset after loading: {dataset}")
+    logger.debug(f"Dataset shape: {dataset.shape}")
 
-    # Print a device
-    logger.info(f"Model is loaded on: {model.device}")
-
-    # Print GPU memory usage
-    logger.info(f"Memory allocated: {torch.cuda.memory_allocated() / 1024 ** 2:.2f} MB")
-    logger.info(f"Memory reserved: {torch.cuda.memory_reserved() / 1024 ** 2:.2f} MB")
-
-    tokenizer = AutoTokenizer.from_pretrained(model_to_tune)
-    # tokenizer.pad_token = tokenizer.eos_token
-
-    dataset = load_dataset("json", data_files=data,  split="train")
-    logger.debug(f"Dataset after loading {dataset}")
-    logger.debug(f"Dataset after loading {dataset.shape}")
+    # Get training config from CONFIG
+    training_config = CONFIG['training']
+    data_config = CONFIG['data']
+    test_split_ratio = data_config['test_split_ratio']
+    max_length = data_config['max_length']
 
     # Define a function to apply the chat template
-    def apply_chat_template(example):
+    def apply_chat_template_to_example(example):
+        """Apply chat template to a dataset example."""
+        from utils.prompt_utils import create_user_message, create_assistant_message
+        
         if orchestrator:
             messages = [
-                {
-                    "role": "user",
-                    "content":
-                        f"Analyze this question and find an appropriate expert who can answer it: {example['question']}"
-                },
-                {"role": "assistant", "content": f"{example['title']}" }
+                create_user_message(
+                    f"Analyze this question and find an appropriate expert who can answer it: {example['question']}"
+                ),
+                create_assistant_message(example['title'])
             ]
-            prompt = tokenizer.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=False
-            )
+            prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=False)
             return {"prompt": prompt}
         else:
             messages = [
-                {"role": "user", "content": example['question']},
-                {"role": "assistant", "content": example['answer']}
+                create_user_message(example['question']),
+                create_assistant_message(example['answer'])
             ]
-            prompt = tokenizer.apply_chat_template(
-                messages, tokenize=False, add_generation_prompt=False
-            )
+            prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=False)
             return {"prompt": prompt}
 
     # Apply the chat template function to the dataset
-    new_dataset = dataset.map(apply_chat_template)
-    new_dataset = new_dataset.train_test_split(0.20)
-    logger.debug(f"Dataset after splitting {new_dataset}")
+    new_dataset = dataset.map(apply_chat_template_to_example)
+    new_dataset = new_dataset.train_test_split(test_split_ratio)
+    logger.debug(f"Dataset after splitting: {new_dataset}")
 
     if tokenizer.pad_token is None:
         # Set an existing special token as a padding token, this way we can avoid model resizing
@@ -72,10 +83,17 @@ def finetune(model_to_tune, adapter_name, data, experiment_number, slg=False, or
 
     # Tokenize the data
     def tokenize_function(example):
-        tokens = tokenizer(example['prompt'], padding="max_length", truncation=True, max_length=1024)
+        """Tokenize example with proper label handling."""
+        tokens = tokenizer(
+            example['prompt'],
+            padding="max_length",
+            truncation=True,
+            max_length=max_length
+        )
         # Set padding token labels to -100 to ignore them in loss calculation
         tokens['labels'] = [
-            -100 if token == tokenizer.pad_token_id else token for token in tokens['input_ids']
+            -100 if token == tokenizer.pad_token_id else token
+            for token in tokens['input_ids']
         ]
         return tokens
 
@@ -83,59 +101,62 @@ def finetune(model_to_tune, adapter_name, data, experiment_number, slg=False, or
     tokenized_dataset = new_dataset.map(tokenize_function)
     tokenized_dataset = tokenized_dataset.remove_columns(['question', 'answer', 'prompt'])
 
-    # Define training arguments
+    # Get LoRA config from CONFIG
+    lora_config = training_config['lora']
     peft_params = LoraConfig(
-        lora_alpha=128,
-        lora_dropout=0.05,
-        r=16,
+        lora_alpha=lora_config['alpha'],
+        lora_dropout=lora_config['dropout'],
+        r=lora_config['r'],
         task_type='CAUSAL_LM'
     )
 
+    # Get learning rate and label smoothing from config
     if orchestrator:
-        learning_rate = 0.001
-        label_smoothing_factor = 0.01
+        orchestrator_config = training_config['orchestrator']
+        learning_rate = orchestrator_config['learning_rate']
+        label_smoothing_factor = orchestrator_config['label_smoothing_factor']
     else:
-        learning_rate = 0.001
-        label_smoothing_factor = 0.01
+        learning_rate = training_config['learning_rate']
+        label_smoothing_factor = training_config['label_smoothing_factor']
 
-    os.makedirs(f'checkpoints/{experiment_number}/{adapter_name}', exist_ok=True)
+    # Create checkpoint directory
+    paths_config = CONFIG['paths']
+    checkpoints_dir = paths_config['checkpoints']
+    checkpoint_dir = os.path.join(checkpoints_dir, experiment_number, adapter_name)
+    ensure_dir(checkpoint_dir)
+
+    # Get logging directory from config
+    log_dir = CONFIG['logging']['log_dir']
+    logging_dir = os.path.join(log_dir, experiment_number)
 
     training_args = TrainingArguments(
-        output_dir=f"checkpoints/{experiment_number}/{adapter_name}",
-        num_train_epochs=10,
-
+        output_dir=checkpoint_dir,
+        num_train_epochs=training_config['num_epochs'],
         eval_strategy="epoch",
-        # eval_steps=100,
-
         save_strategy="epoch",
-        # save_steps=100,
-
-        logging_steps=50,
-
+        logging_steps=training_config['logging_steps'],
         fp16=True,
         report_to="tensorboard",
         log_level="info",
-        logging_dir="j_1_mgn_1",
-
-        per_device_train_batch_size=2,
-        per_device_eval_batch_size=2,
-
+        logging_dir=logging_dir,
+        per_device_train_batch_size=training_config['per_device_train_batch_size'],
+        per_device_eval_batch_size=training_config['per_device_eval_batch_size'],
         learning_rate=learning_rate,
-        weight_decay=0.001,
+        weight_decay=training_config['weight_decay'],
         adam_beta1=0.9,
         adam_beta2=0.999,
-        max_grad_norm=1,
-        warmup_ratio=0.05,
+        max_grad_norm=training_config['max_grad_norm'],
+        warmup_ratio=training_config['warmup_ratio'],
         lr_scheduler_type='cosine',
-        gradient_accumulation_steps=2,
+        gradient_accumulation_steps=training_config['gradient_accumulation_steps'],
         optim='adamw_torch',
         label_smoothing_factor=label_smoothing_factor,
-
         load_best_model_at_end=True,
-        save_total_limit=4
+        save_total_limit=training_config['save_total_limit']
     )
 
     # Initialize Trainer
+    early_stopping_patience = training_config['early_stopping_patience']
     trainer = SFTTrainer(
         model=model,
         args=training_args,
@@ -143,27 +164,37 @@ def finetune(model_to_tune, adapter_name, data, experiment_number, slg=False, or
         train_dataset=tokenized_dataset["train"],
         eval_dataset=tokenized_dataset["test"],
         tokenizer=tokenizer,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=3)]
-        )
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=early_stopping_patience)]
+    )
 
     # Train the model
     trainer.train()
     trainer.evaluate()
 
     # Save the model and tokenizer
+    experiments_dir = CONFIG['paths']['experiments']
+    
     if slg:
-        os.makedirs(f'experiments/{experiment_number}/slg', exist_ok=True)
-        trainer.model.save_pretrained(f"experiments/{experiment_number}/slg/finetuned_{adapter_name}",
-                                      save_adapter=True)
-        tokenizer.save_pretrained(f"experiments/{experiment_number}/slg/finetuned_{adapter_name}")
-        with open(f"experiments/{experiment_number}/slg/finetuned_{adapter_name}/training_log.txt", "a") as log_file:
+        slg_dir = os.path.join(experiments_dir, experiment_number, 'slg')
+        ensure_dir(slg_dir)
+        save_path = os.path.join(slg_dir, adapter_name)
+        
+        trainer.model.save_pretrained(save_path, save_adapter=True)
+        tokenizer.save_pretrained(save_path)
+        
+        training_log_path = os.path.join(save_path, 'training_log.txt')
+        with open(training_log_path, "a") as log_file:
             log_file.write(str(trainer.state.log_history))
     else:
-        os.makedirs(f'experiments/{experiment_number}', exist_ok=True)
-        trainer.model.save_pretrained(f"experiments/{experiment_number}/finetuned_{adapter_name}",
-                                      save_adapter=True)
-        tokenizer.save_pretrained(f"experiments/{experiment_number}/finetuned_{adapter_name}")
-        with open(f"experiments/{experiment_number}/finetuned_{adapter_name}/training_log.txt", "a") as log_file:
+        experiment_dir = os.path.join(experiments_dir, experiment_number)
+        ensure_dir(experiment_dir)
+        save_path = os.path.join(experiment_dir, adapter_name)
+        
+        trainer.model.save_pretrained(save_path, save_adapter=True)
+        tokenizer.save_pretrained(save_path)
+        
+        training_log_path = os.path.join(save_path, 'training_log.txt')
+        with open(training_log_path, "a") as log_file:
             log_file.write(str(trainer.state.log_history))
 
     return None
