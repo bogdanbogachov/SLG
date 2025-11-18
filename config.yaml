@@ -65,7 +65,6 @@ files:
 # Logging
 logging:
   log_dir: 'logs'
-  log_file: 'slg.log'
 
 # Models
 models:

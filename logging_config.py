@@ -36,11 +36,12 @@ def setup_logger(
         from config import CONFIG
         logging_config = CONFIG.get('logging', {})
         log_dir = log_dir or logging_config.get('log_dir', 'logs')
-        log_file = log_file or logging_config.get('log_file', 'slg.log')
+        experiment_name = CONFIG.get('experiment', 'slg')
+        log_file = f'{experiment_name}.log'
     except (ImportError, KeyError, AttributeError):
         # Fallback to defaults if CONFIG is not available
         log_dir = log_dir or 'logs'
-        log_file = log_file or 'eng_llm.log'
+        log_file = log_file or 'slg.log'
 
     # Ensure log directory exists
     os.makedirs(log_dir, exist_ok=True)
