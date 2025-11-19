@@ -8,31 +8,6 @@
 
 ---
 
-## Data Preparation
-
-### Step 1: Create Cumulative QA Files
-
-Split `question_answer/qa.json` into cumulative files where each file includes all previous data:
-- File 1: x elements
-- File 2: x+y elements (includes File 1)
-- File 3: x+y+z elements (includes Files 1 and 2)
-- Continue as needed
-
-Save files in `question_answer/cumulative_datasets/` with names like `qa_cumulative_1.json`, `qa_cumulative_2.json`, etc.
-
-**Important**: Shuffle data with `random_state=42` for reproducibility before creating cumulative files.
-
-### Step 2: Split Each Cumulative File into Train/Test
-
-For each cumulative file, create train/test splits:
-- 80% train, 20% test
-- Use `random_state=42` for reproducibility
-- Remove instances where `title == answer`
-
-Save as `qa_cumulative_{n}_train.json` and `qa_cumulative_{n}_test.json` for each file.
-
----
-
 ## Experiment Setup on Compute Canada
 
 ### Step 1: Set Up Environment
@@ -50,6 +25,7 @@ Save as `qa_cumulative_{n}_train.json` and `qa_cumulative_{n}_test.json` for eac
    ```bash
    python -m venv venv
    source venv/bin/activate
+   export OPENAI_API_KEY="dummy"
    ```
 
 3. Install dependencies:
@@ -74,35 +50,38 @@ training_components:
 python main.py --download_models=True
 ```
 
+### Step 4: Create QA pairs
+
+Extract from `question_answer/qa.json` a portion of data (5%). The idea is to extract 5% more data each 3 consecutive runs so that the qa.json file would include the new 5% + all previous data:
+- File 1: x elements
+- File 2: x+y elements (includes File 1)
+- File 3: x+y+z elements (includes Files 1 and 2)
+- Continue as needed
+
+It can be done manually or automatically (a new function would be needed for the automatic approach).
+
+### Step 5: Split QA pairs
+
+```bash
+python main.py --split_qa=True
+```
+
 ---
 
 ## Running Experiments
-
-### Experiment Naming Convention
-
-Format: `qa_cumulative_{file_number}_run{1,2,3}`
-
-Examples:
-- `qa_cumulative_1_run1`
-- `qa_cumulative_1_run2`
-- `qa_cumulative_1_run3`
-
-Each cumulative dataset must be run 3 times for statistical reliability.
 
 ### Cluster Submission Process
 
 For each experiment:
 
-1. Copy the appropriate train/test files:
-   ```bash
-   cp question_answer/cumulative_datasets/qa_cumulative_{n}_train.json question_answer/qa_train.json
-   cp question_answer/cumulative_datasets/qa_cumulative_{n}_test.json question_answer/qa_test.json
-   ```
+job.sh setup:
+- Enter your email to receive notifications about your jobs
+- Estimate time required for a specific job
+- Choose appropriate resources (for llama 2 fine-tuning GPU partitioning is desired)
 
-2. Submit job:
    ```bash
-   export EXP=qa_cumulative_{n}_run{r}
-   sbatch --job-name="EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
+   export EXP=experiment_name
+   sbatch --job-name="$EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
    ```
 
 **Important**: The `EXP` environment variable overrides the experiment name in `config.yaml`.
@@ -111,21 +90,17 @@ For each experiment:
 
 For cumulative file 1:
 ```bash
-# Copy data files
-cp question_answer/cumulative_datasets/qa_cumulative_1_train.json question_answer/qa_train.json
-cp question_answer/cumulative_datasets/qa_cumulative_1_test.json question_answer/qa_test.json
-
 # Run 1
-export EXP=qa_cumulative_1_run1
-sbatch --job-name="EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
+export EXP=experiment_name
+sbatch --job-name="$EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
 
 # Run 2
-export EXP=qa_cumulative_1_run2
-sbatch --job-name="EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
+export EXP=experiment_name
+sbatch --job-name="$EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
 
 # Run 3
-export EXP=qa_cumulative_1_run3
-sbatch --job-name="EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
+export EXP=experiment_name
+sbatch --job-name="$EXP" --output="${EXP}.out" --error="${EXP}.err" job.sh
 ```
 
 Repeat for each cumulative file.
@@ -144,21 +119,3 @@ squeue -u $USER
 tail -f qa_cumulative_1_run1.out
 tail -f qa_cumulative_1_run1.err
 ```
-
----
-
-## Checklist
-
-Before starting:
-- [ ] Cumulative QA files created and validated
-- [ ] Train/test splits created for each file
-- [ ] Compute Canada environment set up
-- [ ] Models downloaded
-- [ ] `config.yaml` configured correctly
-
-For each experiment:
-- [ ] Correct train/test files copied
-- [ ] `EXPERIMENT` variable set correctly
-- [ ] Job submitted
-- [ ] Results verified after completion
-
