@@ -44,14 +44,18 @@ def run_finetuned(experiment: str):
     base_model_3_2_1b = os.path.join(downloaded_models_dir, models_paths['3_2_1b'])
     base_model_3_1_8b = os.path.join(downloaded_models_dir, models_paths['3_1_8b'])
     
-    ask_finetuned(file=files_config['qa_test'],
-                  base_model=base_model_3_2_1b,
-                  adapter=os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_2_1b']),
-                  experiment=experiment)
-    ask_finetuned(file=files_config['qa_test'],
-                  base_model=base_model_3_1_8b,
-                  adapter=os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_1_8b']),
-                  experiment=experiment)
+    training_components = CONFIG['training_components']
+    if training_components.get('train_3_2_1b', False):
+        ask_finetuned(file=files_config['qa_test'],
+                      base_model=base_model_3_2_1b,
+                      adapter=os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_2_1b']),
+                      experiment=experiment)
+    
+    if training_components.get('train_3_1_8b', False):
+        ask_finetuned(file=files_config['qa_test'],
+                      base_model=base_model_3_1_8b,
+                      adapter=os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_1_8b']),
+                      experiment=experiment)
 
 
 def run_slg(experiment: str):
