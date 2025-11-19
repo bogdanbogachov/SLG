@@ -44,6 +44,16 @@ class Config(BaseModel):
                     )
                 parameters[config_key] = value
             
+            # Optional environment variable overrides
+            optional_overrides = {
+                'EXP': 'experiment'
+            }
+            
+            for env_var, config_key in optional_overrides.items():
+                value = os.getenv(env_var)
+                if value:
+                    parameters[config_key] = value
+            
             return parameters
             
         except OSError as exc:
