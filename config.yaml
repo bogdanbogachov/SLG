@@ -60,6 +60,7 @@ files:
   qa_test: 'question_answer/qa_test.json'
   srm_pdf: 'question_answer/srm.pdf'
   om_pdf: 'question_answer/om.pdf'
+  mm_pdf: 'question_answer/mm.pdf'
   metrics: 'metrics.json'
 
 # Logging
@@ -129,3 +130,10 @@ adapters:
   finetuned_3_2_1b: 'finetuned_3_2_1b'
   finetuned_3_1_8b: 'finetuned_3_1_8b'
   orchestrator_3_2_1b: 'orchestrator_3_2_1b'
+
+# Training components configuration
+# Controls which models/components to train
+training_components:
+  train_slg_system: false            # Train SLG experts and orchestrator
+  train_3_2_1b: true                # Train baseline 3_2_1b model
+  train_3_1_8b: false                 # Train baseline 3_1_8b model

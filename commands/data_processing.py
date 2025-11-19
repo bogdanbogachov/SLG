@@ -10,16 +10,21 @@ def create_qa():
     from question_answer.question_answer_gen import populate
     from question_answer.srm_reader import read_doc
     from question_answer.om_reader import prepare_overhaul_manual
+    from question_answer.mm_reader import prepare_doc
 
     files_config = CONFIG['files']
     srm_pdf = files_config['srm_pdf']
     om_pdf = files_config['om_pdf']
+    mm_pdf = files_config['mm_pdf']
     
     df_srm = read_doc(srm_pdf)
     populate(df_srm, 'srm_qa')
 
     df_om = prepare_overhaul_manual(overhaul_manual=om_pdf)
     populate(df_om, 'om_qa')
+
+    df_mm = prepare_doc(mm_pdf)
+    populate(df_mm, 'mm_qa')
 
 
 def combine_all_qa():
