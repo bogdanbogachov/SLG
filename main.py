@@ -3,6 +3,7 @@ from commands.data_processing import create_qa, combine_all_qa, inflate_overshad
 from commands.train import run_training
 from commands.inference import run_baseline, run_rag, run_finetuned, run_slg
 from commands.evaluation import run_evaluation
+from commands.plot_metrics import plot_experiments_metrics
 from commands.models import download_models
 from config import CONFIG
 
@@ -37,3 +38,4 @@ if __name__ == '__main__':
 
     # Evaluation
     run_evaluation(experiment, include_training_metrics=args.training_metrics) if args.evaluate else None
+    plot_experiments_metrics() if args.plot_metrics else None

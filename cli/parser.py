@@ -10,6 +10,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--data_overlap_check", type=bool, default=False)
     parser.add_argument("--evaluate", type=bool, default=False)
     parser.add_argument("--training_metrics", type=bool, default=False)
+    parser.add_argument("--plot_metrics", type=bool, default=False)
     parser.add_argument("--infer_slg", type=bool, default=False)
     parser.add_argument("--infer_baseline", type=bool, default=False)
     parser.add_argument("--infer_rag", type=bool, default=False)
