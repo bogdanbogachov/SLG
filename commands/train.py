@@ -40,7 +40,6 @@ def run_training(experiment: str):
     # Finetune SLG experts per title and orchestrator
     if train_slg_system:
         logger.info("Training SLG system (experts + orchestrator)...")
-        
 
         # Build per-expert chunk embeddings first, then build a similarity index later.
         # Embeddings are computed before fine-tuning each expert.
@@ -52,6 +51,14 @@ def run_training(experiment: str):
         embedding_dimension = slg_formation["embedding_dimension"]
         neighbor_k = slg_formation["k_retrievals"]
         embedding_batch_size = slg_formation.get("batch_size", 100)
+
+        split_by_title_files = sorted(
+            [f for f in os.listdir(split_by_title_dir) if f.endswith(".json")]
+        )
+
+        expert_ids: List[str] = []
+        chunk_embeddings: List[np.ndarray] = []
+
         # Train SLG experts per title
         for file in os.listdir(split_by_title_dir):
             if file.endswith('.json'):
