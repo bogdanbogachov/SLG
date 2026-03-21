@@ -59,6 +59,41 @@ def run_training(experiment: str):
         expert_ids: List[str] = []
         chunk_embeddings: List[np.ndarray] = []
 
+        def compute_chunk_embedding(data_path: str) -> np.ndarray:
+            with open(data_path, "r", encoding="utf-8") as f:
+                chunk_data = json.load(f)
+
+            # Inference calls experts using only the question, so represent the chunk
+            # by embedding its training questions and averaging.
+            texts = [
+                entry.get("answer", "")
+                for entry in chunk_data
+                if entry.get("answer")
+            ]
+            if not texts:
+                raise ValueError(f"No training answers found in {data_path}")
+
+            vectors: List[np.ndarray] = []
+            for i in range(0, len(texts), embedding_batch_size):
+                batch = texts[i : i + embedding_batch_size]
+                response = client.embeddings.create(
+                    model=embedding_model,
+                    input=batch,
+                )
+                batch_vectors = np.array(
+                    [item.embedding for item in response.data], dtype="float32"
+                )
+                vectors.append(batch_vectors)
+
+            all_vecs = np.concatenate(vectors, axis=0)
+            mean_vec = np.mean(all_vecs, axis=0).astype("float32")
+            if mean_vec.shape[0] != embedding_dimension:
+                raise ValueError(
+                    f"Unexpected embedding dimension {mean_vec.shape[0]} "
+                    f"(expected {embedding_dimension})."
+                )
+            return mean_vec
+
         # Train SLG experts per title
         for file in os.listdir(split_by_title_dir):
             if file.endswith('.json'):
