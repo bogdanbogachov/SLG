@@ -95,17 +95,25 @@ def run_training(experiment: str):
             return mean_vec
 
         # Train SLG experts per title
-        for file in os.listdir(split_by_title_dir):
-            if file.endswith('.json'):
-                logger.info(f"Training SLG expert for: {file}")
-                finetune(
-                    model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
-                    adapter_name=os.path.splitext(file)[0],
-                    data=os.path.join(split_by_title_dir, file),
-                    experiment_number=experiment,
-                    slg=True
-                )
-        
+        for file in split_by_title_files:
+            logger.info(f"Training SLG expert for: {file}")
+            adapter_name = os.path.splitext(file)[0]
+            data_path = os.path.join(split_by_title_dir, file)
+
+            # Compute a fixed representation for this training chunk.
+            expert_ids.append(adapter_name)
+            chunk_embeddings.append(compute_chunk_embedding(data_path))
+
+            finetune(
+                model_to_tune=os.path.join(
+                    downloaded_models_dir, models_paths["3_2_1b"]
+                ),
+                adapter_name=adapter_name,
+                data=data_path,
+                experiment_number=experiment,
+                slg=True,
+            )
+
         # Train orchestrator
         logger.info("Training orchestrator...")
         finetune(
