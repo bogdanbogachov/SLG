@@ -49,7 +49,7 @@ def run_training(experiment: str):
 
         slg_formation = CONFIG["slg_formation"]
         embedding_dimension = slg_formation["embedding_dimension"]
-        neighbor_k = slg_formation["k_retrievals"]
+        neighbor_k = slg_formation["k_neighbours"]
         embedding_batch_size = slg_formation.get("batch_size", 100)
 
         split_by_title_files = sorted(
@@ -63,8 +63,6 @@ def run_training(experiment: str):
             with open(data_path, "r", encoding="utf-8") as f:
                 chunk_data = json.load(f)
 
-            # Inference calls experts using only the question, so represent the chunk
-            # by embedding its training questions and averaging.
             texts = [
                 entry.get("answer", "")
                 for entry in chunk_data
@@ -123,6 +121,55 @@ def run_training(experiment: str):
             experiment_number=experiment,
             orchestrator=True
         )
+
+        # Build SLG cosine-similarity index across chunk embeddings.
+        # This is consumed by inference/slg.py to expand to up to k neighbors.
+        logger.info("Building SLG similarity index...")
+        slg_dir =  slg_formation["slg_dir"]
+        slg_dir = os.path.join(experiments_dir, experiment, slg_dir)
+        ensure_dir(slg_dir)
+
+        if not expert_ids or not chunk_embeddings:
+            raise ValueError("Cannot build similarity index.")
+
+        embeddings_matrix = np.stack(chunk_embeddings, axis=0).astype("float32")
+
+        # Cosine similarity = inner product on L2-normalized vectors.
+        norms = np.linalg.norm(embeddings_matrix, axis=1, keepdims=True)
+        normalized = embeddings_matrix / np.clip(norms, 1e-12, None)
+
+        index = faiss.IndexFlatIP(embedding_dimension)
+        index.add(normalized)
+
+        # Query each embedding against the index (k neighbors + 1 to account for self).
+        search_k = min(neighbor_k + 1, len(expert_ids))
+        _, indices = index.search(normalized, search_k)
+
+        index_entries = []
+        for i, expert_id in enumerate(expert_ids):
+            neighbor_ids: List[str] = []
+            for j in indices[i]:
+                candidate_id = expert_ids[int(j)]
+                if candidate_id == expert_id:
+                    continue
+                neighbor_ids.append(candidate_id)
+                if len(neighbor_ids) >= neighbor_k:
+                    break
+
+            index_entries.append(
+                {
+                    "expert_id": expert_id,
+                    "chunk_embedding": normalized[i].astype("float32").tolist(),
+                    "adapter_path": os.path.join(slg_dir, expert_id),
+                    "top_k_neighbors": neighbor_ids,
+                }
+            )
+
+        index_path = os.path.join(slg_dir, "index.json")
+        with open(index_path, "w", encoding="utf-8") as f:
+            json.dump(index_entries, f, indent=2)
+        logger.info(f"Wrote SLG index to: {index_path}")
+
     else:
         logger.info("Skipping SLG system training")
 
