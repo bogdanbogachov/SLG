@@ -118,6 +118,13 @@ rag:
   batch_size: 100
   k_retrievals: 5
 
+# SLG formation
+slg_formation:
+  embedding_dimension: 1536
+  batch_size: 100
+  k_neighbours: 2
+  slg_dir: "slg"
+
 # Generation constants
 generation:
   max_new_tokens: 750
