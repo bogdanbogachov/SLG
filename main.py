@@ -1,6 +1,7 @@
 from cli.parser import build_parser
 from commands.data_processing import create_qa, combine_all_qa, inflate_overshadowing, split_qa, data_overlap_check
 from commands.train import run_training
+from commands.slg_embeddings import run_slg_embeddings
 from commands.inference import run_baseline, run_rag, run_finetuned, run_slg
 from commands.evaluation import run_evaluation
 from commands.plot_metrics import plot_experiments_metrics
@@ -29,6 +30,9 @@ if __name__ == '__main__':
 
     # Training
     run_training(experiment) if args.finetune else None
+
+    # SLG embeddings + index only (no finetuning)
+    run_slg_embeddings(experiment) if args.slg_embeddings else None
 
     # Inference
     run_baseline(experiment) if args.infer_baseline else None
