@@ -78,6 +78,44 @@ def get_experiment_path(experiment_name: str, base_dir: str) -> str:
     return os.path.join(base_dir, experiment_name)
 
 
+# Written by commands.slg_embeddings.save_slg_embedding_artifacts; required before SLG inference.
+SLG_EMBEDDING_ARTIFACT_NAMES = (
+    "chunk_embeddings_raw.npy",
+    "expert_ids.json",
+    "index.json",
+)
+
+
+def validate_slg_embedding_artifacts(slg_dir: str) -> None:
+    """
+    Ensure the SLG embeddings step has produced required files under ``slg_dir``.
+
+    Raises:
+        FileNotFoundError: If the directory is missing or any artifact file is absent.
+    """
+    if not os.path.isdir(slg_dir):
+        raise FileNotFoundError(
+            f"SLG directory does not exist: {slg_dir}. "
+            "Run the SLG embeddings step for this experiment first "
+            "(e.g. commands.slg_embeddings.run_slg_embeddings). It creates this folder and "
+            "writes chunk_embeddings_raw.npy, expert_ids.json, and index.json."
+        )
+    missing = [
+        name
+        for name in SLG_EMBEDDING_ARTIFACT_NAMES
+        if not os.path.isfile(os.path.join(slg_dir, name))
+    ]
+    if missing:
+        listed = ", ".join(missing)
+        expected = ", ".join(SLG_EMBEDDING_ARTIFACT_NAMES)
+        raise FileNotFoundError(
+            f"Missing SLG embedding file(s) in {slg_dir}: {listed}. "
+            f"Expected all of: {expected}. "
+            "Run the SLG embeddings step for this experiment before inference "
+            "(e.g. commands.slg_embeddings.run_slg_embeddings)."
+        )
+
+
 def get_slg_path(experiment_name: str, experiments_dir: str = None) -> str:
     """
     Get the path to SLG models for an experiment.
