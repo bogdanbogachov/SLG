@@ -28,11 +28,11 @@ if __name__ == '__main__':
     # Analysis
     data_overlap_check() if args.data_overlap_check else None
 
-    # Training
-    run_training(experiment) if args.finetune else None
-
     # SLG embeddings + index only (no finetuning)
     run_slg_embeddings(experiment) if args.slg_embeddings else None
+
+    # Training
+    run_training(experiment) if args.finetune else None
 
     # Inference
     run_baseline(experiment) if args.infer_baseline else None

@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from typing import List, Tuple
 
 import faiss
@@ -38,6 +39,7 @@ def compute_chunk_embedding(
             model=embedding_model,
             input=batch,
         )
+        time.sleep(0.5)
         batch_vectors = np.array(
             [item.embedding for item in response.data], dtype="float32"
         )
