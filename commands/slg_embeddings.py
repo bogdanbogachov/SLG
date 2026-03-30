@@ -12,6 +12,13 @@ from logging_config import logger
 from utils.path_utils import ensure_dir
 
 
+def _slg_expert_dir_name(adapter_stem: str) -> str:
+    """Directory name under experiments/<exp>/<slg_dir>; matches finetuned_<expert_stem> on disk."""
+    if adapter_stem.startswith("finetuned_"):
+        return adapter_stem
+    return f"finetuned_{adapter_stem}"
+
+
 def compute_chunk_embedding(
     data_path: str,
     client: OpenAI,
@@ -57,8 +64,8 @@ def compute_chunk_embedding(
 
 def collect_slg_chunk_embeddings() -> Tuple[List[str], List[np.ndarray]]:
     """
-    Same loop as train.run_training SLG branch: split_by_title files -> expert_ids + chunk_embeddings.
-    (No finetune call — that is the only difference from train.py.)
+    split_by_title files -> expert_ids (finetuned_<stem>) + chunk_embeddings.
+    (No finetune call — training is separate.)
     """
     paths_config = CONFIG["paths"]
     split_by_title_dir = paths_config["split_by_title"]
@@ -85,7 +92,8 @@ def collect_slg_chunk_embeddings() -> Tuple[List[str], List[np.ndarray]]:
         data_path = os.path.join(split_by_title_dir, file)
 
         # Compute a fixed representation for this training chunk.
-        expert_ids.append(adapter_name)
+        # expert_ids must match on-disk adapter folder names (finetuned_<stem>).
+        expert_ids.append(_slg_expert_dir_name(adapter_name))
         chunk_embeddings.append(
             compute_chunk_embedding(
                 data_path,
