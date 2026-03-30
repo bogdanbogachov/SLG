@@ -256,6 +256,7 @@ class SmallLanguageGraph:
         expert_adapter_path = os.path.join(self.slg_path, model)
 
         result = self._tuned_generate_with_confidence(question, expert_adapter_path)
+        logger.info(f"Expert '{model}' confidence: {float(result['confidence']):.4f}")
 
         state["answers"].append(
             {
