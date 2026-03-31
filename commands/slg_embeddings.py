@@ -31,11 +31,13 @@ def compute_chunk_embedding(
 
     # Neighbor similarity should reflect topic/content overlap between experts.
     # Embed training answers (where the knowledge lives), then average to one vector per chunk.
-    texts = [
+    raw = [
         str(entry.get("answer", "")).strip()
         for entry in chunk_data
         if entry.get("answer")
     ]
+    # Deduplicate (first occurrence wins) so repeated answers are not double-counted in the mean.
+    texts = list(dict.fromkeys(t for t in raw if t))
     if not texts:
         raise ValueError(f"No training answers found in {data_path}")
 
