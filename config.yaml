@@ -48,6 +48,7 @@ paths:
   models:
     3_2_1b: 'downloaded_3_2_1b'
     3_1_8b: 'downloaded_3_1_8b'
+    jina_embeddings: 'jina-v2-base-en'
   split_by_title: 'question_answer/split_by_title'
   charts: 'experiments/charts'
 
@@ -118,9 +119,9 @@ rag:
   batch_size: 100
   k_retrievals: 5
 
-# SLG formation
+# SLG formation (jina-v2-base-en local embeddings → 768-dim vectors)
 slg_formation:
-  embedding_dimension: 1536
+  embedding_dimension: 768
   batch_size: 100
   k_neighbours: 2
   slg_dir: "slg"

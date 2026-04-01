@@ -1,11 +1,10 @@
 import json
 import os
-import time
 from typing import List, Tuple
 
 import faiss
 import numpy as np
-from openai import OpenAI
+from sentence_transformers import SentenceTransformer
 
 from config import CONFIG
 from logging_config import logger
@@ -21,8 +20,7 @@ def _slg_expert_dir_name(adapter_stem: str) -> str:
 
 def compute_chunk_embedding(
     data_path: str,
-    client: OpenAI,
-    embedding_model: str,
+    model: SentenceTransformer,
     embedding_dimension: int,
     embedding_batch_size: int,
 ) -> np.ndarray:
@@ -44,15 +42,13 @@ def compute_chunk_embedding(
     vectors: List[np.ndarray] = []
     for i in range(0, len(texts), embedding_batch_size):
         batch = texts[i : i + embedding_batch_size]
-        response = client.embeddings.create(
-            model=embedding_model,
-            input=batch,
+        batch_vectors = model.encode(
+            batch,
+            batch_size=len(batch),
+            convert_to_numpy=True,
+            show_progress_bar=False,
         )
-        time.sleep(0.5)
-        batch_vectors = np.array(
-            [item.embedding for item in response.data], dtype="float32"
-        )
-        vectors.append(batch_vectors)
+        vectors.append(np.asarray(batch_vectors, dtype="float32"))
 
     all_vecs = np.concatenate(vectors, axis=0)
     mean_vec = np.mean(all_vecs, axis=0).astype("float32")
@@ -72,9 +68,11 @@ def collect_slg_chunk_embeddings() -> Tuple[List[str], List[np.ndarray]]:
     paths_config = CONFIG["paths"]
     split_by_title_dir = paths_config["split_by_title"]
 
-    client = OpenAI(api_key=CONFIG["open_ai_api_key"])
-    models_config = CONFIG["models"]
-    embedding_model = models_config["embedding_model"]
+    embedding_model_path = os.path.join(
+        paths_config["downloaded_models"],
+        paths_config["models"]["jina_embeddings"],
+    )
+    model = SentenceTransformer(embedding_model_path, trust_remote_code=True)
 
     slg_formation = CONFIG["slg_formation"]
     embedding_dimension = slg_formation["embedding_dimension"]
@@ -99,8 +97,7 @@ def collect_slg_chunk_embeddings() -> Tuple[List[str], List[np.ndarray]]:
         chunk_embeddings.append(
             compute_chunk_embedding(
                 data_path,
-                client,
-                embedding_model,
+                model,
                 embedding_dimension,
                 embedding_batch_size,
             )
