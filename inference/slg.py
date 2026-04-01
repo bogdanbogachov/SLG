@@ -1,22 +1,23 @@
 """Small Language Graph (SLG) for multi-expert question answering.
 
 Pipeline:
-1) Orchestrator/router selects the main expert.
+1) Embed the question (Jina); pick the main expert by cosine similarity to chunk embeddings in index.json.
 2) Main expert generates an answer + confidence (avg token log-prob -> exp -> [0, 1]).
 3) Based on confidence, we invoke 1..k neighboring experts (neighbors by cosine similarity over
    chunk embeddings computed at training time).
 4) A base (non-tuned) Llama-3.2-1B-Instruct model aggregates candidate answers.
 """
 
-import difflib
 import functools
 import json
 import math
 import os
 from typing import Any, Dict, List
 
+import numpy as np
 import torch
 from langgraph.graph import END, START, StateGraph
+from sentence_transformers import SentenceTransformer
 
 from config import CONFIG
 from logging_config import logger
@@ -53,8 +54,18 @@ class SmallLanguageGraph:
             "neighbors_by_expert"
         ]
         self.neighbor_k: int = int(self.slg_index["neighbor_k"])
+        self.slg_embeddings_by_expert: Dict[str, np.ndarray] = self.slg_index[
+            "embeddings_by_expert"
+        ]
 
         self.expert_nodes: List[str] = self._discover_expert_nodes()
+
+        paths_cfg = CONFIG["paths"]
+        jina_path = os.path.join(
+            paths_cfg["downloaded_models"],
+            paths_cfg["models"]["jina_embeddings"],
+        )
+        self._embedding_model = SentenceTransformer(jina_path, trust_remote_code=True)
 
     def _discover_expert_nodes(self) -> List[str]:
         if not os.path.isdir(self.slg_path):
@@ -84,6 +95,7 @@ class SmallLanguageGraph:
             entries = json.load(f)
 
         neighbors_by_expert: Dict[str, List[str]] = {}
+        embeddings_by_expert: Dict[str, np.ndarray] = {}
         neighbor_k = 0
         for e in entries:
             expert_id = e["expert_id"]
@@ -91,89 +103,63 @@ class SmallLanguageGraph:
             neighbors_by_expert[expert_id] = list(top_neighbors)
             if neighbor_k == 0:
                 neighbor_k = len(top_neighbors)
+            vec = np.asarray(e["chunk_embedding"], dtype=np.float32).reshape(-1)
+            embeddings_by_expert[expert_id] = vec
 
-        return {"neighbors_by_expert": neighbors_by_expert, "neighbor_k": neighbor_k}
+        return {
+            "neighbors_by_expert": neighbors_by_expert,
+            "neighbor_k": neighbor_k,
+            "embeddings_by_expert": embeddings_by_expert,
+        }
 
-    def _categorize_task(self, prompt: str, experts: List[str]) -> str:
-        """Categorize a question and route it to an appropriate expert."""
-        messages = [create_user_message(prompt)]
-
-        paths_config = CONFIG["paths"]
-        models_paths = paths_config["models"]
-        adapters_config = CONFIG["adapters"]
-
-        base_model_path = os.path.join(
-            paths_config["downloaded_models"], models_paths["3_2_1b"]
-        )
-        experiments_dir = paths_config["experiments"]
-        adapter_path = os.path.join(
-            experiments_dir,
-            self.experts_location,
-            adapters_config["orchestrator_3_2_1b"],
-        )
-
-        finetuned_model, tokenizer = load_model_with_adapter(
-            base_model_path=base_model_path,
-            adapter_path=adapter_path,
-            resize_token_embeddings=False,
-        )
-
-        try:
-            formatted_prompt = apply_chat_template(
-                messages, tokenizer, add_generation_prompt=True
+    def _route_question_by_embedding(
+        self, question: str, candidate_experts: List[str]
+    ) -> str:
+        """Pick the expert whose index chunk embedding has highest cosine similarity to the question."""
+        emb_map = self.slg_embeddings_by_expert
+        expert_set = set(self.expert_nodes)
+        candidates = [
+            e for e in candidate_experts if e in emb_map and e in expert_set
+        ]
+        if not candidates:
+            candidates = [e for e in self.expert_nodes if e in emb_map]
+        if not candidates:
+            raise RuntimeError(
+                "No experts with chunk embeddings in index.json match on-disk SLG adapters. "
+                "Run commands.slg_embeddings.run_slg_embeddings for this experiment."
             )
-            inputs = tokenizer(
-                formatted_prompt,
-                return_tensors="pt",
-                padding=False,
-                truncation=True,
-            ).to("cuda")
 
-            generation_config = CONFIG["generation"]
-            orchestrator_max_tokens = generation_config["orchestrator_max_tokens"]
-            outputs = finetuned_model.generate(
-                **inputs,
-                max_new_tokens=orchestrator_max_tokens,
-                num_return_sequences=1,
-                temperature=generation_config["temperature"],
-                eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"),
-            )
-            text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        q = self._embedding_model.encode(
+            [question],
+            convert_to_numpy=True,
+            show_progress_bar=False,
+        )[0].astype(np.float32, copy=False)
+        qn = float(np.linalg.norm(q))
+        if qn < 1e-12:
+            return candidates[0]
+        q = q / qn
 
-            output = (
-                text.split("assistant")[1].strip()
-                if "assistant" in text
-                else text.strip()
-            )
-            output = output.replace(" ", "_").replace("/", "_").lower()
-
-            if output in experts:
-                return output
-
-            return max(
-                experts,
-                key=lambda s: difflib.SequenceMatcher(None, output, s).ratio(),
-            )
-        finally:
-            cleanup_model_memory(finetuned_model, tokenizer)
+        best_e = candidates[0]
+        best_s = -1.0
+        for e in candidates:
+            sim = float(np.dot(q, emb_map[e]))
+            if sim > best_s:
+                best_s = sim
+                best_e = e
+        return best_e
 
     def _task_analysis_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze the task and route it to an appropriate main expert."""
+        """Route the question to the main expert via embedding similarity to index.json vectors."""
         question = state["question"]
-
-        prompt = (
-            "Analyze this question and find an appropriate expert who can answer it: "
-            f"{question}"
-        )
-
-        experts_list_of_strings = list(self.slg_neighbors_by_expert.keys())
-        expert_set = set(self.expert_nodes)
-        experts_list_of_strings = [e for e in experts_list_of_strings if e in expert_set]
+        on_disk = set(self.expert_nodes)
+        with_emb = set(self.slg_embeddings_by_expert.keys())
+        experts_list_of_strings = sorted(on_disk & with_emb)
         if not experts_list_of_strings:
-            experts_list_of_strings = self.expert_nodes
+            experts_list_of_strings = list(self.expert_nodes)
 
-        response = self._categorize_task(prompt, experts_list_of_strings)
-        state["selected_expert"] = response.strip().lower()
+        state["selected_expert"] = self._route_question_by_embedding(
+            question, experts_list_of_strings
+        )
         return state
 
     @staticmethod

@@ -20,7 +20,6 @@ def finetune(
     data: str,
     experiment_number: str,
     slg: bool = False,
-    orchestrator: bool = False
 ) -> None:
     """
     Fine-tune a language model with LoRA.
@@ -31,7 +30,6 @@ def finetune(
         data: Path to JSON data file
         experiment_number: Experiment identifier
         slg: Whether this is for SLG (Small Language Graph)
-        orchestrator: Whether this is an orchestrator model
     """
     if not torch.cuda.is_available():
         raise RuntimeError("No GPU found! Please ensure you have a CUDA-compatible GPU.")
@@ -55,22 +53,12 @@ def finetune(
         """Apply chat template to a dataset example."""
         from utils.prompt_utils import create_user_message, create_assistant_message
         
-        if orchestrator:
-            messages = [
-                create_user_message(
-                    f"Analyze this question and find an appropriate expert who can answer it: {example['question']}"
-                ),
-                create_assistant_message(example['title'])
-            ]
-            prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=False)
-            return {"prompt": prompt}
-        else:
-            messages = [
-                create_user_message(example['question']),
-                create_assistant_message(example['answer'])
-            ]
-            prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=False)
-            return {"prompt": prompt}
+        messages = [
+            create_user_message(example['question']),
+            create_assistant_message(example['answer'])
+        ]
+        prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=False)
+        return {"prompt": prompt}
 
     # Apply the chat template function to the dataset
     new_dataset = dataset.map(apply_chat_template_to_example)
@@ -111,13 +99,8 @@ def finetune(
     )
 
     # Get learning rate and label smoothing from config
-    if orchestrator:
-        orchestrator_config = training_config['orchestrator']
-        learning_rate = orchestrator_config['learning_rate']
-        label_smoothing_factor = orchestrator_config['label_smoothing_factor']
-    else:
-        learning_rate = training_config['learning_rate']
-        label_smoothing_factor = training_config['label_smoothing_factor']
+    learning_rate = training_config['learning_rate']
+    label_smoothing_factor = training_config['label_smoothing_factor']
 
     # Create checkpoint directory
     paths_config = CONFIG['paths']

@@ -1,8 +1,6 @@
 import os
 from typing import List
 
-import numpy as np
-
 from finetune.finetune import finetune
 from config import CONFIG
 from logging_config import logger
@@ -33,14 +31,13 @@ def run_training(experiment: str):
 
     os.makedirs(experiments_dir, exist_ok=True)
 
-    # Finetune SLG experts per title and orchestrator
+    # Finetune SLG experts per title (routing uses Jina embeddings + index.json, not a finetuned orchestrator)
     if train_slg_system:
-        logger.info("Training SLG system (experts + orchestrator)...")
+        logger.info("Training SLG experts...")
         split_by_title_files = sorted(
             [f for f in os.listdir(split_by_title_dir) if f.endswith(".json")]
         )
 
-        # Train SLG experts per title
         for file in split_by_title_files:
             logger.info(f"Training SLG expert for: {file}")
             adapter_name = os.path.splitext(file)[0]
@@ -55,17 +52,6 @@ def run_training(experiment: str):
                 experiment_number=experiment,
                 slg=True,
             )
-
-        # Train orchestrator
-        logger.info("Training orchestrator...")
-        finetune(
-            model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
-            adapter_name=adapters_config['orchestrator_3_2_1b'],
-            data=files_config['qa_train'],
-            experiment_number=experiment,
-            orchestrator=True
-        )
-
 
     else:
         logger.info("Skipping SLG system training")
