@@ -5,7 +5,7 @@ Pipeline:
 2) Main expert generates an answer + confidence (avg token log-prob -> exp -> [0, 1]).
 3) Based on confidence, we invoke 1..k neighboring experts (neighbors by cosine similarity over
    chunk embeddings computed at training time).
-4) A base (non-tuned) Llama-3.2-1B-Instruct model aggregates candidate answers.
+4) The final answer is the candidate with the highest confidence score.
 """
 
 import functools
@@ -21,21 +21,13 @@ from sentence_transformers import SentenceTransformer
 
 from config import CONFIG
 from logging_config import logger
-from utils.model_loader import (
-    cleanup_model_memory,
-    load_base_model_and_tokenizer,
-    load_model_with_adapter,
-)
+from utils.model_loader import cleanup_model_memory, load_model_with_adapter
 from utils.path_utils import (
     ensure_dir,
     get_slg_path,
     validate_slg_embedding_artifacts,
 )
-from utils.prompt_utils import (
-    apply_chat_template,
-    create_system_message,
-    create_user_message,
-)
+from utils.prompt_utils import apply_chat_template, create_user_message
 
 
 class SmallLanguageGraph:
@@ -331,79 +323,18 @@ class SmallLanguageGraph:
         return "aggregator"
 
     def _aggregator_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Aggregate up to k+1 candidate answers into a final answer."""
-        question = state["question"]
+        """Choose the expert answer with the highest confidence as the final answer."""
         candidates = state.get("answers", [])
-
-        system_prompt = (
-            "You are an answer aggregator.\n"
-            "Combine multiple expert answers into one final answer."
-        )
-
-        candidate_lines: List[str] = []
-        for i, c in enumerate(candidates, start=1):
-            candidate_lines.append(
-                f"{i}. Expert: {c.get('expert')}\n"
-                f"   Confidence: {c.get('confidence')}\n"
-                f"   Answer: {c.get('answer')}"
-            )
-
-        user_prompt = (
-            f"Question:\n{question}\n\n"
-            "Candidate answers:\n"
-            + "\n".join(candidate_lines)
-            + "\n\n"
-            "Instructions:\n"
-            "- Combine overlapping correct information into one answer.\n"
-            "- Prefer the most consistent and well-supported claims.\n"
-            "- If answers conflict, choose the best-supported one or mention uncertainty.\n"
-            "- Do not mention the internal process unless needed.\n"
-            "- Return only the final answer."
-        )
-
-        messages = [
-            create_system_message(system_prompt),
-            create_user_message(user_prompt),
-        ]
-
-        paths_config = CONFIG["paths"]
-        models_paths = paths_config["models"]
-        base_model_path = os.path.join(
-            paths_config["downloaded_models"], models_paths["3_2_1b"]
-        )
-
-        model, tokenizer = load_base_model_and_tokenizer(base_model_path)
-        try:
-            formatted_prompt = apply_chat_template(
-                messages, tokenizer, add_generation_prompt=True
-            )
-            inputs = tokenizer(
-                formatted_prompt,
-                return_tensors="pt",
-                padding=False,
-                truncation=True,
-            ).to("cuda")
-
-            generation_config = CONFIG["generation"]
-            aggregation_max_new_tokens = generation_config.get(
-                "aggregation_max_new_tokens", 256
-            )
-
-            eos_id = tokenizer.convert_tokens_to_ids("<|eot_id|>")
-            outputs = model.generate(
-                **inputs,
-                max_new_tokens=aggregation_max_new_tokens,
-                num_return_sequences=1,
-                temperature=generation_config["temperature"],
-                eos_token_id=eos_id,
-                do_sample=False,
-            )
-
-            decoded = tokenizer.decode(outputs[0], skip_special_tokens=True)
-            state["final_answer"] = self._extract_assistant_text(decoded)
+        if not candidates:
+            state["final_answer"] = ""
             return state
-        finally:
-            cleanup_model_memory(model, tokenizer)
+
+        best = max(
+            candidates,
+            key=lambda c: float(c.get("confidence") or 0.0),
+        )
+        state["final_answer"] = str(best.get("answer") or "")
+        return state
 
     def _build_graph(self):
         logger.info("Building SLG graph.")
