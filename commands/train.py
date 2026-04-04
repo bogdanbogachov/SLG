@@ -4,6 +4,7 @@ from typing import List
 from finetune.finetune import finetune
 from config import CONFIG
 from logging_config import logger
+from commands.slg_embeddings import run_slg_embeddings
 
 
 def run_training(experiment: str):
@@ -51,6 +52,14 @@ def run_training(experiment: str):
                 data=data_path,
                 experiment_number=experiment,
                 slg=True,
+            )
+
+        if split_by_title_files:
+            logger.info("Building SLG similarity index (chunk embeddings + index.json)...")
+            run_slg_embeddings(experiment)
+        else:
+            logger.warning(
+                "No JSON files in split_by_title; skipping SLG embedding index build."
             )
 
     else:
