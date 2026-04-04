@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --mail-user=user@mail.mcgill.ca
+#SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
 #SBATCH --time=00:45:00
@@ -23,4 +23,4 @@ source venv/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --finetune=True --infer_finetuned=True
+python main.py --finetune=True --infer_slg=True
