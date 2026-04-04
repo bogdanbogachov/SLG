@@ -2,7 +2,7 @@ import json
 import os
 from typing import List, Tuple
 
-import faiss
+import hnswlib
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
@@ -112,7 +112,7 @@ def save_slg_embedding_artifacts(
     chunk_embeddings: List[np.ndarray],
 ) -> None:
     """
-    Same FAISS + index.json logic as the end of the SLG branch in train.py.
+    Build index.json via hnswlib inner-product search on L2-normalized chunk embeddings.
     Additionally writes chunk_embeddings_raw.npy and expert_ids.json (for reuse without API calls).
     """
     paths_config = CONFIG["paths"]
@@ -141,12 +141,21 @@ def save_slg_embedding_artifacts(
     norms = np.linalg.norm(embeddings_matrix, axis=1, keepdims=True)
     normalized = embeddings_matrix / np.clip(norms, 1e-12, None)
 
-    index = faiss.IndexFlatIP(embedding_dimension)
-    index.add(normalized)
+    n = len(expert_ids)
+    search_k = min(neighbor_k + 1, n)
 
-    # Query each embedding against the index (k neighbors + 1 to account for self).
-    search_k = min(neighbor_k + 1, len(expert_ids))
-    _, indices = index.search(normalized, search_k)
+    if n <= 1:
+        # Degenerate graph: only self-neighbors exist; match knn_query output shape.
+        indices = np.tile(np.arange(n, dtype=np.int64), (search_k, 1)).T
+    else:
+        index = hnswlib.Index(space="ip", dim=embedding_dimension)
+        m = min(32, max(2, n - 1))
+        ef_construction = max(200, search_k * 5)
+        index.init_index(max_elements=n, ef_construction=ef_construction, M=m)
+        index.add_items(normalized, np.arange(n, dtype=np.int64))
+        index.set_ef(max(64, search_k * 5))
+        labels, _distances = index.knn_query(normalized, k=search_k)
+        indices = labels.astype(np.int64, copy=False)
 
     index_entries = []
     for i, expert_id in enumerate(expert_ids):
