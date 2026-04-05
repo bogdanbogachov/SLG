@@ -93,7 +93,7 @@ def collect_slg_chunk_embeddings() -> Tuple[List[str], List[np.ndarray]]:
 
         # Compute a fixed representation for this training chunk.
         # expert_ids must match on-disk adapter folder names (finetuned_<stem>).
-        expert_ids.append(_slg_expert_dir_name(adapter_name))
+        expert_ids.append(adapter_name)
         chunk_embeddings.append(
             compute_chunk_embedding(
                 data_path,
