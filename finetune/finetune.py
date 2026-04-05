@@ -119,6 +119,8 @@ def finetune(
         save_strategy="epoch",
         logging_steps=training_config['logging_steps'],
         fp16=True,
+        use_cpu=False,
+        dataloader_pin_memory=True,
         report_to="tensorboard",
         log_level="info",
         logging_dir=logging_dir,
@@ -150,8 +152,9 @@ def finetune(
         callbacks=[EarlyStoppingCallback(early_stopping_patience=early_stopping_patience)]
     )
 
-    # Train the model
+    # Train the model (keep full model on CUDA; load_best_model_at_end reload can leave some weights on CPU)
     trainer.train()
+    trainer.model.to(torch.device("cuda"))
     trainer.evaluate()
 
     # Save the model and tokenizer
