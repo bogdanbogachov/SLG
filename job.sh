@@ -3,12 +3,12 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=00:30:00
+#SBATCH --time=48:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=16G
-#SBATCH --gpus=a100:1
+#SBATCH --gpus=a100_3g.20gb:1
 
 module load python/3.11.5
 module load rust
@@ -23,4 +23,4 @@ source venv/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --slg_embeddings=True
+python main.py --infer_slg=True
