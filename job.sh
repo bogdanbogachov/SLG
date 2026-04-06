@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=16G
-#SBATCH --gpus=a100_3g.20gb:1
+#SBATCH --gpus=a100:1
 
 module load python/3.11.5
 module load rust
@@ -23,4 +23,4 @@ source venv/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --finetune=True --infer_slg=True
+python main.py --slg_embeddings=True
