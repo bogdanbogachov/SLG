@@ -27,7 +27,6 @@ query_expert_prompt: >
   - {text_1}
   - {text_2}
   # Please evaluate how similar the second text is to the first one.
-  # When evaluating, be very critical. If you see minor discrepancies, consider texts not similar to each other.
   # Please return "1" if similar and "0" if not. Don't ever return anything else but these two binary ints: 1 or 0!
 
 # Inference prompts

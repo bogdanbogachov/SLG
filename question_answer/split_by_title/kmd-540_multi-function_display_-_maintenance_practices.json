@@ -1,0 +1,608 @@
+[
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What steps are involved in turning on the KMD-540 MFD and confirming its display before shutting down the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display contribute to pilot decision-making by providing various safety and navigation data?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units' quick release fasteners and electrical connectors contribute to their ease of removal and their ability to process and display data within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units utilize processors to manage data flow within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the step-by-step procedures for safely removing and reinstalling the KMD-540 MFD as specified in the maintenance instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific procedures for disconnecting and securing the electrical connector during the removal and installation of the Control Display Unit (CDU) in the Garmin G1000 system?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall the KMD-540 MFD according to the maintenance procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What specific safety and navigation information can pilots access through the KMD-540 Multi-Function Display to support their situational awareness during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display help pilots quickly interpret diverse flight, safety, and weather information to enhance situational awareness?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the step-by-step procedures for removing and reinstalling the KMD-540 MFD as specified in the maintenance instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to ensure the Control Display Unit (CDU) operates correctly after installation according to Garmin G1000 Line Maintenance?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do you properly turn on the KMD-540 MFD and verify its display?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the key features of the Control Display Units that enable their quick removal and effective data processing in the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly turn on the MASTER ALT/BAT switch and verify the KMD-540 MFD display during system startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units' quick release fasteners and electrical connectors facilitate their maintenance and operational functionality within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly power on and off the KMD-540 MFD and avionics master switch?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps involved in removing and installing the KMD-540 MFD as described in the maintenance procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to safely remove and reinstall the KMD-540 MFD during aircraft maintenance as outlined in the procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to power on the KMD-540 MFD and ensure the MASTER ALT/BAT switch is correctly set during system initialization?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps for removing and installing the KMD-540 MFD as outlined in the maintenance procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the correct procedure for turning on the MASTER ALT/BAT switch and verifying the KMD-540 MFD display during system startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to remove and reinstall the Control Display Unit (CDU) while ensuring proper electrical connections and circuit breaker engagement according to Garmin G1000 Line Maintenance?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the initial steps to activate the KMD-540 MFD and ensure proper system startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Primary Function Display and Multi-Function Display collaborate within the Control Display Units to present information?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling the KMD-540 MFD during aircraft maintenance as described in the procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing the KMD-540 MFD during maintenance as specified in the instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to properly remove and reinstall the Control Display Unit (CDU) in the Garmin G1000 system, including disconnecting and reconnecting electrical connectors and managing circuit breakers?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the design of the Control Display Units enable them to operate as both primary and multi-function displays within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Primary Function Display and Multi-Function Display work together to provide information in the aircraft's Control Display Units?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units' processors and display configurations collaborate to facilitate data management and presentation within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific procedures to safely remove and reinstall the KMD-540 MFD according to the maintenance instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units' design and components facilitate their quick removal, installation, and data processing functions within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What types of data, including safety, navigation, and weather information, are displayed on the KMD-540 Multi-Function Display to assist pilots during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing the Control Display Unit (CDU) to ensure proper electrical connection and circuit breaker engagement as specified in Garmin G1000 Line Maintenance?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display help pilots access and interpret various safety, navigation, and weather data during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to turn on the KMD-540 MFD and verify its display after setting the MASTER ALT/BAT switch to ON?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall the KMD-540 MFD during maintenance as outlined in the procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What types of data can be displayed on the KMD-540 Multi-Function Display to enhance pilot situational awareness during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to ensure the Control Display Unit (CDU) is correctly reinstalled and functions properly after removal, according to Garmin G1000 Line Maintenance procedures?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures to safely disconnect, remove, and reinstall the KMD-540 MFD during maintenance as outlined in the instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What components allow the Control Display Units to be easily removed and connected in the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What steps should be taken to activate the KMD-540 MFD and confirm its display before turning off the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing the Control Display Unit (CDU) to ensure proper electrical connections and circuit breaker engagement as outlined in the Garmin G1000 Line Maintenance?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the correct procedure for turning on the MASTER ALT/BAT switch and verifying the KMD-540 MFD display?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall the Control Display Unit (CDU) while ensuring proper electrical connection and circuit breaker engagement according to Garmin G1000 Line Maintenance procedures?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the design of the Control Display Units allow for easy removal and installation while ensuring they can process and display data effectively within the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "In what ways does the KMD-540 Multi-Function Display improve a pilot's ability to monitor and interpret critical flight, safety, and weather data simultaneously during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the key steps to safely remove and reinstall the Control Display Unit (CDU) in the Garmin G1000 system?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the sequential steps to safely remove and reinstall the KMD-540 MFD as outlined in the maintenance procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display help pilots access and interpret multiple sources of safety, navigation, and weather data during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display facilitate the quick interpretation of various safety, navigation, and weather data to improve pilot situational awareness?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific actions required to power on the KMD-540 MFD and verify its display during system startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps involved in removing and installing the Control Display Unit (CDU) according to the Garmin G1000 Line Maintenance procedures?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to remove and reinstall the Control Display Unit (CDU) while ensuring proper electrical connection, circuit breaker engagement, and correct operation in the Garmin G1000 system?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are some of the key types of information that the KMD-540 Multi-Function Display presents to pilots to support their situational awareness during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the quick release fasteners and electrical connector contribute to the maintenance and functionality of the Control Display Units in the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to disconnect and reconnect the electrical connector when removing and installing the Control Display Unit (CDU) in the Garmin G1000 system?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the essential steps to safely remove and reinstall the Control Display Unit (CDU) in the Garmin G1000 system while ensuring proper electrical connections and circuit breaker engagement?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to remove and reinstall the Control Display Unit (CDU) while ensuring the electrical connector is properly disconnected and reconnected, the circuit breaker is correctly engaged, and the CDU operates properly after installation?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall the KMD-540 MFD as specified in the maintenance procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display enhance a pilot's ability to access and interpret diverse safety, navigation, and weather information during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall the KMD-540 MFD while ensuring proper disconnection, handling, and reattachment procedures during aircraft maintenance?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display enhance a pilot's ability to quickly interpret various types of flight, safety, and weather data during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What role do the processors within the Control Display Units play in managing data flow and display functions in the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units' design and processors work together to enable quick removal, installation, and effective data management within the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for disconnecting, removing, and reinstalling the KMD-540 MFD as outlined in the maintenance instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the benefits of using the KMD-540 Multi-Function Display for pilots in terms of accessing critical flight, safety, and navigation information?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to power on the KMD-540 MFD and verify its display before turning off the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to turn on the MASTER ALT/BAT switch and verify the KMD-540 MFD display?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display improve pilot awareness during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to safely turn on the KMD-540 MFD and confirm its display before shutting down the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the process for turning on the MASTER ALT/BAT switch and verifying the KMD-540 MFD display during system startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the key safety and procedural steps to remove and reinstall the KMD-540 MFD as specified in the maintenance instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display assist pilots in integrating and quickly interpreting multiple safety, navigation, and weather data sources during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the advantages of using the KMD-540 Multi-Function Display for pilots in terms of integrating safety, navigation, and weather data to improve situational awareness?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the functions of the left and right Control Display Units in the aircraft's integrated system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the sequence for turning off the KMD-540 MFD and avionics master switch?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific procedures for disconnecting and securing the Control Display Unit (CDU) during removal and installation as outlined in the Garmin G1000 Line Maintenance instructions?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing the Control Display Unit (CDU) while ensuring electrical connections are properly managed and the circuit breaker is correctly engaged?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display enhance a pilot's ability to interpret critical flight, safety, and navigation data quickly?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What procedures must be followed to properly disconnect, remove, and reinstall the KMD-540 MFD according to the maintenance instructions?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display help pilots interpret multiple types of flight, safety, and weather data efficiently during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the Control Display Units facilitate data processing and display in the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What steps should be followed to ensure the proper reinstallation and operation of the Control Display Unit (CDU) after removal in the Garmin G1000 system?",
+        "answer": "Remove the Control Display Unit  . (1) Disengage the applicable PFD or MFD circuit breaker for the CDU. (2) Disconnect the quick release fasteners from the CDU. (3) Carefully pull the CDU from the instrument panel and disconnect the electrical connector that is attached to the back of the CDU.Install the CDU . (1) Connect the electrical connector to the back of the CDU and put the CDU in the instrument panel. Attach the CDU to the instrument panel with the quick release fasteners. (3) Engage the applicable PFD or MFD circuit breaker for the CDU. Make sure the applicable CDU operates correctly. Refer to the Garmin G1000 Line Maintenance"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do the components of the Control Display Units enable both quick removal and effective data processing within the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display improve a pilot's ability to quickly interpret and access various safety, navigation, and weather data during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly power on the KMD-540 MFD and ensure the MASTER ALT/BAT switch is set correctly?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the procedure for turning on the MASTER ALT/BAT switch and verifying the KMD-540 MFD display?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly initialize and shut down the KMD-540 MFD system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How do you verify the KMD-540 MFD displays the title page during startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the specific actions required to safely remove and reinstall the KMD-540 MFD as part of maintenance, including disconnection, removal, and reinstallation steps?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "In what ways do the Primary Function Display and Multi-Function Display enhance the functionality of the Control Display Units in the aircraft's system?",
+        "answer": "The Control Display Unit  is a flat screen display which is removed and installed by quick release fasteners and an electrical connector attached to the back. A Garmin Display Unit  operates as the CDU. The left display serves as the Primary Function Display . The right display serves as the Multi-Function Display . Each display is able to give the same information as the other if needed. The displays incorporate the processors that move data through the different components of the integrated system."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the correct sequence for powering on the KMD-540 MFD and verifying its display before turning off the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly turn on the KMD-540 MFD and verify its display before turning off the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "How does the KMD-540 Multi-Function Display assist pilots in quickly accessing and understanding various safety, navigation, and weather information during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What types of information, including safety, navigation, and weather data, can the KMD-540 Multi-Function Display present to improve pilot awareness during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What is the correct procedure for turning on the MASTER ALT/BAT switch and verifying the KMD-540 MFD display during system startup?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the necessary steps to safely remove and reinstall the KMD-540 MFD during maintenance as outlined in the procedures?",
+        "answer": "KMD-540 MFD Removal . (1) Disconnect the main battery from the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (2) Disengage the MFD circuit breaker on the circuit breaker panel. (3) Remove the screw in the face of the MFD. (4) Carefully, pull the unit out of the avionics rack. (5) Disconnect the electrical connector from the MFD. (6) Remove the MFD from the airplane.KMD-540 MFD Installation . (1) Put the MFD in the avionics rack. (2) Connect the electrical connector to the MFD. (3) Install the screw in the face of the MFD. (4) Engage the MFD circuit breaker on the circuit breaker panel. (5) Connect the main battery to the airplane. Refer to Chapter 24, Battery - Maintenance Practices. (6) Do an operational check of the MFD."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What types of data are displayed on the KMD-540 Multi-Function Display to improve pilot awareness during flight?",
+        "answer": "The KMD-540 Multi-Function Display  can be installed to give the pilot more situational awareness during flight.  Enhanced Ground Proximity Warning System , and Traffic Advisory System  data is given on the color MFD display. Other data, such as Global Positioning System  data and weather data can be shown on the display. These displays can give the pilot more data that is easy to read in a short period of time."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly activate and deactivate the KMD-540 MFD and associated switches during system startup and shutdown?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KMD-540 MULTI-FUNCTION DISPLAY - MAINTENANCE PRACTICES",
+        "question": "What actions are required to power on the KMD-540 MFD and confirm its display before turning off the avionics system?",
+        "answer": "(1) Set the MASTER ALT/BAT switch to the ON position. (3) Turn the ON/OFF knob on the KMD-540 MFD to the ON position. Make sure that the KMD-540 title page comes on the screen. (5) Turn the ON/OFF knob on the KMD-540 MFD to the OFF position. Set the AVIONICS master switch to the off position. o 0 o lo o o111o"
+    }
+]

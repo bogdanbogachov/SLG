@@ -1,0 +1,386 @@
+[
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the location of the GPS antenna on the aircraft and how is it positioned relative to the communication antennas?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How does the GPS system configuration differ between aircraft equipped with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How does the configuration of the GPS system differ between airplanes with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the steps involved in removing and installing a GPS antenna on an aircraft?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly secure the coax cable after disconnecting the GPS antenna during removal?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and installing a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting electrical power, securing connections, and restoring power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the key steps to ensure proper reinstallation of a GPS antenna on an aircraft after removal?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How is the GPS system configuration different in aircraft equipped with the KR-87 ADF System compared to those without it?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the differences in the GPS receiver models used in aircraft with and without the KR-87 ADF System, and where are they located?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed safety and procedural steps to remove and reinstall a GPS antenna on an aircraft's fuselage?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "Where is the GPS antenna positioned relative to the communication antennas on the aircraft?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely removing and installing a GPS receiver in an aircraft's avionics radio panel, including steps to disconnect power, secure connections, and restore electrical power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the procedure for reconnecting the GPS antenna after removal?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing a GPS antenna on an aircraft, including steps for disconnecting the coax connector, securing the coax cable, and properly attaching the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the difference between the GPS receivers used in airplanes with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "Where is the GPS receiver located within the avionics system of these aircraft, and how does its configuration differ based on the presence of the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the function of the MD41-228 GPS-NAV selector in aircraft equipped with the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting electrical power, securing connections, and restoring power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How do you properly remove and reinstall a GPS receiver from an aircraft's avionics radio panel?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling a GPS antenna on an aircraft, including disconnecting the coax connector, securing the coax cable, and ensuring proper attachment of the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the steps to properly reconnect and secure the GPS antenna after installation on an aircraft?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "In what specific location is the KA-92 GPS Antenna installed on the aircraft, and how is its placement related to the communication antennas?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and installing a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting power, securing electrical connections, and restoring electrical power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the step-by-step process for removing and installing a GPS receiver in an aircraft's avionics radio panel, including safety precautions and electrical connections?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the location of the GPS antenna on the aircraft and how does its placement relate to the communication antennas?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the key steps to safely remove and reinstall a GPS receiver in an aircraft's avionics system while ensuring proper electrical connections and power management?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing a GPS receiver in an aircraft's avionics radio panel, including steps to disconnect electrical power, secure connections, and restore power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely removing and reinstalling a GPS antenna on an aircraft's fuselage, including steps for disconnecting and securing the coax cable and ensuring proper attachment of the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to safely reinstall a GPS antenna on an aircraft's fuselage after removal, including connecting the coax connector and securing the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and installing a GPS receiver in an aircraft's avionics radio panel, including steps to disconnect electrical power, secure connections, and restore power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in safely removing and installing a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting power, securing electrical connections, and restoring power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "Where is the KA-92 GPS Antenna located on the aircraft?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How does the inclusion of a GPS data cartridge in the KLN-89B GPS Receiver affect its configuration compared to the KLN-89 GPS Receiver used in aircraft without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the function of the MD41-230 and MD41-228 GPS-NAV selectors in the aircraft's avionics system?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to remove and install a GPS receiver in an aircraft's avionics radio panel while ensuring electrical safety and proper connection?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the necessary safety and procedural steps to properly remove and reinstall a GPS antenna on an aircraft?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How does the GPS data cartridge feature differ between aircraft with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the procedure for disconnecting and reconnecting the GPS receiver in an aircraft's avionics system?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling a GPS antenna on an aircraft's fuselage, including disconnecting the coax connector and securing the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and install a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting electrical power, securing connections, and restoring power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps involved in removing and installing a GPS receiver in an aircraft's avionics radio panel to ensure proper handling and connection?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall a GPS antenna on an aircraft's fuselage?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and install a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting electrical power, securing electrical connections, and restoring power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What precautions should be taken when disconnecting the GPS antenna's coax cable during removal?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to remove and install a GPS receiver in an aircraft's avionics radio panel while ensuring electrical safety and proper connection?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and installing a GPS receiver in an aircraft's avionics radio panel to ensure proper electrical connection and safety during power disconnection and restoration?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to remove and install a GPS receiver in an aircraft's avionics radio panel, including procedures for disconnecting electrical power, securing electrical connections, and restoring power?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What components are included in the GPS system for airplanes with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to properly remove and reinstall a GPS antenna on an aircraft's fuselage, including handling the coax connector, securing the coax cable, and ensuring the antenna is correctly attached?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall a GPS antenna on an aircraft's fuselage, including handling the coax connector, securing the coax cable, and ensuring proper attachment of the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What safety precautions should be taken when removing and installing a GPS receiver in an aircraft's avionics radio panel?",
+        "answer": "Remove GPS Receiver . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Loosen single hex screw, located in recessed hole on face of GPS receiver, counterclockwise. Continue turning hex screw until unit is free to be removed from avionics radio panel rack. (3) Pull GPS receiver from radio panel rack and remove from airplane.Install GPS Receiver . (1) Place GPS receiver in radio panel rack and slide forward, engaging fixed electrical connectors and coax connector. (2) Secure unit to avionics radio panel rack by turning hex screw in a clockwise direction until tight. (3) Restore electrical power to airplane as required and turn the master switch to \"ON\"."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the key steps to ensure the GPS antenna is correctly reinstalled and secured on the aircraft's fuselage after removal?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely removing and reinstalling a GPS antenna on an aircraft's fuselage, including handling the coax connector and securing the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the purpose of the MD41-230 and MD41-228 GPS-NAV selectors in the aircraft's avionics system?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to safely remove and reinstall a GPS antenna on an aircraft's fuselage, including handling the coax connector, securing the coax cable, and ensuring proper attachment of the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove and reinstall a GPS antenna on an aircraft's fuselage, including disconnecting the coax connector, securing the coax cable, and properly attaching the antenna?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the specific procedures for handling the coax connector and securing the GPS antenna during removal and installation on an aircraft?",
+        "answer": "Remove GPS Antenna . (1) Remove electrical power from airplane and turn the master switch to \"OFF\". (2) Remove screws securing GPS antenna to fuselage skin. (3) Carefully lift GPS antenna and disconnect coax connector from GPS antenna. NOTE:  Secure coax cable using a tie strap, tape, or other suitable material, to prevent connector from slipping through the opening in the fuselage once disconnected from GPS antenna. (4) Remove GPS antenna and gasket from airplane.Install GPS Antenna . (1) Place GPS antenna gasket in position on fuselage skin. (2) Position GPS antenna at coax connector opening in fuselage and connect coax connector to (3) Remove material used to secure coax cable. (4) Secure GPS antenna to fuselage skin with screws. (5) Restore electrical power to airplane as required and turn the master switch to \"ON\".L.J LU IJ i i"
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the differences in the GPS receiver models and their associated components between aircraft with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How does the GPS system configuration differ in aircraft equipped with the KR-87 ADF System compared to those without it?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the purpose of the GPS data cartridge in the KLN-89B GPS Receiver used in aircraft with the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "In what location is the GPS receiver installed in the avionics system of these aircraft, and how does its configuration vary depending on the presence of the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What are the differences in the GPS receiver models and their locations between aircraft equipped with and without the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "What is the significance of the GPS antenna's placement above the cabin near the communication antennas?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    },
+    {
+        "chapter": "CHAPTER 34 - NAVIGATION",
+        "title": "KLN-89/KLN-89B/KLN-94 GPS - MAINTENANCE PRACTICES",
+        "question": "How does the inclusion of a GPS data cartridge in the KLN-89B GPS Receiver influence its configuration in aircraft equipped with the KR-87 ADF System?",
+        "answer": "Airplanes without the KR-87 ADF System are configured with a KLN-89 GPS Receiver  that includes a GPS database. The GPS receiver is located in the avionics radio panel rack. A MD41- 230 GPS-NAV selector is located on the annunciator and GPS panel assembly located above the avionics radio panel.Airplanes with the KR-87 ADF System are configured with a KLN-89B GPS Receiver  that includes a GPS data cartridge. The GPS receiver is located in the avionics radio panel rack. A MD41- 228 GPS-NAV selector is located on the annunciator and GPS panel assembly, located above the avionics radio panel.The GPS uses a KA-92 GPS Antenna located above the cabin at FS 43.45, in the general proximity of the COMM antennas."
+    }
+]
