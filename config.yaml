@@ -129,6 +129,10 @@ generation:
   max_new_tokens: 750
   temperature: 0.1
 
+# Evaluation: save resume checkpoints every N test questions (row-wise); see experiments/<exp>/evaluation_checkpoints/
+evaluation:
+  checkpoint_every: 10
+
 # Adapter names
 adapters:
   finetuned_3_2_1b: 'finetuned_3_2_1b'

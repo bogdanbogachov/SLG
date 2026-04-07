@@ -7,6 +7,7 @@ import nltk
 from nltk.translate.meteor_score import meteor_score
 from nltk.tokenize import word_tokenize
 import time
+from typing import Optional
 from openai import OpenAI
 import numpy as np
 
@@ -106,6 +107,73 @@ def check_entailment(reference: str, candidate: str, api_client) -> float:
     return similarity
 
 
+def _aggregate_metrics(bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts):
+    """Turn per-question score lists into averaged metrics dict."""
+    avg_bleu = sum(bleu_scores) / len(bleu_scores) if bleu_scores else 0
+    avg_rouge = {
+        key: sum(rouge_scores[key]) / len(rouge_scores[key])
+        for key in rouge_scores.keys()
+    } if any(rouge_scores.values()) else {'rouge1': 0, 'rouge2': 0, 'rougeL': 0}
+    avg_exact_match = sum(exact_matches) / len(exact_matches) if exact_matches else 0
+    avg_meteor = sum(meteor_scores) / len(meteor_scores) if meteor_scores else 0
+    avg_entailment = sum(entailment_scores) / len(entailment_scores) if entailment_scores else 0
+    avg_ai_expert = sum(ai_experts) / len(ai_experts) if ai_experts else 0
+    return {
+        'BLEU': avg_bleu,
+        'ROUGE': avg_rouge,
+        'Exact Match': avg_exact_match,
+        'METEOR': avg_meteor,
+        'Entailment': avg_entailment,
+        'AI Expert': avg_ai_expert,
+    }
+
+
+def _empty_score_lists():
+    return (
+        [],
+        {'rouge1': [], 'rouge2': [], 'rougeL': []},
+        [],
+        [],
+        [],
+        [],
+    )
+
+
+def _save_eval_checkpoint(
+    path: str,
+    next_i: int,
+    n_pairs: int,
+    bleu_scores,
+    rouge_scores,
+    exact_matches,
+    meteor_scores,
+    entailment_scores,
+    ai_experts,
+    partial_metrics: dict,
+):
+    """Persist progress so evaluation can resume after interruption."""
+    state = {
+        'version': 1,
+        'next_i': next_i,
+        'n_pairs': n_pairs,
+        'bleu_scores': bleu_scores,
+        'rouge_scores': rouge_scores,
+        'exact_matches': exact_matches,
+        'meteor_scores': meteor_scores,
+        'entailment_scores': [float(x) for x in entailment_scores],
+        'ai_experts': ai_experts,
+        'partial_metrics': partial_metrics,
+    }
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(state, f, indent=2)
+
+
+def _load_eval_checkpoint(path: str):
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
 def calculate_ai_expert(reference, candidate, api_client):
     """
     Calculate AI expert scores between a reference and a candidate answer using OpenAI GPT-4.1 Nano.
@@ -139,100 +207,155 @@ def calculate_ai_expert(reference, candidate, api_client):
         return 0
 
 
-def evaluate(predictions, ground_truth):
+def evaluate(predictions, ground_truth, checkpoint_path: Optional[str] = None):
     """
     Evaluate predictions against ground truth using BLEU, ROUGE, and Exact Match.
-    """
 
-    # OpenAI api key
+    If ``checkpoint_path`` is set, progress is saved periodically and the run resumes
+    from the last checkpoint after an interruption. The checkpoint is removed when
+    evaluation finishes successfully. Delete the checkpoint file manually to start over.
+    """
+    eval_cfg = CONFIG.get('evaluation') or {}
+    checkpoint_every = int(eval_cfg.get('checkpoint_every', 10))
+    if checkpoint_every < 1:
+        checkpoint_every = 1
+
     client = OpenAI(api_key=CONFIG['open_ai_api_key'])
 
-    bleu_scores = []
-    rouge_scores = {'rouge1': [], 'rouge2': [], 'rougeL': []}
-    exact_matches = []
-    meteor_scores = []
-    entailment_scores = []
-    ai_experts = []
-    logger.info(f"Evaluation has started.")
-    counter = 0
+    n_pairs = min(len(predictions), len(ground_truth))
+    start_i = 0
+    bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts = _empty_score_lists()
+
+    if checkpoint_path and os.path.isfile(checkpoint_path):
+        try:
+            state = _load_eval_checkpoint(checkpoint_path)
+            if state.get('n_pairs') != n_pairs:
+                logger.warning(
+                    'Checkpoint does not match current data length (%s vs %s); starting evaluation from scratch.',
+                    state.get('n_pairs'),
+                    n_pairs,
+                )
+            else:
+                start_i = int(state['next_i'])
+                bleu_scores = state['bleu_scores']
+                rouge_scores = state['rouge_scores']
+                exact_matches = state['exact_matches']
+                meteor_scores = state['meteor_scores']
+                entailment_scores = state['entailment_scores']
+                ai_experts = state['ai_experts']
+                logger.info(
+                    'Resuming evaluation from question index %s/%s (checkpoint).',
+                    start_i,
+                    n_pairs,
+                )
+        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
+            logger.warning('Could not load evaluation checkpoint (%s); starting from scratch.', e)
+
+    logger.info('Evaluation has started.')
     threshold = 10
-    for pred, truth in zip(predictions, ground_truth):
-        # if counter in [i for i in range(0, len(ground_truth), 30)]:
-        #     time.sleep(45)
-        counter += 1
-        percent_checked = (counter/len(predictions))*100
+    for i in range(start_i, n_pairs):
+        pred, truth = predictions[i], ground_truth[i]
+        percent_checked = ((i + 1) / n_pairs) * 100 if n_pairs else 0
         if threshold < percent_checked:
-            logger.info(f"Evaluated {threshold}%")
+            logger.info('Evaluated %s%%', threshold)
             threshold += 10
+
         if pred['question'] != truth['question']:
-            logger.info(f"Warning: questions didn't match at chapter: {pred['chapter']}, and title: {pred['title']}")
-            logger.info(f"Pred question: {pred['question']}")
-            logger.info(f"Truth question: {truth['question']}")
-            logger.info(40*'-')
-            continue
-
-        if truth['answer'] == '':
-            gt_answer = 'Empty'
-        elif truth['answer'] is None:
-            gt_answer = 'Empty'
+            logger.info(
+                "Warning: questions didn't match at chapter: %s, and title: %s",
+                pred['chapter'],
+                pred['title'],
+            )
+            logger.info('Pred question: %s', pred['question'])
+            logger.info('Truth question: %s', truth['question'])
+            logger.info(40 * '-')
         else:
-            gt_answer = truth['answer']
+            if truth['answer'] == '':
+                gt_answer = 'Empty'
+            elif truth['answer'] is None:
+                gt_answer = 'Empty'
+            else:
+                gt_answer = truth['answer']
 
-        if pred['answer'] == '':
-            pred_answer = 'Empty'
-        elif pred['answer'] is None:
-            pred_answer = 'Empty'
-        else:
-            pred_answer = pred['answer']
+            if pred['answer'] == '':
+                pred_answer = 'Empty'
+            elif pred['answer'] is None:
+                pred_answer = 'Empty'
+            else:
+                pred_answer = pred['answer']
 
-        # BLEU
-        logger.debug("Calculating BLEU score.")
-        bleu = calculate_bleu(gt_answer, pred_answer)
-        bleu_scores.append(bleu)
+            logger.debug('Calculating BLEU score.')
+            bleu = calculate_bleu(gt_answer, pred_answer)
+            bleu_scores.append(bleu)
 
-        # ROUGE
-        logger.debug("Calculating ROUGE score.")
-        rouge = calculate_rouge(gt_answer, pred_answer)
-        for key in rouge_scores.keys():
-            rouge_scores[key].append(rouge[key].fmeasure)
+            logger.debug('Calculating ROUGE score.')
+            rouge = calculate_rouge(gt_answer, pred_answer)
+            for key in rouge_scores.keys():
+                rouge_scores[key].append(rouge[key].fmeasure)
 
-        # Exact Match
-        logger.debug("Calculating Exact Match (EM) score.")
-        exact_matches.append(calculate_exact_match(gt_answer, pred_answer))
+            logger.debug('Calculating Exact Match (EM) score.')
+            exact_matches.append(calculate_exact_match(gt_answer, pred_answer))
 
-        # Meteor
-        logger.debug("Calculating METEOR score.")
-        meteor = calculate_meteor_score(gt_answer, pred_answer)
-        meteor_scores.append(meteor)
+            logger.debug('Calculating METEOR score.')
+            meteor = calculate_meteor_score(gt_answer, pred_answer)
+            meteor_scores.append(meteor)
 
-        # Entailment
-        logger.debug("Calculating entailment score.")
-        entailment = check_entailment(gt_answer, pred_answer, api_client=client)
-        entailment_scores.append(entailment)
+            logger.debug('Calculating entailment score.')
+            entailment = check_entailment(gt_answer, pred_answer, api_client=client)
+            entailment_scores.append(float(entailment))
 
-        # AI expert
-        logger.debug("Calculating AI expert score.")
-        ai_expert = calculate_ai_expert(gt_answer, pred_answer, api_client=client)
-        ai_experts.append(ai_expert)
+            logger.debug('Calculating AI expert score.')
+            ai_expert = calculate_ai_expert(gt_answer, pred_answer, api_client=client)
+            ai_experts.append(ai_expert)
 
-    # Aggregate scores
-    avg_bleu = sum(bleu_scores) / len(bleu_scores) if bleu_scores else 0
-    avg_rouge = {key: sum(rouge_scores[key]) / len(rouge_scores[key]) for key in rouge_scores.keys()}
-    avg_exact_match = sum(exact_matches) / len(exact_matches) if exact_matches else 0
-    avg_meteor = sum(meteor_scores) / len(meteor_scores) if meteor_scores else 0
-    avg_entailment = sum(entailment_scores) / len(entailment_scores) if entailment_scores else 0
-    avg_ai_expert = sum(ai_experts) / len(ai_experts) if ai_experts else 0
-    logger.info(f"Evaluation has been completed.")
-    logger.info(40*'-')
+        if checkpoint_path and (
+            (i + 1) % checkpoint_every == 0 or (i + 1) == n_pairs
+        ):
+            partial = _aggregate_metrics(
+                bleu_scores,
+                rouge_scores,
+                exact_matches,
+                meteor_scores,
+                entailment_scores,
+                ai_experts,
+            )
+            _save_eval_checkpoint(
+                checkpoint_path,
+                i + 1,
+                n_pairs,
+                bleu_scores,
+                rouge_scores,
+                exact_matches,
+                meteor_scores,
+                entailment_scores,
+                ai_experts,
+                partial,
+            )
+            logger.info(
+                'Saved evaluation checkpoint (%s/%s questions processed).',
+                i + 1,
+                n_pairs,
+            )
 
-    return {
-        "BLEU": avg_bleu,
-        "ROUGE": avg_rouge,
-        "Exact Match": avg_exact_match,
-        "METEOR": avg_meteor,
-        "Entailment": avg_entailment,
-        "AI Expert": avg_ai_expert
-    }
+    result = _aggregate_metrics(
+        bleu_scores,
+        rouge_scores,
+        exact_matches,
+        meteor_scores,
+        entailment_scores,
+        ai_experts,
+    )
+    logger.info('Evaluation has been completed.')
+    logger.info(40 * '-')
+
+    if checkpoint_path and os.path.isfile(checkpoint_path):
+        try:
+            os.remove(checkpoint_path)
+            logger.info('Removed evaluation checkpoint (completed).')
+        except OSError as e:
+            logger.warning('Could not remove evaluation checkpoint: %s', e)
+
+    return result
 
 
 def extract_log_values(log_file):
