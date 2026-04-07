@@ -60,7 +60,8 @@ def ask_baseline(file: str, model: str, experiment: str, client) -> None:
                     {"role": "user", "content": item['question']},
                 ],
                 max_tokens=generation_config['max_new_tokens'],
-                temperature=generation_config['temperature']
+                temperature=generation_config['temperature'],
+                seed=int(CONFIG['seed']),
             )
             llm_response = response.choices[0].message.content.strip()
 
@@ -126,12 +127,16 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
             logger.debug(f'Tokenized prompt for baseline fine-tuned: {inputs}')
             
             generation_config = CONFIG['generation']
+            seed = int(CONFIG['seed'])
+            gen = torch.Generator(device=inputs['input_ids'].device)
+            gen.manual_seed(seed)
             outputs = finetuned_model.generate(
                 **inputs,
                 max_new_tokens=generation_config['max_new_tokens'],
                 num_return_sequences=1,
                 temperature=generation_config['temperature'],
-                eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>")
+                eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"),
+                generator=gen,
             )
             
             text = tokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -310,7 +315,8 @@ class AskRag:
                         {"role": "user", "content": input_text},
                     ],
                     max_tokens=generation_config['max_new_tokens'],
-                    temperature=generation_config['temperature']
+                    temperature=generation_config['temperature'],
+                    seed=int(CONFIG['seed']),
                 )
                 llm_response = response.choices[0].message.content.strip()
             except Exception as e:

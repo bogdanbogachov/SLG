@@ -118,6 +118,7 @@ def finetune(
         eval_strategy="epoch",
         save_strategy="epoch",
         logging_steps=training_config['logging_steps'],
+        seed=int(CONFIG['seed']),
         fp16=True,
         use_cpu=False,
         dataloader_pin_memory=True,

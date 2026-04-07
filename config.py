@@ -5,6 +5,8 @@ import yaml
 import os
 from typing import Dict, Any
 
+from utils.seed import set_project_seed
+
 
 class Config(BaseModel):
     """Configuration loader with environment variable support."""
@@ -53,7 +55,17 @@ class Config(BaseModel):
                 value = os.getenv(env_var)
                 if value:
                     parameters[config_key] = value
-            
+
+            parameters.setdefault('seed', 42)
+            seed_env = os.getenv('SEED')
+            if seed_env is not None:
+                try:
+                    parameters['seed'] = int(seed_env)
+                except ValueError as exc:
+                    raise ConfigError(
+                        f"Invalid SEED environment variable: {seed_env!r}"
+                    ) from exc
+
             return parameters
             
         except OSError as exc:
@@ -66,3 +78,4 @@ class Config(BaseModel):
 
 CONFIG_PATH = os.getenv("CONFIG_PATH", "config.yaml")
 CONFIG = Config.load_config(CONFIG_PATH)
+set_project_seed(int(CONFIG['seed']))

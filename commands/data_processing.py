@@ -70,7 +70,9 @@ def split_train_test(data_file):
     data = [entry for entry in data if entry.get("title") != entry.get("answer")]
 
     # Split data into train and test sets (80% train, 20% test)
-    train_data, test_data = train_test_split(data, test_size=0.2, random_state=42)
+    train_data, test_data = train_test_split(
+        data, test_size=0.2, random_state=int(CONFIG['seed'])
+    )
 
     # Save train and test data
     files_config = CONFIG['files']

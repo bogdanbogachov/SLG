@@ -3,6 +3,10 @@
 # Default experiment name
 experiment: 'default_experiment_name'
 
+# Project-wide RNG (Python / NumPy / PyTorch; training; OpenAI & HF generation where supported).
+# Override at runtime with SEED=<int>.
+seed: 42
+
 # Question-answer creation prompts
 system_prompt: >
   You are an expert in Aerospace Engineering and you are tasked to read text and create questions for this text.
@@ -123,7 +127,6 @@ slg_formation:
 # Generation constants
 generation:
   max_new_tokens: 750
-  seed: 42
   temperature: 0.1
 
 # Adapter names
