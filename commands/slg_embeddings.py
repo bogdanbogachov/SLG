@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 from config import CONFIG
 from logging_config import logger
-from utils.path_utils import ensure_dir
+from utils.path_utils import ensure_dir, get_slg_index_dir
 
 
 def _slg_expert_dir_name(adapter_stem: str) -> str:
@@ -121,11 +121,14 @@ def save_slg_embedding_artifacts(
     embedding_dimension = slg_formation["embedding_dimension"]
     neighbor_k = slg_formation["k_neighbours"]
 
+    # Shared index directory (experiment-agnostic); expert adapters stay under experiments/<exp>/<slg_dir>/
+    index_dir = get_slg_index_dir(experiments_dir)
+    experts_slg_dir = os.path.join(experiments_dir, experiment, slg_formation["slg_dir"])
+
     # Build SLG cosine-similarity index across chunk embeddings.
     # This is consumed by inference/slg.py to expand to up to k neighbors.
     logger.info("Building SLG similarity index...")
-    slg_dir = os.path.join(experiments_dir, experiment, slg_formation["slg_dir"])
-    ensure_dir(slg_dir)
+    ensure_dir(index_dir)
 
     if not expert_ids or not chunk_embeddings:
         raise ValueError("No SLG experts were trained; cannot build similarity index.")
@@ -133,8 +136,8 @@ def save_slg_embedding_artifacts(
     embeddings_matrix = np.stack(chunk_embeddings, axis=0).astype("float32")
 
     # Extra persistence (not in original inline block): raw matrix + id list for offline reuse.
-    np.save(os.path.join(slg_dir, "chunk_embeddings_raw.npy"), embeddings_matrix)
-    with open(os.path.join(slg_dir, "expert_ids.json"), "w", encoding="utf-8") as f:
+    np.save(os.path.join(index_dir, "chunk_embeddings_raw.npy"), embeddings_matrix)
+    with open(os.path.join(index_dir, "expert_ids.json"), "w", encoding="utf-8") as f:
         json.dump(expert_ids, f, indent=2)
 
     # Cosine similarity = inner product on L2-normalized vectors.
@@ -172,18 +175,30 @@ def save_slg_embedding_artifacts(
             {
                 "expert_id": expert_id,
                 "chunk_embedding": normalized[i].astype("float32").tolist(),
-                "adapter_path": os.path.join(slg_dir, expert_id),
+                "adapter_path": os.path.join(experts_slg_dir, expert_id),
                 "top_k_neighbors": neighbor_ids,
             }
         )
 
-    index_path = os.path.join(slg_dir, "index.json")
+    index_path = os.path.join(index_dir, "index.json")
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index_entries, f, indent=2)
     logger.info(f"Wrote SLG index to: {index_path}")
 
 
 def run_slg_embeddings(experiment: str) -> None:
+    paths_config = CONFIG["paths"]
+    experiments_dir = paths_config["experiments"]
+    index_dir = get_slg_index_dir(experiments_dir)
+    index_path = os.path.join(index_dir, "index.json")
+    if os.path.isfile(index_path):
+        logger.info(
+            "SLG index already exists at %s; skipping embedding + index rebuild. "
+            "Delete this file to force a rebuild.",
+            index_path,
+        )
+        return
+
     logger.info("Running SLG embedding + index step (no finetuning)...")
     expert_ids, chunk_embeddings = collect_slg_chunk_embeddings()
     save_slg_embedding_artifacts(experiment, expert_ids, chunk_embeddings)

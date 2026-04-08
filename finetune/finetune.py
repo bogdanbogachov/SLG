@@ -162,7 +162,8 @@ def finetune(
     experiments_dir = CONFIG['paths']['experiments']
     
     if slg:
-        slg_dir = os.path.join(experiments_dir, experiment_number, 'slg')
+        slg_subdir = CONFIG.get('slg_formation', {}).get('slg_dir', 'slg')
+        slg_dir = os.path.join(experiments_dir, experiment_number, slg_subdir)
         ensure_dir(slg_dir)
         save_path = os.path.join(slg_dir, adapter_name)
         

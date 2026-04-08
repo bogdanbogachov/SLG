@@ -86,33 +86,44 @@ SLG_EMBEDDING_ARTIFACT_NAMES = (
 )
 
 
-def validate_slg_embedding_artifacts(slg_dir: str) -> None:
+def get_slg_index_dir(experiments_dir: str = None) -> str:
     """
-    Ensure the SLG embeddings step has produced required files under ``slg_dir``.
+    Return the experiment-agnostic directory for SLG index artifacts
+    (``experiments/<slg_index>/``), containing chunk_embeddings_raw.npy, expert_ids.json, index.json.
+    """
+    if experiments_dir is None:
+        paths_config = CONFIG["paths"]
+        experiments_dir = paths_config["experiments"]
+    slg_index_name = CONFIG["paths"].get("slg_index", "slg_index")
+    return os.path.join(experiments_dir, slg_index_name)
+
+
+def validate_slg_embedding_artifacts(index_dir: str) -> None:
+    """
+    Ensure the shared SLG index step has produced required files under ``index_dir``.
 
     Raises:
         FileNotFoundError: If the directory is missing or any artifact file is absent.
     """
-    if not os.path.isdir(slg_dir):
+    if not os.path.isdir(index_dir):
         raise FileNotFoundError(
-            f"SLG directory does not exist: {slg_dir}. "
-            "Run the SLG embeddings step for this experiment first "
-            "(e.g. commands.slg_embeddings.run_slg_embeddings). It creates this folder and "
-            "writes chunk_embeddings_raw.npy, expert_ids.json, and index.json."
+            f"SLG index directory does not exist: {index_dir}. "
+            "Run the SLG embeddings step first "
+            "(e.g. commands.slg_embeddings.run_slg_embeddings). It creates this folder under "
+            "experiments/<slg_index>/ and writes chunk_embeddings_raw.npy, expert_ids.json, and index.json."
         )
     missing = [
         name
         for name in SLG_EMBEDDING_ARTIFACT_NAMES
-        if not os.path.isfile(os.path.join(slg_dir, name))
+        if not os.path.isfile(os.path.join(index_dir, name))
     ]
     if missing:
         listed = ", ".join(missing)
         expected = ", ".join(SLG_EMBEDDING_ARTIFACT_NAMES)
         raise FileNotFoundError(
-            f"Missing SLG embedding file(s) in {slg_dir}: {listed}. "
+            f"Missing SLG index file(s) in {index_dir}: {listed}. "
             f"Expected all of: {expected}. "
-            "Run the SLG embeddings step for this experiment before inference "
-            "(e.g. commands.slg_embeddings.run_slg_embeddings)."
+            "Run commands.slg_embeddings.run_slg_embeddings before inference."
         )
 
 
@@ -130,5 +141,6 @@ def get_slg_path(experiment_name: str, experiments_dir: str = None) -> str:
     if experiments_dir is None:
         paths_config = CONFIG['paths']
         experiments_dir = paths_config['experiments']
-    return os.path.join(experiments_dir, experiment_name, 'slg')
+    slg_subdir = CONFIG.get('slg_formation', {}).get('slg_dir', 'slg')
+    return os.path.join(experiments_dir, experiment_name, slg_subdir)
 

@@ -24,7 +24,9 @@ from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_model_with_adapter
 from utils.path_utils import (
     ensure_dir,
+    get_slg_index_dir,
     get_slg_path,
+    validate_dir_exists,
     validate_slg_embedding_artifacts,
 )
 from utils.prompt_utils import apply_chat_template, create_user_message
@@ -38,8 +40,17 @@ class SmallLanguageGraph:
         paths_config = CONFIG["paths"]
         self.experiments_dir = paths_config["experiments"]
         self.slg_path = get_slg_path(self.experts_location, self.experiments_dir)
-        validate_slg_embedding_artifacts(self.slg_path)
-        self.index_path = os.path.join(self.slg_path, "index.json")
+        self.index_dir = get_slg_index_dir(self.experiments_dir)
+        validate_slg_embedding_artifacts(self.index_dir)
+        validate_dir_exists(
+            self.slg_path,
+            error_message=(
+                f"SLG expert adapters directory not found: {self.slg_path}. "
+                "Train SLG experts for this experiment (training_components.train_slg_system) "
+                f"so adapters exist under experiments/<experiment>/{CONFIG['slg_formation']['slg_dir']}/."
+            ),
+        )
+        self.index_path = os.path.join(self.index_dir, "index.json")
 
         self.slg_index = self._load_slg_index()
         self.slg_neighbors_by_expert: Dict[str, List[str]] = self.slg_index[
@@ -80,7 +91,7 @@ class SmallLanguageGraph:
         if not os.path.isfile(self.index_path):
             raise FileNotFoundError(
                 f"SLG similarity index not found: {self.index_path}. "
-                "Run commands.slg_embeddings.run_slg_embeddings for this experiment."
+                "Run commands.slg_embeddings.run_slg_embeddings (writes under experiments/<slg_index>/)."
             )
 
         with open(self.index_path, "r", encoding="utf-8") as f:
