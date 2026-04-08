@@ -17,7 +17,7 @@ module load scipy-stack
 module load gcc arrow
 
 # Activate venv
-source venv/bin/activate
+source ENV/bin/activate
 
 # Export a dummy variable for Open AI API
 export OPENAI_API_KEY="dummy"
