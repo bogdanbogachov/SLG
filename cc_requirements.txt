@@ -55,7 +55,9 @@ nltk==3.9.1+computecanada
 numpy==2.4.2+computecanada
 openai==1.95.1
 orjson==3.10.13
-packaging==26.0+computecanada
+# langchain-core 0.3.x requires packaging<25; 26.x+computecanada conflicts with that.
+# Use a CC wheel if available, e.g. packaging==24.2+computecanada — or let pip resolve in [23.2, 25).
+packaging>=23.2,<25
 pandas==3.0.0+computecanada
 peft==0.14.0+computecanada
 pillow==10.2.0+computecanada
