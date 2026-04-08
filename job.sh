@@ -3,12 +3,12 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=60:00:00
+#SBATCH --time=03:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=16G
-#SBATCH --gpus=a100:1
+#SBATCH --gpus-per-node=h100:2
 
 module load python/3.11.5
 module load rust
