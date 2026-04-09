@@ -1,7 +1,6 @@
 """Inference functions for baseline, RAG, and fine-tuned models."""
 from transformers import AutoTokenizer
 import numpy as np
-import torch
 import json
 import os
 from typing import Dict, Any, List
@@ -127,16 +126,15 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
             logger.debug(f'Tokenized prompt for baseline fine-tuned: {inputs}')
             
             generation_config = CONFIG['generation']
-            seed = int(CONFIG['seed'])
-            gen = torch.Generator(device=inputs['input_ids'].device)
-            gen.manual_seed(seed)
+            # PeftModel.generate() forwards to the inner model; `generator=` is rejected by
+            # Transformers' model_kwarg validation on some versions. Global RNG is still
+            # seeded via config import (set_project_seed).
             outputs = finetuned_model.generate(
                 **inputs,
                 max_new_tokens=generation_config['max_new_tokens'],
                 num_return_sequences=1,
                 temperature=generation_config['temperature'],
                 eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"),
-                generator=gen,
             )
             
             text = tokenizer.decode(outputs[0], skip_special_tokens=True)
