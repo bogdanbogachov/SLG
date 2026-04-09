@@ -123,7 +123,10 @@ rag:
 slg_formation:
   embedding_dimension: 768
   batch_size: 100
-  k_neighbours: 2
+  # Max neighbors per expert after threshold filter (cosine on L2-normalized chunk embeddings).
+  k_neighbours: 3
+  # Only link experts with cosine similarity >= this; then keep up to k_neighbours highest.
+  neighbor_similarity_threshold: 0.75
   slg_dir: "slg"
 
 # Generation constants

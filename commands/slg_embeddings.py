@@ -2,7 +2,6 @@ import json
 import os
 from typing import List, Tuple
 
-import hnswlib
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
@@ -112,22 +111,27 @@ def save_slg_embedding_artifacts(
     chunk_embeddings: List[np.ndarray],
 ) -> None:
     """
-    Build index.json via hnswlib inner-product search on L2-normalized chunk embeddings.
-    Additionally writes chunk_embeddings_raw.npy and expert_ids.json (for reuse without API calls).
+    Build index.json from pairwise cosine similarity on L2-normalized chunk embeddings.
+
+    Neighbors: experts j != i with similarity >= neighbor_similarity_threshold, sorted by
+    similarity descending, keep at most k_neighbours. If none pass the threshold, [].
+    Also writes chunk_embeddings_raw.npy and expert_ids.json.
     """
     paths_config = CONFIG["paths"]
     experiments_dir = paths_config["experiments"]
     slg_formation = CONFIG["slg_formation"]
-    embedding_dimension = slg_formation["embedding_dimension"]
-    neighbor_k = slg_formation["k_neighbours"]
+    max_neighbors = int(slg_formation["k_neighbours"])
+    threshold = float(slg_formation.get("neighbor_similarity_threshold", 0.95))
 
     # Shared index directory (experiment-agnostic); expert adapters stay under experiments/<exp>/<slg_dir>/
     index_dir = get_slg_index_dir(experiments_dir)
     experts_slg_dir = os.path.join(experiments_dir, experiment, slg_formation["slg_dir"])
 
-    # Build SLG cosine-similarity index across chunk embeddings.
-    # This is consumed by inference/slg.py to expand to up to k neighbors.
-    logger.info("Building SLG similarity index...")
+    logger.info(
+        "Building SLG similarity index (threshold=%s, max_neighbors=%s)...",
+        threshold,
+        max_neighbors,
+    )
     ensure_dir(index_dir)
 
     if not expert_ids or not chunk_embeddings:
@@ -145,31 +149,20 @@ def save_slg_embedding_artifacts(
     normalized = embeddings_matrix / np.clip(norms, 1e-12, None)
 
     n = len(expert_ids)
-    search_k = min(neighbor_k + 1, n)
-
-    if n <= 1:
-        # Degenerate graph: only self-neighbors exist; match knn_query output shape.
-        indices = np.tile(np.arange(n, dtype=np.int64), (search_k, 1)).T
-    else:
-        index = hnswlib.Index(space="ip", dim=embedding_dimension)
-        m = min(32, max(2, n - 1))
-        ef_construction = max(200, search_k * 5)
-        index.init_index(max_elements=n, ef_construction=ef_construction, M=m)
-        index.add_items(normalized, np.arange(n, dtype=np.int64))
-        index.set_ef(max(64, search_k * 5))
-        labels, _distances = index.knn_query(normalized, k=search_k)
-        indices = labels.astype(np.int64, copy=False)
+    if n > 1:
+        sim_matrix = normalized @ normalized.T
 
     index_entries = []
     for i, expert_id in enumerate(expert_ids):
         neighbor_ids: List[str] = []
-        for j in indices[i]:
-            candidate_id = expert_ids[int(j)]
-            if candidate_id == expert_id:
-                continue
-            neighbor_ids.append(candidate_id)
-            if len(neighbor_ids) >= neighbor_k:
-                break
+        if n > 1:
+            sims = sim_matrix[i]
+            candidates = [
+                j for j in range(n) if j != i and float(sims[j]) >= threshold
+            ]
+            candidates.sort(key=lambda j: float(sims[j]), reverse=True)
+            for j in candidates[:max_neighbors]:
+                neighbor_ids.append(expert_ids[j])
 
         index_entries.append(
             {

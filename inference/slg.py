@@ -99,15 +99,17 @@ class SmallLanguageGraph:
 
         neighbors_by_expert: Dict[str, List[str]] = {}
         embeddings_by_expert: Dict[str, np.ndarray] = {}
-        neighbor_k = 0
+        neighbor_list_lengths: List[int] = []
         for e in entries:
             expert_id = e["expert_id"]
             top_neighbors = e.get("top_k_neighbors", [])
             neighbors_by_expert[expert_id] = list(top_neighbors)
-            if neighbor_k == 0:
-                neighbor_k = len(top_neighbors)
+            neighbor_list_lengths.append(len(top_neighbors))
             vec = np.asarray(e["chunk_embedding"], dtype=np.float32).reshape(-1)
             embeddings_by_expert[expert_id] = vec
+
+        # Upper bound for confidence→how-many-neighbors scheduling (experts may have 0..cap links).
+        neighbor_k = max(neighbor_list_lengths) if neighbor_list_lengths else 0
 
         return {
             "neighbors_by_expert": neighbors_by_expert,
