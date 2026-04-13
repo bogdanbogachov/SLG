@@ -307,7 +307,7 @@ class AskRag:
                 models_config = CONFIG['models']
                 generation_config = CONFIG['generation']
                 response = self.client.chat.completions.create(
-                    model=models_config['gpt_4_1_nano'],
+                    model=models_config['gpt_4_1'],
                     messages=[
                         {"role": "system", "content": CONFIG['rag_prompt']},
                         {"role": "user", "content": input_text},
