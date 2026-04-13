@@ -202,7 +202,12 @@ class AskRag:
         with open(self.documents_file, 'r') as file:
             data = json.load(file)
 
-        documents = [document['answer'] for document in data if document['answer'] != ""]
+        raw_answers = [document['answer'] for document in data if document['answer'] != ""]
+        documents = list(dict.fromkeys(raw_answers))
+        if len(documents) < len(raw_answers):
+            logger.info(
+                f"Deduplicated corpus answers: {len(raw_answers)} rows -> {len(documents)} unique."
+            )
         models_config = CONFIG['models']
         embedding_model = models_config['embedding_model']
 
