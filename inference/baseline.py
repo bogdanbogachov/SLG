@@ -102,7 +102,6 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
     with open(file, 'r') as f:
         data = json.load(f)
 
-    answers: List[Dict[str, Any]] = []
     logger.info(f"Model used to infer: {adapter}")
 
     # Load model with adapter using utility function
@@ -115,9 +114,22 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
     paths_config = CONFIG['paths']
     output_dir = os.path.join(paths_config['answers'], experiment)
     ensure_dir(output_dir)
+    output_file = os.path.join(output_dir, f"{os.path.basename(adapter)}.json")
+
+    # Load existing progress if available
+    if os.path.exists(output_file):
+        with open(output_file, 'r') as f:
+            answers = json.load(f)
+        start_index = len(answers)
+        logger.info(f"Resuming fine-tuned inference from index {start_index}/{len(data)}.")
+    else:
+        answers = []
+        start_index = 0
+        logger.info("Starting fresh fine-tuned inference run.")
     
     try:
-        for item in data:
+        for i, item in enumerate(data[start_index:], start=start_index):
+            logger.info(f'Answering {i + 1}/{len(data)} questions.')
             messages = [create_user_message(item['question'])]
             
             # Apply chat template
@@ -149,7 +161,6 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
             answers.append(new_dict)
 
             # Save incrementally
-            output_file = os.path.join(output_dir, f"{adapter.split('/')[-1]}.json")
             with open(output_file, 'w') as f:
                 json.dump(answers, f, indent=4)
     

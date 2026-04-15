@@ -391,11 +391,23 @@ class SmallLanguageGraph:
         paths_config = CONFIG["paths"]
         output_dir = os.path.join(paths_config["answers"], self.experiment)
         ensure_dir(output_dir)
+        output_path = os.path.join(output_dir, "slg.json")
+
+        # Load existing progress if available
+        if os.path.exists(output_path):
+            with open(output_path, "r", encoding="utf-8") as f:
+                answers_list: List[Dict[str, Any]] = json.load(f)
+            start_index = len(answers_list)
+            logger.info(f"Resuming SLG inference from index {start_index}/{len(data)}.")
+        else:
+            answers_list = []
+            start_index = 0
+            logger.info("Starting fresh SLG inference run.")
 
         graph = self._build_graph()
-        answers_list: List[Dict[str, Any]] = []
 
-        for item in data:
+        for i, item in enumerate(data[start_index:], start=start_index):
+            logger.info(f"Answering {i + 1}/{len(data)} questions.")
             logger.info(f"Inference of the title: {item['title']}")
             initial_state: Dict[str, Any] = {
                 "question": item["question"],
@@ -417,10 +429,10 @@ class SmallLanguageGraph:
                     "answer": result.get("final_answer"),
                 }
             )
-            logger.info(40 * "-")
 
-        output_path = os.path.join(output_dir, "slg.json")
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(answers_list, f, indent=4)
+            # Save progress incrementally so we can resume after interruptions.
+            with open(output_path, "w", encoding="utf-8") as f:
+                json.dump(answers_list, f, indent=4)
+            logger.info(40 * "-")
 
         return None
