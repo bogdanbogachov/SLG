@@ -2,127 +2,7 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "In what way do the Wemacs, CABIN AIR control cable, and CABIN HT control interact to adjust both the volume and temperature of fresh air supplied to the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How do the Wemacs, CABIN AIR control cable, and CABIN HT control work together to regulate both the volume and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the aircraft's fresh air system direct air from the fuselage side inlets into the cabin interior?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How is fresh air from the sources on the wing leading edge and fuselage sides managed to ensure proper distribution throughout the aircraft cabin?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the sources and methods used to ventilate the cockpit and cabin area with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "In what ways does the ventilation system supply fresh air to the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What components and pathways facilitate the delivery of fresh air to the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the means by which fresh air is introduced into the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the specific pathways through which fresh air is supplied to the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does adjusting the Wemac valve, CABIN AIR control, and CABIN HT control collectively affect the airflow and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "How is fresh air from the fuselage side inlets directed into the cabin interior?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the aircraft's fresh air system utilize different sources to supply air to various cabin locations?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the functions of the Wemacs, CABIN AIR control cable, and CABIN HT control in managing the airflow and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the position of the Wemac valves, CABIN AIR control, and CABIN HT control collectively determine the airflow and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the fresh air entering from the right side of the fuselage reach different areas of the aircraft cabin?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the ventilation system use external wing root openings, an adjustable air scoop, and internal ducting to provide fresh air to the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the different methods used to ventilate the cockpit and cabin area with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the specific locations of the fresh air sources on the aircraft, and how is the incoming air from each source directed into the cabin?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the position of the CABIN AIR control and CABIN HT control affect the airflow and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How are the fresh air sources on the aircraft positioned to supply different cabin areas, and through what mechanisms is the air from each source distributed?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the aircraft ensure proper distribution of fresh air entering from the wing leading edge inlets and fuselage sides to various cabin areas?",
         "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
     },
     {
@@ -134,115 +14,7 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the combination of Wemacs, the CABIN AIR control cable, and the CABIN HT control enable regulation of both airflow volume and air temperature in the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the adjustment of the Wemacs, CABIN AIR control cable, and CABIN HT control collectively determine the amount and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What features and pathways are utilized to ventilate the cockpit and cabin area with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does adjusting the Wemac valve and CABIN AIR control cable influence the amount of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the specific locations of the fresh air sources on the aircraft, and how is the air from each source directed into different areas of the cabin?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How do the Wemacs, CABIN AIR control cable, and CABIN HT control collectively regulate the airflow and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the ventilation system supply fresh air to the cockpit and cabin area using external wing root openings, an adjustable air scoop, and internal ducting?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the combination of Wemacs, the CABIN AIR control cable, and the CABIN HT control allow for precise regulation of both the airflow volume and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the aircraft's fresh air system direct air from the wing leading edge inlets and fuselage side inlets to specific cabin locations?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How is fresh air from the wing leading edge inlets distributed throughout the cabin?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the sources and components involved in ventilating the cockpit and cabin with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What components and pathways are used to ventilate the cockpit and cabin area with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What are the specific features and pathways involved in ventilating the cockpit and cabin area with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the fresh air entering from the fuselage sides reach the cabin interior?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the aircraft's fresh air system route air from the wing leading edge inlets and fuselage side sources to various cabin locations?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How are the fresh air sources on the aircraft positioned and how is the air from each source routed into the cabin?",
-        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What mechanisms are available to control both the volume and temperature of fresh air entering the aircraft cabin?",
-        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does the ventilation system deliver fresh air to the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What is the pathway of fresh air entering from the fuselage sides into the aircraft cabin?",
+        "question": "How does the aircraft's fresh air system control and distribute air from the wing leading edge inlets and fuselage side sources to ensure proper ventilation throughout the cabin?",
         "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
     },
     {
@@ -254,14 +26,20 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What mechanisms are involved in ventilating the cockpit and cabin with fresh air?",
+        "question": "What components and pathways facilitate the delivery of fresh air to the cockpit and cabin area?",
         "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What components are used to ventilate the cockpit and cabin area?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+        "question": "Where are the sources of fresh air located on the aircraft, and how is the air from the wing leading edge inlets distributed within the cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does adjusting the Wemac valves, CABIN AIR control cable, and CABIN HT control collectively influence the airflow and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
@@ -272,7 +50,91 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "How does adjusting the Wemacs, CABIN AIR control cable, and CABIN HT control individually or collectively influence the airflow and temperature of fresh air entering the aircraft cabin?",
+        "question": "What is the pathway of fresh air entering from the fuselage sides into the aircraft cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the fresh air entering from the right side of the fuselage reach different areas of the aircraft cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How is fresh air from the sources on the wing leading edge and fuselage sides managed to ensure proper distribution throughout the aircraft cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What components and pathways are used to ventilate the cockpit and cabin area with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the aircraft ensure proper distribution of fresh air entering from the wing leading edge inlets and fuselage sides to various cabin areas?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the functions of the Wemacs, CABIN AIR control cable, and CABIN HT control in managing the airflow and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does adjusting the Wemac valve, CABIN AIR control, and CABIN HT control collectively affect the airflow and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What methods are employed to ventilate the cockpit and cabin area with fresh air through external wing root openings, an adjustable air scoop, and internal ducting?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the ventilation system ensure fresh air reaches the cockpit and cabin?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How is fresh air supplied to the cockpit and cabin area?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What mechanisms are available to control both the volume and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the specific pathways through which fresh air is supplied to the cockpit and cabin area?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the ventilation system supply fresh air to the cockpit and cabin area using external wing root openings, an adjustable air scoop, and internal ducting?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the specific locations of the fresh air sources on the aircraft, and how is the incoming air from each source directed into the cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does adjusting the Wemac valve and CABIN AIR control cable influence the amount of fresh air entering the aircraft cabin?",
         "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
     },
     {
@@ -284,7 +146,25 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How is fresh air from the wing leading edge inlets and fuselage sides directed into different areas of the cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the specific features and pathways involved in ventilating the cockpit and cabin area with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "How does the aircraft's fresh air system direct air from the sources on the wing leading edge and fuselage sides into various cabin areas?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the fresh air entering from the fuselage sides reach the cabin interior?",
         "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
     },
     {
@@ -302,7 +182,19 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What methods are used to ventilate the cockpit and cabin area with fresh air?",
+        "question": "How do the Wemacs, CABIN AIR control cable, and CABIN HT control work together to regulate both the volume and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "In what way do the Wemacs, CABIN AIR control cable, and CABIN HT control interact to adjust both the volume and temperature of fresh air supplied to the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the sources and methods used to ventilate the cockpit and cabin area with fresh air?",
         "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
     },
     {
@@ -320,20 +212,26 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
-        "question": "What components and pathways are involved in ventilating the cockpit and cabin area with fresh air?",
-        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
-    },
-    {
-        "chapter": "CHAPTER 21 - AIR CONDITIONING",
-        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "How can the combined adjustments of the Wemacs, CABIN AIR control, and CABIN HT control be used to fine-tune both the airflow and temperature of fresh air entering the aircraft cabin?",
         "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How is fresh air from the fuselage side inlets controlled and distributed within the aircraft cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "How are the fresh air sources on the aircraft positioned and how is the air from each source routed into different areas of the cabin?",
         "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the different methods used to ventilate the cockpit and cabin area with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
@@ -350,8 +248,44 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What methods are used to ventilate the cockpit and cabin area with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the specific methods by which fresh air is circulated into the cockpit and cabin area?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the combination of Wemacs, the CABIN AIR control cable, and the CABIN HT control enable regulation of both airflow volume and air temperature in the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "What are the locations of the fresh air sources on the aircraft and how is the air from each source distributed within the cabin?",
         "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "In what ways does the ventilation system supply fresh air to the cockpit and cabin area?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the ventilation system utilize external wing root openings, an adjustable air scoop, and internal ducting to supply fresh air to the cockpit and cabin area?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does adjusting the Wemacs, CABIN AIR control cable, and CABIN HT control individually or collectively influence the airflow and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
@@ -374,8 +308,38 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How are the fresh air sources on the aircraft positioned and how is the air from each source routed into the cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the specific locations of the fresh air sources on the aircraft, and how is the air from each source directed into different areas of the cabin?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the sources and components involved in ventilating the cockpit and cabin with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "What mechanisms control the distribution of fresh air entering from the wing leading edge inlets and fuselage sides into the aircraft cabin?",
         "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the aircraft's fresh air system direct air from the fuselage side inlets into the cabin interior?",
+        "answer": "Fresh air enters the cabin from one of three sources. Two of those sources are located on the leading edge of the wing  and the other source is located on the right and left sides of the fuselage, between the firewall and the forward door post. (1)  Fresh air from the leading edge inlets is distributed through a series of ducts to adjustable air outlet valves . Each wing feeds three Wemacs, with a total of six Wemacs located throughout the cabin. Wemacs are located at the upper corner of the windshield, between the instrument panel and forward doorpost, and overhead in the rear passenger area. (2)  Fresh air entering from the right side of the fuselage is controlled by an infinitely positionable scoop . This air is ducted directly into the heated air plenum and is distributed throughout the cabin."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How do the Wemacs, CABIN AIR control cable, and CABIN HT control work together to adjust both the airflow volume and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
@@ -398,8 +362,26 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the position of the CABIN AIR control and CABIN HT control affect the airflow and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does adjusting the Wemac valves, CABIN AIR control, and CABIN HT control collectively influence the airflow and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "How does the adjustment of the Wemac valves, CABIN AIR control cable, and CABIN HT control collectively influence both the volume and temperature of fresh air entering the aircraft cabin?",
         "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What are the means by which fresh air is introduced into the cockpit and cabin area?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
     },
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
@@ -416,7 +398,25 @@
     {
         "chapter": "CHAPTER 21 - AIR CONDITIONING",
         "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What components and pathways are involved in ventilating the cockpit and cabin area with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
         "question": "What are the different methods available to control both the volume and temperature of fresh air entering the aircraft cabin?",
+        "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "What features are involved in ventilating the cockpit and cabin area with fresh air?",
+        "answer": "The cockpit/cabin area is ventilated with fresh air by means of external wing root openings, an adjustable air scoop, and internal ducting."
+    },
+    {
+        "chapter": "CHAPTER 21 - AIR CONDITIONING",
+        "title": "FRESH AIR DISTRIBUTION - DESCRIPTION AND OPERATION",
+        "question": "How does the combination of Wemacs, the CABIN AIR control cable, and the CABIN HT control allow for precise regulation of both the airflow volume and temperature of fresh air entering the aircraft cabin?",
         "answer": "The amount of fresh air entering the cabin can be controlled by any of the six Wemacs. Rotating the Wemac valve will vary the airflow from fully closed to fully open.Airflow into the cabin can also be adjusted by the CABIN AIR control cable. Pulling the control fully aft allows the maximum amount of fresh air to flow through the distribution system. Pushing the control fully forward closes the scoop  and allows no fresh air to flow through the distribution system. NOTE:  Air temperature in the distribution system can be altered by use of the CABIN HT control. As the CABIN HT control is gradually pulled out, more and more heated air will blend with the fresh air from the scoop, and is distributed into the cabin. Either one or both of the controls may be set at any position from full open to full closed."
     }
 ]

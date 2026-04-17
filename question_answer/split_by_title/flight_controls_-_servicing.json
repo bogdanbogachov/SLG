@@ -2,7 +2,13 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what is the proper procedure for lubricating flap motor screw jack threads and needle bearings, including cleaning methods and lubrication intervals?",
+        "question": "What are the guidelines for lubricating the rudder system's bearing components during assembly and inspection?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance procedures, what is the correct method for lubricating flap motor screw jack threads and needle bearings without removing the actuator?",
         "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
     },
     {
@@ -14,55 +20,7 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, under what circumstances should the bearings in the control column, aileron hinges, and aileron bellcrank be lubricated?",
-        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What is the recommended process for lubricating flap motor screw jack threads and needle bearings during routine maintenance?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specific lubrication requirements and recommended intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as outlined in the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What steps should be taken to properly lubricate flap motor screw jack threads according to the specified maintenance procedures?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended practices for lubricating flap motor screw jack threads and needle bearings as outlined in the maintenance procedures?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended lubrication methods and intervals for the rudder system components as specified in the maintenance instructions?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended procedures and conditions for lubricating the bearings in the aileron control system during maintenance and installation as specified in the manual?",
-        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended lubrication practices for the rudder system's bearing components during routine maintenance and assembly?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended procedures and conditions for lubricating the bearings in the aileron system during assembly, installation, and operational checks?",
+        "question": "What are the recommended procedures and timing for lubricating the bearings in the aileron system during assembly and maintenance?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
     },
     {
@@ -74,158 +32,20 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specific lubrication requirements for the rudder system's bearing components during assembly and inspection as outlined in the maintenance instructions?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, under what conditions should the rudder bar bearing block halves and oilite bearings be lubricated?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specified intervals and conditions for lubricating the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator according to the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, when should the lubrication of the rudder bar bearing block halves and oilite bearings be performed?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the lubrication requirements and intervals for the rudder system components as outlined in the maintenance instructions?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What is the recommended procedure for lubricating flap motor screw jack threads and needle bearings during maintenance, including cleaning methods and adherence to specified time intervals?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended procedures and timing for lubricating the bearings in the aileron system during assembly and maintenance?",
-        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what is the proper procedure for lubricating flap motor screw jack threads and needle bearings without removing the actuator?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and specific conditions for maintaining the bearings in the trim wheel controls, elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "How should the lubrication of the rudder bar bearing block halves and oilite bearings be scheduled during maintenance?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "When should the rudder bar bearing block halves and oilite bearings be lubricated according to the maintenance instructions?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended procedures and timing for lubricating the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator according to the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended procedures for lubricating the rudder system's bearing components during assembly and inspection?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance guidelines, what steps are recommended for lubricating the flap motor screw jack threads and needle bearings?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What steps are recommended for cleaning and lubricating flap motor screw jack threads during scheduled maintenance, and how should needle bearings be lubricated in the flap system?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended lubrication practices for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator, including their specified intervals and conditions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What is the procedure for lubricating flap motor screw jack threads and needle bearings during maintenance, including cleaning methods and lubrication intervals?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specified conditions and recommended intervals for lubricating the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator according to the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specific lubrication requirements and intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as outlined in the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, when should lubrication be performed on the bearings in the control column, aileron hinges, and aileron bellcrank components?",
-        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specific lubrication requirements and recommended intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as outlined in the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What types of lubricants are specified for lubricating the rudder system components, and under what conditions should these lubrications be performed?",
-        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "What are the recommended procedures for lubricating the bearings in the aileron control system during assembly, installation, and operational maintenance according to the maintenance manual?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance procedures, what steps should be taken to ensure proper lubrication of flap motor screw jack threads and needle bearings during scheduled inspections?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+        "question": "What are the specific conditions and intervals for lubricating the bearings in the aileron system as outlined in the maintenance manual?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance guidelines, what steps should be followed to lubricate flap motor screw jack threads and needle bearings effectively during scheduled inspections?",
-        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+        "question": "What are the recommended lubrication procedures for the elevator down spring link rub strip and trim tab components according to the maintenance guidelines?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -242,20 +62,8 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and intervals for the bearings in the trim wheel controls, the elevator down spring link rub strip, the trim tab piano hinges, and the trim tab actuator?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the maintenance guidelines for lubricating bearings in the aileron system during assembly, installation, and operational checks as specified in the manual?",
-        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
-    },
-    {
-        "chapter": "CHAPTER 12 - SERVICING",
-        "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended practices for lubricating bearings in the trim wheel controls and other related elevator components?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+        "question": "According to the maintenance instructions, what is the proper procedure for lubricating flap motor screw jack threads and needle bearings without removing the actuator?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -272,14 +80,86 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance procedures, what is the correct method for lubricating flap motor screw jack threads and needle bearings without removing the actuator?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended lubrication procedures for needle and rod end bearings on the aileron bellcrank?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the lubrication requirements and intervals for the rudder system components as outlined in the maintenance instructions?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "According to the maintenance instructions, what is the proper process for lubricating the flap motor screw jack threads and needle bearings, including cleaning procedures and lubrication intervals?",
         "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended steps for lubricating flap motor screw jack threads and needle bearings during maintenance, including cleaning procedures and lubrication frequency?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended lubrication practices for the rudder system's bearing components during assembly and when performing inspections?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the specific conditions and time intervals for lubricating the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what is the proper procedure for lubricating the flap motor screw jack threads and ensuring needle bearings are adequately lubricated?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, when should lubrication be performed on the bearings in the control column, aileron hinges, and aileron bellcrank components?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended procedures and timing for lubricating the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator according to the maintenance instructions?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended lubrication practices for the rudder system's bearing components during routine maintenance and assembly?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "What specific maintenance actions are recommended for lubricating the bearings in the aileron system during assembly, installation, and operational checks according to the maintenance manual?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and intervals for the bearings in the trim wheel controls, the elevator down spring link rub strip, the trim tab piano hinges, and the trim tab actuator?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -296,7 +176,7 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and specific conditions for maintaining the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
+        "question": "What are the specified conditions and recommended intervals for lubricating the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator according to the maintenance instructions?",
         "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
     },
     {
@@ -314,8 +194,20 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended practices for lubricating the rudder system's bearing components during assembly and inspection?",
+        "question": "What are the specific lubrication requirements for the rudder system's bearing components during assembly and inspection as outlined in the maintenance instructions?",
         "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "How should flap motor screw jack threads and needle bearings be lubricated according to the maintenance instructions?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What is the recommended process for lubricating flap motor screw jack threads and needle bearings during routine maintenance?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -326,8 +218,20 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the specific guidelines for lubricating the bearings in the aileron system during assembly, installation, and operational checks as outlined in the maintenance manual?",
-        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+        "question": "According to the maintenance guidelines, when should the rudder bar bearing block halves and oilite bearings be lubricated?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the recommended practices for lubricating bearings in the trim wheel controls and other related elevator components?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance guidelines, what are the conditions and recommended intervals for lubricating the oilite bearings in the rudder system?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -350,8 +254,20 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, what are the guidelines for lubricating the bearings in the trim wheel controls and the components of the elevator system?",
+        "question": "What are the specific lubrication requirements and intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as outlined in the maintenance instructions?",
         "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended lubrication methods and intervals for the rudder system components as specified in the maintenance instructions?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, how should the lubrication of the rudder system's bearing components be scheduled during routine inspections and assembly?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -374,14 +290,38 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "When should bearings in the control column and aileron hinges be lubricated according to the maintenance instructions?",
+        "question": "What are the specific guidelines for lubricating the bearings in the aileron system during assembly, installation, and operational checks as outlined in the maintenance manual?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "According to the maintenance instructions, when should lubrication be performed on bearings in the control column, aileron hinges, and aileron bellcrank components?",
+        "question": "What are the recommended practices for lubricating the rudder system's bearing components during assembly and inspection?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What steps are recommended for cleaning and lubricating flap motor screw jack threads during scheduled maintenance, and how should needle bearings be lubricated in the flap system?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the guidelines for lubricating the bearings in the trim wheel controls and the components of the elevator system?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the maintenance guidelines for lubricating bearings in the aileron system during assembly, installation, and operational checks as specified in the manual?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended procedures for lubricating the rudder system's bearing components during assembly and inspection?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -392,20 +332,38 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance guidelines, what steps are recommended for lubricating the flap motor screw jack threads and needle bearings?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "What are the recommended procedures for lubricating the rudder system's bearing components during assembly and when performing inspections?",
         "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What is the recommended approach for lubricating flap motor screw jack threads and needle bearings during routine maintenance, including cleaning procedures and lubrication intervals?",
+        "question": "According to the maintenance instructions, under what circumstances should the bearings in the control column, aileron hinges, and aileron bellcrank be lubricated?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What is the procedure for lubricating flap motor screw jack threads and needle bearings during maintenance, including cleaning methods and lubrication intervals?",
         "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
-        "question": "What are the recommended lubrication practices and intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as specified in the maintenance instructions?",
-        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+        "question": "According to the maintenance instructions, what is the proper procedure for lubricating flap motor screw jack threads and needle bearings, including cleaning methods and lubrication intervals?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended procedures and conditions for lubricating the bearings in the aileron system as specified in the maintenance manual?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -428,8 +386,20 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance guidelines, what steps should be followed to lubricate flap motor screw jack threads and needle bearings effectively during scheduled inspections?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "What are the specific conditions and timing for lubricating the bearings in the aileron system as outlined in the maintenance manual?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What is the recommended procedure for cleaning and lubricating flap motor screw jack threads without removing the actuator?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -452,7 +422,25 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended procedures and conditions for lubricating the bearings in the aileron control system during maintenance and installation as specified in the manual?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "According to the maintenance instructions, what are the recommended lubrication procedures and intervals for the bearings in the trim wheel controls, the elevator down spring link rub strip, the trim tab piano hinges, and the trim tab actuator?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "How should the lubrication of the rudder bar bearing block halves and oilite bearings be scheduled during maintenance?",
+        "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and specific conditions for the trim wheel bearings, elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
         "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
     },
     {
@@ -470,6 +458,18 @@
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the recommended lubrication practices and intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as specified in the maintenance instructions?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, when should lubrication be performed on bearings in the control column, aileron hinges, and aileron bellcrank components?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
         "question": "What are the recommended lubrication procedures for the rudder system's bearing components during assembly and inspection?",
         "answer": "The rudder bar bearing block halves should be lubricated on an \"as needed\" basis and when assembled or installed.The oilite bearings in the rudder bar ends and linkage point pivots should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 304 for lubrication requirements of the rudder system. GR - GREASE, GENERAL PURPOSE -  GP - OIL NO. 1 -WEIGHT, NON-DETERGENT GR - GREASE, GENERAL PURPOSE -  GL - GREASE, HIGH AND LOW TEMPERATURE  OG - OIL, GENERAL PURPOSE -"
     },
@@ -477,6 +477,24 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "FLIGHT CONTROLS - SERVICING",
         "question": "According to the maintenance instructions, what are the guidelines for lubricating bearings in the trim wheel controls and the trim tab components?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What is the recommended approach for lubricating flap motor screw jack threads and needle bearings during routine maintenance, including cleaning procedures and lubrication intervals?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What steps are recommended for lubricating flap motor screw jack threads and needle bearings during scheduled maintenance?",
+        "answer": "Flap motor screw jack threads should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits. To lubricate the jack screw, operate flaps to full down position, clean screw threads with solvent rag, and dry with compressed air. NOTE:  It is not necessary to remove actuator from airplane to clean or lubricate threads.Needle bearings should be lubricated on an \"as needed\" basis and when assembled or installed.Refer to Figure 302 for lubrication requirements of the flap system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the recommended lubrication procedures and specific conditions for maintaining the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator?",
         "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
     },
     {
@@ -490,6 +508,30 @@
         "title": "FLIGHT CONTROLS - SERVICING",
         "question": "What are the specific guidelines for lubricating the bearings in the aileron system during installation and operational maintenance as outlined in the maintenance manual?",
         "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the specific lubrication requirements and recommended intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as outlined in the maintenance instructions?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "What are the specific lubrication requirements and recommended intervals for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator as outlined in the maintenance instructions?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "When should bearings in the control column and aileron hinges be lubricated according to the maintenance instructions?",
+        "answer": "Bearings in the control column should be lubricated on an \"as needed\" basis and when assembled or installed.Piano hinges on the ailerons should be lubricated on an \"as needed\" basis and when assembled or installed.Needle bearings on the aileron bellcrank should be lubricated on an \"as needed\" basis and when assembled or installed.Rod end bearings on the aileron bellcrank should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 301 for lubrication requirements of the aileron system."
+    },
+    {
+        "chapter": "CHAPTER 12 - SERVICING",
+        "title": "FLIGHT CONTROLS - SERVICING",
+        "question": "According to the maintenance instructions, what are the recommended lubrication practices for the elevator down spring link rub strip, trim tab piano hinges, and trim tab actuator, including their specified intervals and conditions?",
+        "answer": "Bearings in the trim wheel controls should be lubricated on an \"as needed\" basis and when assembled or installed.The elevator down spring link rub strip should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Trim tab piano hinges should be lubricated on an \"as needed\" basis and when assembled or installed.The trim tab actuator should be lubricated using time intervals set forth in Chapter 5, Inspection Time Limits.Refer to Figure 303 for lubrication requirements of the elevator system."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
