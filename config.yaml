@@ -44,8 +44,6 @@ rag_prompt: >
 # Paths
 paths:
   experiments: 'experiments'
-  # Shared SLG routing index (Jina embeddings + index.json); not per-experiment
-  slg_index: 'slg_index'
   answers: 'answers'
   question_answer: 'question_answer'
   checkpoints: 'checkpoints'
@@ -53,7 +51,6 @@ paths:
   models:
     3_2_1b: 'downloaded_3_2_1b'
     3_1_8b: 'downloaded_3_1_8b'
-    jina_embeddings: 'jina-v2-base-en'
   split_by_title: 'question_answer/split_by_title'
   charts: 'experiments/charts'
 
@@ -91,7 +88,7 @@ training:
   weight_decay: 0.001
   warmup_ratio: 0.05
   per_device_train_batch_size: 2
-  per_device_eval_batch_size: 2
+  per_device_eval_batch_size: 64
   gradient_accumulation_steps: 2
   max_grad_norm: 1
   logging_steps: 50
@@ -119,15 +116,12 @@ rag:
   batch_size: 100
   k_retrievals: 5
 
-# SLG formation (jina-v2-base-en local embeddings → 768-dim vectors)
-slg_formation:
-  embedding_dimension: 768
-  batch_size: 100
-  # Max neighbors per expert after threshold filter (cosine on L2-normalized chunk embeddings).
-  k_neighbours: 3
-  # Only link experts with cosine similarity >= this; then keep up to k_neighbours highest.
-  neighbor_similarity_threshold: 0.9
-  slg_dir: "slg"
+# SLG router configuration
+slg:
+  slg_dir: "slg"                    # adapter subdirectory under experiments/<exp>/
+  descriptions_dir: "slg_descriptions"  # where descriptions.json is stored (experiment-agnostic)
+  max_description_words: 10
+  out_of_scope_token: "NONE"
 
 # Generation constants
 generation:
@@ -146,6 +140,6 @@ adapters:
 # Training components configuration
 # Controls which models/components to train
 training_components:
-  train_slg_system: true            # Train SLG experts (routing: Jina + index.json)
-  train_3_2_1b: true               # Train baseline 3_2_1b model
-  train_3_1_8b: true                 # Train baseline 3_1_8b model
+  train_slg_system: true            # Train SLG experts (routing: prompt-based SLM + descriptions.json)
+  train_3_2_1b: false               # Train baseline 3_2_1b model
+  train_3_1_8b: false                 # Train baseline 3_1_8b model

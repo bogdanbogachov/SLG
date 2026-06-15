@@ -4,7 +4,6 @@ from typing import List
 from finetune.finetune import finetune
 from config import CONFIG
 from logging_config import logger
-from commands.slg_embeddings import run_slg_embeddings
 
 
 def run_training(experiment: str):
@@ -32,7 +31,7 @@ def run_training(experiment: str):
 
     os.makedirs(experiments_dir, exist_ok=True)
 
-    # Finetune SLG experts per title (routing uses Jina embeddings + index.json, not a finetuned orchestrator)
+    # Finetune SLG experts per title (routing uses prompt-based SLM router + descriptions.json)
     if train_slg_system:
         logger.info("Training SLG experts...")
         split_by_title_files = sorted(
@@ -54,13 +53,8 @@ def run_training(experiment: str):
                 slg=True,
             )
 
-        if split_by_title_files:
-            logger.info("Building SLG similarity index (chunk embeddings + index.json)...")
-            run_slg_embeddings(experiment)
-        else:
-            logger.warning(
-                "No JSON files in split_by_title; skipping SLG embedding index build."
-            )
+        if not split_by_title_files:
+            logger.warning("No JSON files in split_by_title; no SLG experts were trained.")
 
     else:
         logger.info("Skipping SLG system training")

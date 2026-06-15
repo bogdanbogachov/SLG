@@ -29,7 +29,7 @@ def finetune(
         adapter_name: Name for the adapter
         data: Path to JSON data file
         experiment_number: Experiment identifier
-        slg: Whether this is for SLG (Small Language Graph)
+        slg: Whether this is for SLG (Small Language Router)
     """
     if not torch.cuda.is_available():
         raise RuntimeError("No GPU found! Please ensure you have a CUDA-compatible GPU.")
@@ -162,7 +162,7 @@ def finetune(
     experiments_dir = CONFIG['paths']['experiments']
     
     if slg:
-        slg_subdir = CONFIG.get('slg_formation', {}).get('slg_dir', 'slg')
+        slg_subdir = CONFIG.get('slg', {}).get('slg_dir', 'slg')
         slg_dir = os.path.join(experiments_dir, experiment_number, slg_subdir)
         ensure_dir(slg_dir)
         save_path = os.path.join(slg_dir, adapter_name)

@@ -78,69 +78,17 @@ def get_experiment_path(experiment_name: str, base_dir: str) -> str:
     return os.path.join(base_dir, experiment_name)
 
 
-# Written by commands.slg_embeddings.save_slg_embedding_artifacts; required before SLG inference.
-SLG_EMBEDDING_ARTIFACT_NAMES = (
-    "chunk_embeddings_raw.npy",
-    "expert_ids.json",
-    "index.json",
-)
-
-
-def get_slg_index_dir(experiments_dir: str = None) -> str:
-    """
-    Return the experiment-agnostic directory for SLG index artifacts
-    (``experiments/<slg_index>/``), containing chunk_embeddings_raw.npy, expert_ids.json, index.json.
-    """
-    if experiments_dir is None:
-        paths_config = CONFIG["paths"]
-        experiments_dir = paths_config["experiments"]
-    slg_index_name = CONFIG["paths"].get("slg_index", "slg_index")
-    return os.path.join(experiments_dir, slg_index_name)
-
-
-def validate_slg_embedding_artifacts(index_dir: str) -> None:
-    """
-    Ensure the shared SLG index step has produced required files under ``index_dir``.
-
-    Raises:
-        FileNotFoundError: If the directory is missing or any artifact file is absent.
-    """
-    if not os.path.isdir(index_dir):
-        raise FileNotFoundError(
-            f"SLG index directory does not exist: {index_dir}. "
-            "Run the SLG embeddings step first "
-            "(e.g. commands.slg_embeddings.run_slg_embeddings). It creates this folder under "
-            "experiments/<slg_index>/ and writes chunk_embeddings_raw.npy, expert_ids.json, and index.json."
-        )
-    missing = [
-        name
-        for name in SLG_EMBEDDING_ARTIFACT_NAMES
-        if not os.path.isfile(os.path.join(index_dir, name))
-    ]
-    if missing:
-        listed = ", ".join(missing)
-        expected = ", ".join(SLG_EMBEDDING_ARTIFACT_NAMES)
-        raise FileNotFoundError(
-            f"Missing SLG index file(s) in {index_dir}: {listed}. "
-            f"Expected all of: {expected}. "
-            "Run commands.slg_embeddings.run_slg_embeddings before inference."
-        )
+def get_slg_descriptions_path() -> str:
+    """Return the path to the expert descriptions file (experiment-agnostic)."""
+    slg_cfg = CONFIG.get("slg", {})
+    descriptions_dir = slg_cfg.get("descriptions_dir", "slg_descriptions")
+    return os.path.join(descriptions_dir, "descriptions.json")
 
 
 def get_slg_path(experiment_name: str, experiments_dir: str = None) -> str:
-    """
-    Get the path to SLG models for an experiment.
-    
-    Args:
-        experiment_name: Name of the experiment
-        experiments_dir: Base directory for experiments (defaults to CONFIG['paths']['experiments'])
-        
-    Returns:
-        Path to SLG models directory
-    """
+    """Return the path to the SLG expert adapter directory for an experiment."""
     if experiments_dir is None:
-        paths_config = CONFIG['paths']
-        experiments_dir = paths_config['experiments']
-    slg_subdir = CONFIG.get('slg_formation', {}).get('slg_dir', 'slg')
+        experiments_dir = CONFIG["paths"]["experiments"]
+    slg_subdir = CONFIG.get("slg", {}).get("slg_dir", "slg")
     return os.path.join(experiments_dir, experiment_name, slg_subdir)
 

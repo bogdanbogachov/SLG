@@ -59,10 +59,9 @@ def run_finetuned(experiment: str):
 
 
 def run_slg(experiment: str):
-    from inference.slg import SmallLanguageGraph
+    from inference.slg import SmallLanguageRouter
     paths_config = CONFIG['paths']
-    answers_dir = paths_config['answers']
-    ensure_dir(os.path.join(answers_dir, experiment))
+    ensure_dir(os.path.join(paths_config['answers'], experiment))
     files_config = CONFIG['files']
-    slg = SmallLanguageGraph(experts_location=experiment, experiment=experiment)
-    slg.ask_slg(file=files_config['qa_test'])
+    router = SmallLanguageRouter(experts_location=experiment, experiment=experiment)
+    router.ask(file=files_config['qa_test'])

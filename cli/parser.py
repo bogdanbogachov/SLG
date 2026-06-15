@@ -13,7 +13,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("--inflate_overshadowing", type=bool, default=False)
 
-    parser.add_argument("--slg_embeddings", type=bool, default=False)
+    parser.add_argument("--slg_descriptions", type=bool, default=False)
 
     parser.add_argument("--finetune", type=bool, default=False)
 

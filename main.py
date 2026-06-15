@@ -1,7 +1,7 @@
 from cli.parser import build_parser
 from commands.data_processing import create_qa, combine_all_qa, inflate_overshadowing, split_qa, data_overlap_check
 from commands.train import run_training
-from commands.slg_embeddings import run_slg_embeddings
+from commands.slg_descriptions import run_slg_descriptions
 from commands.inference import run_baseline, run_rag, run_finetuned, run_slg
 from commands.evaluation import run_evaluation
 from commands.plot_metrics import plot_experiments_metrics
@@ -28,8 +28,8 @@ if __name__ == '__main__':
     # Analysis
     data_overlap_check() if args.data_overlap_check else None
 
-    # SLG embeddings + index only (no finetuning)
-    run_slg_embeddings(experiment) if args.slg_embeddings else None
+    # Generate SLG expert descriptions (run after split_qa, before finetune or infer_slg)
+    run_slg_descriptions() if args.slg_descriptions else None
 
     # Training
     run_training(experiment) if args.finetune else None
