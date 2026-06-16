@@ -1,4 +1,4 @@
-"""Generate short, distinct expert descriptions using LLaMA 3.2-1B-Instruct."""
+"""Generate short, distinct expert descriptions using LLaMA 3.1-8B-Instruct."""
 
 import json
 import os
@@ -95,8 +95,8 @@ def _generate(model, tokenizer, messages: List[Dict[str, str]]) -> str:
     return decoded.strip()
 
 
-def run_slg_descriptions() -> None:
-    descriptions_path = get_slg_descriptions_path()
+def run_slg_descriptions(experiment: str) -> None:
+    descriptions_path = get_slg_descriptions_path(experiment)
     if os.path.isfile(descriptions_path):
         logger.info(
             "Descriptions file already exists at %s; skipping. Delete to rebuild.",
@@ -115,7 +115,7 @@ def run_slg_descriptions() -> None:
         raise ValueError(f"No split_by_title files found in {split_by_title_dir}.")
 
     base_model_path = os.path.join(
-        paths_config["downloaded_models"], paths_config["models"]["3_2_1b"]
+        paths_config["downloaded_models"], paths_config["models"]["3_1_8b"]
     )
     model, tokenizer = load_base_model_and_tokenizer(base_model_path)
 

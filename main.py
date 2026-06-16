@@ -29,7 +29,7 @@ if __name__ == '__main__':
     data_overlap_check() if args.data_overlap_check else None
 
     # Generate SLG expert descriptions (run after split_qa, before finetune or infer_slg)
-    run_slg_descriptions() if args.slg_descriptions else None
+    run_slg_descriptions(experiment) if args.slg_descriptions else None
 
     # Training
     run_training(experiment) if args.finetune else None

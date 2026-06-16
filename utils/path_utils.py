@@ -78,11 +78,13 @@ def get_experiment_path(experiment_name: str, base_dir: str) -> str:
     return os.path.join(base_dir, experiment_name)
 
 
-def get_slg_descriptions_path() -> str:
-    """Return the path to the expert descriptions file (experiment-agnostic)."""
+def get_slg_descriptions_path(experiment: str, experiments_dir: str = None) -> str:
+    """Return the per-experiment path to the expert descriptions file."""
+    if experiments_dir is None:
+        experiments_dir = CONFIG["paths"]["experiments"]
     slg_cfg = CONFIG.get("slg", {})
     descriptions_dir = slg_cfg.get("descriptions_dir", "slg_descriptions")
-    return os.path.join(descriptions_dir, "descriptions.json")
+    return os.path.join(experiments_dir, experiment, descriptions_dir, "descriptions.json")
 
 
 def get_slg_path(experiment_name: str, experiments_dir: str = None) -> str:

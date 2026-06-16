@@ -63,7 +63,7 @@ class SmallLanguageRouter:
             ),
         )
 
-        descriptions_path = get_slg_descriptions_path()
+        descriptions_path = get_slg_descriptions_path(self.experiment)
         validate_file_exists(
             descriptions_path,
             error_message=(
@@ -92,7 +92,7 @@ class SmallLanguageRouter:
 
         paths_cfg = CONFIG["paths"]
         self._base_model_path = os.path.join(
-            paths_cfg["downloaded_models"], paths_cfg["models"]["3_2_1b"]
+            paths_cfg["downloaded_models"], paths_cfg["models"]["3_1_8b"]
         )
 
     def _discover_expert_nodes(self) -> List[str]:
