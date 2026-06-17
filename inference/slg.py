@@ -91,8 +91,11 @@ class SmallLanguageRouter:
             )
 
         paths_cfg = CONFIG["paths"]
-        self._base_model_path = os.path.join(
+        self._router_model_path = os.path.join(
             paths_cfg["downloaded_models"], paths_cfg["models"]["3_1_8b"]
+        )
+        self._expert_base_model_path = os.path.join(
+            paths_cfg["downloaded_models"], paths_cfg["models"]["3_2_1b"]
         )
 
     def _discover_expert_nodes(self) -> List[str]:
@@ -169,7 +172,7 @@ class SmallLanguageRouter:
         routes: List[List[str]] = []
         for i, question in enumerate(questions):
             messages = self._build_router_prompt(question)
-            raw = self._generate_with_model(messages, model, tokenizer, max_new_tokens=200)
+            raw = self._generate_with_model(messages, model, tokenizer, max_new_tokens=1000)
             experts = self._parse_router_output(raw)
             routes.append(experts)
             logger.info(
@@ -181,7 +184,7 @@ class SmallLanguageRouter:
     def _generate_answer(self, question: str, expert_id: str) -> str:
         adapter_path = os.path.join(self.slg_path, expert_id)
         model, tokenizer = load_model_with_adapter(
-            base_model_path=self._base_model_path,
+            base_model_path=self._expert_base_model_path,
             adapter_path=adapter_path,
             resize_token_embeddings=True,
         )
@@ -224,17 +227,36 @@ class SmallLanguageRouter:
             logger.info("All questions already answered.")
             return
 
-        # Phase 1: route all remaining questions in one base-model session
-        logger.info("Routing %d questions...", len(remaining))
-        router_model, router_tokenizer = load_base_model_and_tokenizer(self._base_model_path)
-        try:
-            routes = self._route_all(
-                [item["question"] for item in remaining],
-                router_model,
-                router_tokenizer,
-            )
-        finally:
-            cleanup_model_memory(router_model, router_tokenizer)
+        # Phase 1: route all questions (load from checkpoint if available)
+        routes_path = os.path.join(output_dir, "slg_routes.json")
+        all_routes: List[List[str]] = []
+        if os.path.exists(routes_path):
+            with open(routes_path, "r", encoding="utf-8") as f:
+                all_routes = json.load(f)
+            if len(all_routes) == len(data):
+                logger.info("Loaded routing checkpoint; skipping Phase 1.")
+            else:
+                logger.warning(
+                    "Routes checkpoint has %d entries but data has %d; re-routing.",
+                    len(all_routes), len(data),
+                )
+                all_routes = []
+
+        if not all_routes:
+            logger.info("Routing %d questions...", len(data))
+            router_model, router_tokenizer = load_base_model_and_tokenizer(self._router_model_path)
+            try:
+                all_routes = self._route_all(
+                    [item["question"] for item in data],
+                    router_model,
+                    router_tokenizer,
+                )
+            finally:
+                cleanup_model_memory(router_model, router_tokenizer)
+            with open(routes_path, "w", encoding="utf-8") as f:
+                json.dump(all_routes, f, indent=2)
+
+        routes = all_routes[start_index:]
 
         # Phase 2: invoke experts and assemble answers
         for i, (item, expert_ids) in enumerate(zip(remaining, routes), start=start_index):
