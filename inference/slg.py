@@ -30,20 +30,19 @@ from utils.prompt_utils import apply_chat_template, create_system_message, creat
 _ROUTER_SYSTEM_PROMPT = (
     "You are a reasoning-based routing assistant for a question-answering system. "
     "Given a question and a list of specialist experts with short descriptions, follow these steps:\n"
-    "1. Briefly reason about which expert(s) are most relevant to the question topic.\n"
-    "2. On the very last line, output 'Experts: ' followed by the expert name(s) as a comma-separated list "
-    "using the exact names provided.\n"
+    "1. Briefly reason about which single expert is most relevant to the question topic.\n"
+    "2. On the very last line, output 'Expert: ' followed by exactly one expert name "
+    "using the exact name provided.\n"
     "   If the question is outside the scope of all experts, output 'NONE' on the last line.\n\n"
-    "Example last line (one expert):   Experts: expert_a\n"
-    "Example last line (two experts):  Experts: expert_a, expert_b\n"
+    "Example last line (in scope):  Expert: expert_a\n"
     "Example last line (out of scope): NONE"
 )
 
 _ROUTER_USER_TEMPLATE = (
     "Question: {question}\n\n"
     "Available experts:\n{expert_list}\n\n"
-    "Reason about which expert(s) can best answer this question, "
-    "then on the final line output the expert name(s) or NONE."
+    "Reason about which single expert can best answer this question, "
+    "then on the final line output that expert name or NONE."
 )
 
 
@@ -130,16 +129,19 @@ class SmallLanguageRouter:
         if last_line.upper() == self._out_of_scope_token.upper():
             return []
 
-        # Strip optional "Experts:" prefix
+        # Strip optional "Expert:"/"Experts:" prefix
         if last_line.lower().startswith("experts:"):
             last_line = last_line[len("experts:"):].strip()
+        elif last_line.lower().startswith("expert:"):
+            last_line = last_line[len("expert:"):].strip()
 
         candidates = [c.strip().rstrip(".") for c in last_line.split(",")]
-        matched = [c for c in candidates if c in self._expert_nodes]
+        matched = [c for c in candidates if c in self._expert_nodes][:1]
 
         if not matched:
-            # Fallback: scan full output for expert name mentions
-            matched = list(dict.fromkeys(e for e in self._expert_nodes if e in raw))
+            # Fallback: scan full output for expert name mentions, take first
+            matched = [next((e for e in self._expert_nodes if e in raw), None)]
+            matched = [e for e in matched if e]
 
         if not matched:
             logger.warning("Router output did not match any expert; treating as out-of-scope.")
@@ -197,10 +199,6 @@ class SmallLanguageRouter:
             )
         finally:
             cleanup_model_memory(model, tokenizer)
-
-    @staticmethod
-    def _concatenate_answers(expert_answers: Dict[str, str]) -> str:
-        return "\n\n".join(f"[{eid}]\n{ans}" for eid, ans in expert_answers.items())
 
     def ask(self, file: str) -> None:
         validate_file_exists(file)
@@ -265,16 +263,9 @@ class SmallLanguageRouter:
             if not expert_ids:
                 answer = "OUT_OF_SCOPE"
                 logger.info("Question is out of scope.")
-            elif len(expert_ids) == 1:
+            else:
                 logger.info("Invoking expert '%s'.", expert_ids[0])
                 answer = self._generate_answer(item["question"], expert_ids[0])
-            else:
-                logger.info("Invoking %d experts: %s", len(expert_ids), expert_ids)
-                expert_answers: Dict[str, str] = {}
-                for eid in expert_ids:
-                    expert_answers[eid] = self._generate_answer(item["question"], eid)
-                    logger.info("Expert '%s' answered.", eid)
-                answer = self._concatenate_answers(expert_answers)
 
             answers_list.append({
                 "chapter": item["chapter"],
