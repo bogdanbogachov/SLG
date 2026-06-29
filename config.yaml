@@ -51,6 +51,7 @@ paths:
   models:
     3_2_1b: 'downloaded_3_2_1b'
     3_1_8b: 'downloaded_3_1_8b'
+    jina_embeddings: 'jina-v2-base-en'
   split_by_title: 'question_answer/split_by_title'
   charts: 'experiments/charts'
 
@@ -122,6 +123,20 @@ slg:
   descriptions_dir: "slg_descriptions"  # where descriptions.json is stored (experiment-agnostic)
   max_description_words: 10
   out_of_scope_token: "NONE"
+
+# Routing pipeline: cosine pre-filter -> reasoning router -> critic -> reroute -> aggregate -> compress
+routing:
+  top_k_cosine: 5                       # Jina cosine shortlist size handed to the reasoning router
+  max_reroutes: 3                       # critic-reject reroute attempts before giving up on a question
+  interactive_multi_expert: true        # interactive chat may pick >1 expert; batch inference always forces 1
+  embedding_dimension: 768              # jina-v2-base-en
+  embedding_batch_size: 100             # batch size when embedding expert training answers
+  penalty_similarity_threshold: 0.85    # incoming question counts as "the same" (for penalties) at >= this cosine
+  penalty_weight: 0.2                   # cosine down-weight applied per accumulated penalty point
+  compression_max_tokens: 256           # token budget for the compressed answer carried across chat turns
+  # Sentinels returned to the user / written to predictions
+  rejection_message: "A suitable expert was not found for your question."
+  exhausted_message: "The experts were not able to answer your question."
 
 # Generation constants
 generation:

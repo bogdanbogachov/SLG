@@ -1,0 +1,325 @@
+"""Small Language Router orchestrator.
+
+Per question the pipeline runs: cosine shortlist -> reasoning router -> expert
+answer -> critic -> (reroute on failure) -> aggregate -> compress.
+
+Two entry points share the same building blocks:
+
+* :meth:`ask`  — automated batch inference over a QA file. Exactly one expert
+  per question, single answer, no multi-turn. To keep model load/unload churn
+  low under tight VRAM, questions are processed in *rounds*: route all pending
+  questions, answer them grouped by expert, critic them all, then reroute the
+  failures into the next round.
+* :meth:`chat` — interactive multi-turn session (implemented in a later step).
+"""
+
+import json
+import os
+from collections import defaultdict
+from typing import Dict, List
+
+import numpy as np
+
+from config import CONFIG
+from logging_config import logger
+from utils.path_utils import (
+    ensure_dir,
+    get_slg_descriptions_path,
+    get_slg_path,
+    validate_dir_exists,
+    validate_file_exists,
+)
+
+from inference.slg.experts import ExpertRunner
+from inference.slg.reasoner import Reasoner
+from inference.slg.retriever import ExpertRetriever
+from inference.slg.session import SessionState
+
+# Per-question terminal states
+PENDING = "pending"
+RESOLVED = "resolved"
+REJECTED = "rejected"    # router found no suitable expert
+EXHAUSTED = "exhausted"  # critic rejected every attempt
+
+
+class SmallLanguageRouter:
+    def __init__(self, experts_location: str, experiment: str):
+        self.experiment = experiment
+        self._routing = CONFIG["routing"]
+        self._top_k = int(self._routing["top_k_cosine"])
+        self._max_reroutes = int(self._routing["max_reroutes"])
+        self._rejection_message = self._routing["rejection_message"]
+        self._exhausted_message = self._routing["exhausted_message"]
+
+        experiments_dir = CONFIG["paths"]["experiments"]
+        self._slg_path = get_slg_path(experts_location, experiments_dir)
+        validate_dir_exists(
+            self._slg_path,
+            error_message=(
+                f"SLG expert adapters directory not found: {self._slg_path}. "
+                "Train SLG experts before running inference."
+            ),
+        )
+
+        descriptions_path = get_slg_descriptions_path(experiment)
+        validate_file_exists(
+            descriptions_path,
+            error_message=(
+                f"Expert descriptions not found: {descriptions_path}. "
+                "Run --slg_descriptions before inference."
+            ),
+        )
+        with open(descriptions_path, "r", encoding="utf-8") as f:
+            self._descriptions: Dict[str, str] = json.load(f)
+
+        self._valid_experts = self._resolve_valid_experts()
+        if not self._valid_experts:
+            raise ValueError(
+                "No routable experts: need both a LoRA adapter on disk and a description."
+            )
+
+        self._retriever = ExpertRetriever(experiment, allowed_experts=self._valid_experts)
+        self._runner = ExpertRunner(self._slg_path)
+        self._reasoner = Reasoner()
+
+    # ------------------------------------------------------------- setup
+    def _resolve_valid_experts(self) -> set:
+        adapters = {
+            name
+            for name in os.listdir(self._slg_path)
+            if os.path.isdir(os.path.join(self._slg_path, name))
+        }
+        desc = set(self._descriptions)
+        if desc - adapters:
+            logger.warning("Descriptions without adapters (not routable): %s", sorted(desc - adapters))
+        if adapters - desc:
+            logger.warning("Adapters without descriptions (not routable): %s", sorted(adapters - desc))
+        return adapters & desc
+
+    def _diagnostics_dir(self) -> str:
+        d = os.path.join(CONFIG["paths"]["answers"], self.experiment, "slg_diagnostics")
+        ensure_dir(d)
+        return d
+
+    # =============================================================== batch
+    def ask(self, file: str) -> None:
+        validate_file_exists(file)
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        output_dir = os.path.join(CONFIG["paths"]["answers"], self.experiment)
+        ensure_dir(output_dir)
+        output_path = os.path.join(output_dir, "slg.json")
+        if os.path.exists(output_path):
+            with open(output_path, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+            if len(existing) == len(data):
+                logger.info("All %d questions already answered in %s; nothing to do.", len(data), output_path)
+                return
+            logger.info("Existing slg.json is incomplete (%d/%d); recomputing run.", len(existing), len(data))
+
+        questions = [item["question"] for item in data]
+
+        # Embed every question once (Jina), then release it before loading the 8B.
+        logger.info("Embedding %d questions for cosine routing...", len(questions))
+        q_emb = [self._retriever.embed_query(q) for q in questions]
+
+        state = self._run_rounds(questions, q_emb)
+
+        # Assemble answers in original order for evaluation alignment.
+        answers_list = []
+        for i, item in enumerate(data):
+            answers_list.append({
+                "chapter": item.get("chapter"),
+                "title": item.get("title"),
+                "question": item["question"],
+                "experts": state["history"][i],
+                "answer": state["answer"][i],
+                "status": state["status"][i],
+            })
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(answers_list, f, indent=4)
+
+        self._write_diagnostics(state)
+        self._log_summary(state)
+
+    def _run_rounds(self, questions: List[str], q_emb: List[np.ndarray]) -> Dict:
+        n = len(questions)
+        session = SessionState()
+        state = {
+            "status": [PENDING] * n,
+            "answer": [None] * n,
+            "history": [[] for _ in range(n)],   # experts tried, in order
+            "route_traces": [[] for _ in range(n)],
+            "critic_log": [[] for _ in range(n)],
+        }
+
+        for attempt in range(self._max_reroutes):
+            pending = [i for i in range(n) if state["status"][i] == PENDING]
+            if not pending:
+                break
+            logger.info("=== Routing round %d/%d — %d pending question(s) ===",
+                        attempt + 1, self._max_reroutes, len(pending))
+
+            # --- Route phase (8B resident) ---
+            self._reasoner.load()
+            assignment: Dict[int, str] = {}
+            for i in pending:
+                penalties = session.penalty_weights(q_emb[i])
+                shortlist = [eid for eid, _ in self._retriever.shortlist(q_emb[i], self._top_k, penalties)]
+                trace, chosen = self._reasoner.route(
+                    questions[i], shortlist, self._descriptions, max_experts=1, penalized=penalties
+                )
+                state["route_traces"][i].append(trace)
+                if not chosen:
+                    state["status"][i] = REJECTED
+                    state["answer"][i] = self._rejection_message
+                else:
+                    assignment[i] = chosen[0]
+                    state["history"][i].append(chosen[0])
+            self._reasoner.unload()
+
+            # --- Answer phase (1B adapters, grouped by expert) ---
+            groups: Dict[str, List[int]] = defaultdict(list)
+            for i, expert in assignment.items():
+                groups[expert].append(i)
+            round_answers: Dict[int, str] = {}
+            for expert, idxs in groups.items():
+                outs = self._runner.answer_batch(expert, [questions[i] for i in idxs])
+                for i, out in zip(idxs, outs):
+                    round_answers[i] = out
+
+            # --- Critic phase (8B resident) ---
+            self._reasoner.load()
+            for i, out in round_answers.items():
+                expert = assignment[i]
+                passed, critique = self._reasoner.criticize(
+                    questions[i], expert, self._descriptions.get(expert, ""), out
+                )
+                state["critic_log"][i].append({"expert": expert, "passed": passed, "critique": critique})
+                if passed:
+                    state["status"][i] = RESOLVED
+                    state["answer"][i] = out
+                else:
+                    count = session.penalize(expert, q_emb[i])
+                    logger.info("Critic FAIL on Q%d expert '%s' (penalty count=%d).", i + 1, expert, count)
+            self._reasoner.unload()
+
+        # Anything still pending exhausted its reroute budget.
+        for i in range(n):
+            if state["status"][i] == PENDING:
+                state["status"][i] = EXHAUSTED
+                state["answer"][i] = self._exhausted_message
+        return state
+
+    # -------------------------------------------------------- diagnostics
+    def _write_diagnostics(self, state: Dict) -> None:
+        d = self._diagnostics_dir()
+        with open(os.path.join(d, "slg_routes.json"), "w", encoding="utf-8") as f:
+            json.dump(state["history"], f, indent=2)
+        with open(os.path.join(d, "critic_log.json"), "w", encoding="utf-8") as f:
+            json.dump(state["critic_log"], f, indent=2)
+        with open(os.path.join(d, "route_traces.json"), "w", encoding="utf-8") as f:
+            json.dump(state["route_traces"], f, indent=2)
+
+    def _log_summary(self, state: Dict) -> None:
+        from collections import Counter
+        counts = Counter(state["status"])
+        logger.info(
+            "SLG batch complete — resolved=%d rejected=%d exhausted=%d",
+            counts.get(RESOLVED, 0), counts.get(REJECTED, 0), counts.get(EXHAUSTED, 0),
+        )
+
+    # ================================================================ chat
+    def chat(self, input_fn=input, output_fn=print) -> None:
+        """Interactive multi-turn session.
+
+        The router may select multiple experts (when ``interactive_multi_expert``
+        is set); each answer is criticized, failures punish their expert and
+        trigger rerouting, the surviving answers are aggregated, and a compressed
+        form is carried into the next turn. The router's reasoning and each critic
+        verdict are surfaced to the user.
+        """
+        multi = bool(self._routing.get("interactive_multi_expert", True))
+        session = SessionState()
+        output_fn(
+            "SLG interactive session. Type your engineering question "
+            "('exit' or 'quit' to leave).\n"
+        )
+        while True:
+            try:
+                question = input_fn("\nyou> ").strip()
+            except (EOFError, KeyboardInterrupt):
+                output_fn("\nEnding session.")
+                break
+            if not question:
+                continue
+            if question.lower() in {"exit", "quit"}:
+                output_fn("Ending session.")
+                break
+            self._chat_turn(question, session, multi, output_fn)
+
+    def _chat_turn(self, question: str, session: SessionState, multi: bool, output_fn) -> None:
+        q_emb = self._retriever.embed_query(question)
+        accepted: List[tuple] = []   # (expert_id, answer)
+        ever_chose = False
+
+        for attempt in range(self._max_reroutes):
+            penalties = session.penalty_weights(q_emb)
+            taken = {e for e, _ in accepted}
+            shortlist = [
+                e for e, _ in self._retriever.shortlist(q_emb, self._top_k, penalties)
+                if e not in taken
+            ]
+            if not shortlist:
+                break
+            max_experts = len(shortlist) if multi else 1
+
+            self._reasoner.load()
+            trace, chosen = self._reasoner.route(
+                question, shortlist, self._descriptions, max_experts,
+                penalized=penalties, carried_context=session.carried_context,
+            )
+            self._reasoner.unload()
+            output_fn(f"\n[router reasoning]\n{trace}\n[router chose] {chosen or 'NONE'}")
+
+            if not chosen:
+                break
+            ever_chose = True
+
+            # Answer each chosen expert (carrying compressed context).
+            answers = {
+                e: self._runner.answer(e, question, session.carried_context) for e in chosen
+            }
+
+            # Critic each answer; surface verdict; punish failures.
+            self._reasoner.load()
+            for expert in chosen:
+                passed, critique = self._reasoner.criticize(
+                    question, expert, self._descriptions.get(expert, ""), answers[expert]
+                )
+                output_fn(f"\n[critic · {expert}] {'PASS' if passed else 'FAIL'}\n{critique}")
+                if passed:
+                    accepted.append((expert, answers[expert]))
+                else:
+                    count = session.penalize(expert, q_emb)
+                    output_fn(f"[penalty] '{expert}' penalized (count={count}); will reroute.")
+            self._reasoner.unload()
+
+            if accepted and not multi:
+                break
+            if accepted and multi:
+                # Got at least one good answer this round; stop rerouting.
+                break
+
+        if accepted:
+            self._reasoner.load()
+            final = self._reasoner.aggregate(question, accepted)
+            combined = (session.carried_context + "\n" + final).strip()
+            session.set_context(self._reasoner.compress(combined))
+            self._reasoner.unload()
+            output_fn(f"\nassistant> {final}")
+        elif not ever_chose:
+            output_fn(f"\nassistant> {self._rejection_message}")
+        else:
+            output_fn(f"\nassistant> {self._exhausted_message}")

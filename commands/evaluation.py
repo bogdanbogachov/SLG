@@ -4,6 +4,15 @@ from utils.path_utils import ensure_dir
 from config import CONFIG
 
 
+def _is_predictions(data) -> bool:
+    """A predictions file is a non-empty list of dicts each carrying a 'question'."""
+    return (
+        isinstance(data, list)
+        and len(data) > 0
+        and all(isinstance(item, dict) and 'question' in item for item in data)
+    )
+
+
 def run_evaluation(experiment: str, include_training_metrics: bool = False):
     from evaluate.evaluate import load_data, evaluate, pull_training_metrics
     from logging_config import logger
@@ -32,10 +41,17 @@ def run_evaluation(experiment: str, include_training_metrics: bool = False):
             continue
         stem = os.path.splitext(predictions_file)[0]
         checkpoint_path = os.path.join(eval_ckpt_dir, f'{stem}.json')
+        predictions_path = os.path.join(answers_dir, predictions_file)
+
+        # Only score prediction files: a list of dicts carrying a 'question'. Auxiliary
+        # artifacts (e.g. routing logs) are not predictions and must be skipped, otherwise
+        # evaluate() crashes trying to read them like predictions.
+        predictions, ground_truth = load_data(predictions_path, ground_truth_file)
+        if not _is_predictions(predictions):
+            logger.info('Skipping %s (not a predictions file).', predictions_file)
+            continue
 
         if os.path.isfile(checkpoint_path):
-            predictions_path = os.path.join(answers_dir, predictions_file)
-            predictions, ground_truth = load_data(predictions_path, ground_truth_file)
             results = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
             by_stem[stem] = results
         elif stem in by_stem:
@@ -46,8 +62,6 @@ def run_evaluation(experiment: str, include_training_metrics: bool = False):
             )
             continue
         else:
-            predictions_path = os.path.join(answers_dir, predictions_file)
-            predictions, ground_truth = load_data(predictions_path, ground_truth_file)
             results = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
             by_stem[stem] = results
 

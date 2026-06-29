@@ -94,3 +94,10 @@ def get_slg_path(experiment_name: str, experiments_dir: str = None) -> str:
     slg_subdir = CONFIG.get("slg", {}).get("slg_dir", "slg")
     return os.path.join(experiments_dir, experiment_name, slg_subdir)
 
+
+def get_slg_index_dir(experiment: str, experiments_dir: str = None) -> str:
+    """Return the per-experiment directory holding cached expert routing embeddings."""
+    if experiments_dir is None:
+        experiments_dir = CONFIG["paths"]["experiments"]
+    return os.path.join(experiments_dir, experiment, "slg_index")
+

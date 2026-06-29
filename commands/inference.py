@@ -65,3 +65,9 @@ def run_slg(experiment: str):
     files_config = CONFIG['files']
     router = SmallLanguageRouter(experts_location=experiment, experiment=experiment)
     router.ask(file=files_config['qa_test'])
+
+
+def run_slg_chat(experiment: str):
+    from inference.slg import SmallLanguageRouter
+    router = SmallLanguageRouter(experts_location=experiment, experiment=experiment)
+    router.chat()
