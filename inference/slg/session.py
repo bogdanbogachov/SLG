@@ -1,72 +1,68 @@
-"""Session-scoped state: escalating expert penalties + carried chat context.
+"""Session-scoped state shared by every question in one run / conversation.
 
-A penalty is recorded whenever the critic rejects an expert's answer. Each
-penalty is keyed by the *question embedding*, so a rejected expert is avoided
-not only while rerouting the current question but also for any later question
-in the same session that is cosine-similar to it. Re-failing the same expert on
-a similar question escalates its penalty (the count grows), pushing it further
-down the cosine ranking.
+Bundles the three online mechanisms that learn over the lifetime of a single
+pipeline invocation:
 
-Lifetime is a single pipeline invocation: the whole automated run in batch mode,
-or one open conversation in interactive chat mode.
+* **(A)** :class:`~inference.slg.competence.CompetenceModel` — the online,
+  label-free estimate of which expert to trust per query region, updated from
+  every critic verdict and used to adjust the cosine ranking.
+* **(C)** :class:`~inference.slg.abstention.AbstentionCalibrator` — the
+  self-supervised confidence threshold that decides when to answer vs. abstain.
+* the compressed **carried context** threaded across chat turns.
+
+Lifetime is a single invocation: the whole automated run in batch mode, or one
+open conversation in interactive chat mode. Verdicts produced by the
+domain verifier **(B)** are folded into both A and C through
+:meth:`observe_verdict`.
 """
-
-from dataclasses import dataclass, field
-from typing import Dict, List
 
 import numpy as np
 
 from config import CONFIG
 
-
-@dataclass
-class _PenaltyEntry:
-    expert_id: str
-    question_embedding: np.ndarray  # L2-normalized
-    count: int = 1
+from inference.slg.abstention import AbstentionCalibrator
+from inference.slg.competence import CompetenceModel
+from inference.slg.verifier import Verdict
 
 
-@dataclass
 class SessionState:
-    """Penalty memory and compressed carried context for one session/run."""
+    """Online competence + abstention calibration + carried chat context."""
 
-    _entries: List[_PenaltyEntry] = field(default_factory=list)
-    carried_context: str = ""
-
-    def __post_init__(self):
+    def __init__(self, carried_context: str = ""):
         routing = CONFIG["routing"]
-        self._threshold = float(routing.get("penalty_similarity_threshold", 0.85))
-        self._weight = float(routing.get("penalty_weight", 0.2))
+        threshold = float(
+            routing.get(
+                "competence_similarity_threshold",
+                routing.get("penalty_similarity_threshold", 0.85),
+            )
+        )
+        self.competence = CompetenceModel(
+            threshold=threshold,
+            weight=float(routing.get("competence_weight", 0.3)),
+        )
+        self.calibrator = AbstentionCalibrator(
+            target_error=float(routing.get("abstention_target_error", 0.10)),
+            confidence_floor=float(routing.get("abstention_confidence_floor", 0.5)),
+            min_calibration=int(routing.get("abstention_min_calibration", 20)),
+        )
+        self.carried_context = carried_context
 
-    def penalize(self, expert_id: str, question_embedding: np.ndarray) -> int:
-        """Record/escalate a penalty for ``expert_id`` on this question.
+    # ------------------------------------------------------- observe (B->A,C)
+    def observe_verdict(self, expert_id: str, q_emb: np.ndarray, verdict: Verdict) -> None:
+        """Fold a verifier verdict into both the competence model and calibrator."""
+        self.competence.observe(expert_id, q_emb, verdict.passed)
+        self.calibrator.observe(verdict.confidence, verdict.passed)
 
-        Returns the new accumulated count for the matched (expert, question).
-        """
-        for entry in self._entries:
-            if entry.expert_id == expert_id and self._similar(
-                entry.question_embedding, question_embedding
-            ):
-                entry.count += 1
-                return entry.count
-        self._entries.append(_PenaltyEntry(expert_id, question_embedding, count=1))
-        return 1
+    # ----------------------------------------------------------- routing (A)
+    def routing_adjustments(self, q_emb: np.ndarray):
+        """Signed cosine adjustments for experts seen near this question."""
+        return self.competence.adjustments(q_emb)
 
-    def penalty_weights(self, question_embedding: np.ndarray) -> Dict[str, float]:
-        """Down-weight per expert for a question (count * configured weight)."""
-        counts: Dict[str, int] = {}
-        for entry in self._entries:
-            if self._similar(entry.question_embedding, question_embedding):
-                counts[entry.expert_id] = counts.get(entry.expert_id, 0) + entry.count
-        return {eid: c * self._weight for eid, c in counts.items()}
+    # -------------------------------------------------------- abstention (C)
+    def accept(self, confidence: float) -> bool:
+        """Whether an answer of this confidence clears the calibrated threshold."""
+        return self.calibrator.accept(confidence)
 
-    def _similar(self, a: np.ndarray, b: np.ndarray) -> bool:
-        return float(np.dot(a, b)) >= self._threshold
-
-    # ----------------------------------------------------------- context
+    # ---------------------------------------------------------------- context
     def set_context(self, text: str) -> None:
         self.carried_context = text or ""
-
-    def reset_penalties(self) -> None:
-        """Drop all penalties (used to isolate questions when desired)."""
-        self._entries.clear()

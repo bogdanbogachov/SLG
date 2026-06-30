@@ -1,108 +1,357 @@
-# SLG
+# SLG — Small Language Router
 
-A fine-tuning and inference pipeline optimized for resource-constrained environments, capable of running on small GPUs (up to 4 GB VRAM) with distributed AI potential. The system implements **SLG (Small Language Graph)**, a multi-expert architecture where each expert is fine-tuned using LoRA adapters.
+A fine-tuning and inference pipeline for **privacy-constrained engineering
+question answering on commodity hardware**. Everything runs on-premises — no
+cloud LLM is contacted at inference time, so no question or document ever leaves
+the machine. The system, **SLG (Small Language Router)**, answers engineering
+questions with a pool of small specialist models (one LoRA adapter per topic
+split) orchestrated by a reasoning-based router.
+
+Three online mechanisms let the small local models close much of the gap to a
+cloud LLM under tight resources:
+
+- **(A) Online competence-learning router** — the router learns *which expert to
+  trust* from its own verifier signal, with no labels and no retraining. Every
+  verdict updates a per-expert, per-query-region reliability estimate that
+  adjusts the cosine ranking. Routing improves over the lifetime of a run.
+- **(B) Domain-grounded verifier** — instead of generic self-critique, answers
+  are checked for engineering validity (numeric sanity, units on quantities,
+  format, contradiction) by deterministic checks **and** the 8B critic, which
+  also reports a confidence.
+- **(C) Calibrated abstention** — a self-supervised confidence threshold decides
+  when to answer and when to withhold, controlling the error rate among answers
+  the system actually returns. A wrong engineering answer is worse than an
+  honest "I can't answer this reliably."
+
 ## Requirements
 
 - Python 3.10+
-- CUDA-compatible GPU
-- Environment variables: `OPENAI_API_KEY`
+- CUDA-compatible GPU (the 8B router/verifier needs a GPU large enough to hold
+  it; the 1B experts and Jina embedder are light)
+- Environment variables: `OPENAI_API_KEY`, `HF_API_KEY`, `TOGETHER_AI_API_KEY`
 
 ## Installation
 
 ```bash
 # Create virtual environment on Linux
 python -m venv venv
+source venv/bin/activate
 
 # Install dependencies
-pip uninstall -y -r <(pip freeze)
 pip install --upgrade pip setuptools wheel
 pip install --upgrade --upgrade-strategy eager -r requirements.txt
 ```
 
 ## Configuration
 
-1. Copy `config.yaml` and set paths, model names, and hyperparameters
-2. Set environment variables:
+1. Set paths, model names, and hyperparameters in `config.yaml`.
+2. Export the API keys (used during data generation / baselines, not by local
+   inference):
    ```bash
    export OPENAI_API_KEY='your-key'
+   export HF_API_KEY='your-key'
+   export TOGETHER_AI_API_KEY='your-key'
    ```
-3. Set experiment name in `config.yaml`: `experiment: 'your_experiment_name'`
+3. Set the experiment name in `config.yaml`: `experiment: 'your_experiment_name'`.
+4. Tune the router in the `routing:` block (shortlist size, reroute budget,
+   competence weight, verifier units check, abstention target error).
 
 ## Usage
 
 ### Workflow
 
 ```bash
-# 1. Download models
+# 1. Download models (LLaMA 3.2-1B, LLaMA 3.1-8B, jina-v2-base-en)
 python main.py --download_models
 
-# 2. Generate QA pairs from PDFs
+# 2. Generate QA pairs from source documents
 python main.py --create_qa
 python main.py --combine_all_qa
 python main.py --inflate_overshadowing
 python main.py --split_qa
 
-# 3. Optional: Check data overlap
-python main.py --data_overlap_check
+# 3. Generate expert descriptions (after split_qa, before inference)
+python main.py --slg_descriptions
 
-# 4. Fine-tune models
+# 4. Fine-tune one LoRA expert per topic split
 python main.py --finetune
 
 # 5. Run inference
-python main.py --infer_baseline       # OpenAI GPT-4.1
-python main.py --infer_rag            # RAG with GPT-4.1-nano
-python main.py --infer_finetuned      # Fine-tuned LLaMA models
-python main.py --infer_slg            # Small Language Graph
+python main.py --infer_baseline       # OpenAI GPT-4.1 (cloud reference only)
+python main.py --infer_rag            # RAG baseline
+python main.py --infer_finetuned      # Single fine-tuned LLaMA
+python main.py --infer_slg            # SLG — automated batch inference
+python main.py --chat_slg             # SLG — interactive multi-turn session
 
-# 6. Evaluate results
+# 6. Evaluate
 python main.py --evaluate
-python main.py --evaluate --training_metrics  # Include training metrics
+python main.py --evaluate --training_metrics
 ```
+
+## Pipeline flow
+
+This section explains, in plain terms, exactly what happens to a question from
+the moment it arrives to the moment an answer (or an abstention) comes back.
+Both entry points — batch (`--infer_slg`) and interactive (`--chat_slg`) — share
+the same machinery and differ only in how many experts may answer and whether
+the session is multi-turn.
+
+**The components involved:**
+
+- a local **Jina** embedder (`jina-v2-base-en`, 768-dim) — turns text into
+  vectors, entirely on-device;
+- one resident **LLaMA 3.1-8B** that plays four roles via different prompts —
+  **router**, **verifier/critic**, **aggregator**, **compressor**;
+- a pool of **LLaMA 3.2-1B + LoRA** experts, one adapter per topic split, loaded
+  on demand.
+
+### Two comparisons that are easy to confuse
+
+The system uses cosine similarity in **two different places** for **two
+different purposes**. Keeping them apart is the key to understanding the flow:
+
+| | what is compared | what it decides | selection rule |
+|---|---|---|---|
+| **Expert retrieval** | question ↔ **each expert** | which experts are worth considering | **top-k** (no threshold) |
+| **Competence memory (A)** | question ↔ **past questions** | how much an expert's past pass/fail counts here | cosine ≥ **0.85** (a real threshold) |
+
+So the only hard cosine threshold in the system (`0.85`) is **not** used to pick
+experts — experts are always chosen by top-k ranking. The threshold lives in the
+competence model, where it decides whether a previous question is close enough
+that its outcome should reward or punish the expert on the current question.
+
+### Step by step (one question)
+
+1. **Embed the question.** Jina produces a normalized vector. (In batch, every
+   question is embedded once up front so the embedder can be released before the
+   8B loads.)
+
+2. **Score every expert by cosine.** Each expert is represented by the mean
+   embedding of its deduplicated training answers. We take the cosine of the
+   question against every expert — a relevance score per expert.
+
+3. **Apply the competence adjustment (A).** Before ranking, each expert's score
+   is nudged by `delta = competence_weight × (reliability − 0.5)`. *Reliability*
+   is the expert's online pass/fail estimate **in the neighbourhood of this
+   question** — built only from past questions whose cosine to the current one is
+   ≥ 0.85. An expert with no relevant history gets delta 0 (pure cosine). An
+   expert that has been passing similar questions is boosted; one that has been
+   failing them is demoted. This is the part that **learns online, with no
+   labels and no retraining** — and it resets each run/session.
+
+4. **Shortlist the top-k.** Sort experts by `cosine + delta` and keep the top
+   `top_k_cosine` (default 5). This is a ranking cut, not a similarity cut: the
+   5th-best expert is shortlisted even if its cosine is low.
+
+5. **Route with the 8B (the reasoning router).** The router reads the shortlist
+   (each expert's name + description), the question, and soft "proven /
+   struggling" hints derived from A. It writes a brief reasoning trace and, on
+   the last line, names the expert(s) to use — or `NONE`. If it picks nobody the
+   question ends as **REJECTED** ("a suitable expert was not found"). In batch it
+   may pick **one** expert; in interactive it may pick several.
+
+6. **Answer with the expert(s) (1B + LoRA).** The chosen adapter(s) generate the
+   answer. In interactive mode any carried context from previous turns is
+   prepended.
+
+7. **Verify the answer (B, the domain verifier).** Two checks run together:
+   - *Deterministic* (no model): numeric sanity (with a hard veto on
+     empty answers or absurd/non-finite numbers), units-on-quantities when the
+     question is quantitative, and format adherence for list-type questions.
+   - *LLM critic* (the 8B): judges 8 engineering criteria and emits
+     `VERDICT: PASS/FAIL` plus `CONFIDENCE: 0–100`.
+
+   The answer **passes** only if the critic says PASS *and* no deterministic veto
+   fired. The **confidence** returned is `sqrt(critic_confidence ×
+   deterministic_score)` (a conservative blend; 0 if vetoed).
+
+8. **Learn from the verdict (feeds A and C).** The verdict updates two things:
+   the expert's competence neighbourhood (reward on pass, punish on fail, local
+   to this question — step 3 next time), and the abstention calibrator's
+   observation set (step 9).
+
+9. **Accept, abstain, or reroute (C, calibrated abstention).** The calibrator
+   maintains a confidence threshold **τ**:
+   - `passed` **and** `confidence ≥ τ` → **RESOLVED**; the answer is returned.
+   - `passed` but `confidence < τ` → the answer is **withheld** (kept as a
+     fallback in case nothing better turns up).
+   - `failed` → the expert is demoted (A) and the question is **rerouted** to the
+     next-best shortlisted expert.
+
+   τ starts at a floor of 0.5 and, once `abstention_min_calibration` (default 20)
+   verdicts have accrued, becomes the lowest confidence at which the *critic*
+   FAIL-rate among accepted answers stays ≤ `abstention_target_error` (0.10).
+
+10. **Stop conditions.** Rerouting repeats up to `max_reroutes` (default 3).
+    After the budget is spent a question ends as **RESOLVED**, **REJECTED**
+    (router never chose anyone), **EXHAUSTED** (every attempt failed the critic),
+    or **ABSTAINED** (something passed but never cleared τ).
+
+11. **Aggregate and compress (interactive only).** When more than one expert is
+    accepted, the 8B aggregator merges them into one cohesive reply; that reply
+    is then compressed and carried forward as context for the next turn.
+
+### The per-question flow at a glance
+
+```
+                       ┌─────────────────────────────────────────────┐
+   question ──▶ Jina ──▶ cosine pre-filter over ALL experts           │
+                       │   + (A) online competence adjustments        │
+                       └───────────────┬─────────────────────────────┘
+                                       │  top-k shortlist
+                                       ▼
+                            8B reasoning router  ──── chooses expert(s)
+                                       │                    │ none
+                                       ▼                    ▼
+                         1B + LoRA expert answer      "suitable expert
+                                       │               not found" (REJECTED)
+                                       ▼
+                    (B) domain verifier  =  deterministic checks
+                                            (numbers, units, format)
+                                          + 8B critic  → pass/fail + confidence
+                                       │
+            ┌──────────────────────────┼───────────────────────────────┐
+            ▼                          ▼                                ▼
+   pass & confidence ≥ τ      pass but confidence < τ            fail (critic)
+        ACCEPT                  withhold (abstain-guard)        update (A): demote
+            │                          │                         expert in region
+            ▼                          ▼                                │
+   aggregate → compress       (C) if no answer ever               reroute (≤ max_reroutes)
+                              clears τ → ABSTAIN                        │
+                                                          budget spent → EXHAUSTED
+```
+
+Every verdict feeds **(A)** the competence model (boost on pass, demote on fail,
+local to the query region) and **(C)** the abstention calibrator (confidence +
+verdict as a self-supervised label, which sets the threshold τ).
+
+### Automated batch inference (`--infer_slg`)
+
+- **Exactly one expert per question**, one answer returned, single turn.
+- Processed in **rounds** to minimise model load/unload churn on tight VRAM:
+  route every pending question, answer them grouped by expert, verify them all,
+  then reroute only the failures into the next round (up to `max_reroutes`).
+- Per-question outcome (`status` in `slg.json`):
+  - `resolved` — verified and confident enough to return.
+  - `rejected` — the router found no suitable expert.
+  - `exhausted` — the verifier rejected every attempt within the reroute budget.
+  - `abstained` — an answer passed the critic but never cleared the calibrated
+    confidence bar, so the system withholds it.
+- Writes `answers/<exp>/slg.json` (one record per question, original order) plus
+  diagnostics under `answers/<exp>/slg_diagnostics/` (routes, route traces,
+  verifier log, **competence learning curve**, **calibration trace**).
+
+### Interactive session (`--chat_slg`)
+
+- Multi-turn chatbot. The router may select **multiple experts** per turn when
+  `routing.interactive_multi_expert` is set.
+- The **router's reasoning trace and every verifier verdict (with confidence)
+  are shown to the user**, as is each abstain-guard / competence demotion event.
+- Accepted answers are **aggregated** into one cohesive reply, then
+  **compressed** and carried as context into the next turn.
+- If no answer clears the confidence bar the assistant abstains; if the router
+  never picks an expert it reports that none was suitable.
+
+## Scope and assumptions of the online mechanisms (A, B, C)
+
+All three mechanisms learn online, with no labels and no retraining, and **reset
+every run / chat session** — nothing persists to disk. That shared design choice
+carries assumptions worth stating for each.
+
+### (A) Online competence-learning router
+
+- **Self-supervised signal.** Reliability is updated from the *verifier's*
+  verdict, not from ground truth, so a systematically lenient or harsh critic
+  biases who the router learns to trust. It inherits the verifier's accuracy.
+- **Region by cosine threshold.** "Same region" is a hard cosine cut
+  (`competence_similarity_threshold`, 0.85). Near the boundary the assignment is
+  brittle; a question just under 0.85 inherits no competence and starts neutral.
+- **Cold start / small-N.** A brand-new expert gets delta 0 until it has been
+  tried; on short runs each region holds few observations, so the Beta estimate
+  is wide and the nudge is small by design.
+
+### (B) Domain-grounded verifier
+
+- **Critic is the same 8B.** The deterministic checks are independent, but the
+  LLM verdict comes from the resident 8B — it is self-critique, not an external
+  oracle. Its agreement with ground truth should be validated on a labelled set.
+- **Deterministic checks are heuristics.** Numeric-sanity, units, and format
+  rules are regex/range based; only the absurd-magnitude and degenerate-answer
+  vetoes are hard. Units/format are soft (confidence-shaping), so a correct but
+  unconventionally phrased answer can be down-weighted, not rejected.
+
+### (C) Calibrated abstention
+
+The threshold τ is a **selective-prediction heuristic, not a method with formal
+error guarantees.**
+
+- **Self-supervised label.** τ controls the *critic's* FAIL rate among accepted
+  answers, not true wrongness — and the same 8B acts as both critic and
+  verifier, so it is calibrated against its own judgement.
+- **Not conformal in the strict sense.** There is no held-out calibration split
+  and the online stream is reused adaptively, so the exchangeability assumptions
+  of split-conformal prediction do not hold. τ is *calibrated*, not *guaranteed*.
+- **Small-N / per-session reset.** Below `abstention_min_calibration`
+  observations τ is just the fixed floor (0.5); on short runs the calibration
+  set is small and noisy.
+
+`target_error` (default 0.10) is therefore the tolerated fraction of
+critic-FAIL answers above the line, not a guaranteed bound on real error.
 
 ## Project Structure
 
 ```
-eng_llm/
-├── main.py                # Entry point
-├── config.yaml            # Configuration file
-├── requirements.txt       # Dependencies
-├── commands/              # Command handlers
-│   ├── data_processing.py
-│   ├── train.py
-│   ├── inference.py
-│   ├── evaluation.py
-│   └── models.py
-├── question_answer/       # QA generation from PDFs
-├── finetune/              # LoRA fine-tuning
-├── inference/             # Baseline, RAG, SLG inference
-├── evaluate/              # Evaluation metrics
-├── utils/                 # Model loading, paths, prompts
-└── download_llama/        # Model download utilities
+SLG/
+├── main.py                     # Entry point
+├── config.yaml                 # Configuration (see the routing: block)
+├── commands/                   # Command handlers (data, train, inference, eval)
+├── inference/
+│   ├── baseline.py             # GPT-4.1 / RAG / fine-tuned baselines
+│   └── slg/                    # Small Language Router
+│       ├── pipeline.py         # Orchestrator: ask() batch + chat() interactive
+│       ├── retriever.py        # Jina cosine pre-filter over experts
+│       ├── reasoner.py         # Resident 8B: route / criticize / aggregate / compress
+│       ├── experts.py          # 1B + LoRA expert answering
+│       ├── competence.py       # (A) online expert-competence model
+│       ├── verifier.py         # (B) domain-grounded verifier
+│       ├── abstention.py       # (C) calibrated abstention
+│       └── session.py          # Per-run state binding A + C + carried context
+├── finetune/                   # LoRA fine-tuning
+├── evaluate/                   # Evaluation metrics
+├── utils/                      # Model loading, paths, prompts
+└── download_llama/             # Model download utilities
 ```
 
 ## Key Features
 
-- **LoRA Fine-tuning**: Efficient fine-tuning of LLaMA 3.2-1B and 3.1-8B models
-- **RAG**: Retrieval-augmented generation with FAISS vector search
-- **SLG**: Small Language Graph with expert routing and multi-model inference
-- **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert
+- **Fully on-prem**: no cloud LLM at inference time; data never leaves the host.
+- **LoRA experts**: one adapter per topic split, loaded on demand.
+- **Reasoning router** with an **online competence model** that learns who to
+  trust without labels or retraining.
+- **Domain-grounded verification** and **calibrated abstention** for reliable
+  engineering answers.
+- **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert.
 
 ## Output Structure
 
 ```
 experiments/
 └── {experiment_name}/
-    ├── finetuned_3_2_1b/       # Fine-tuned adapter
-    ├── finetuned_3_1_8b/       # Fine-tuned adapter
-    ├── orchestrator_3_2_1b/    # Orchestrator adapter
-    ├── slg/                    # SLG expert adapters
-    └── metrics.json            # Evaluation results
+    ├── slg/                       # SLG expert LoRA adapters (one dir per expert)
+    ├── slg_index/                 # cached expert routing embeddings
+    ├── slg_descriptions/          # descriptions.json (expert -> short description)
+    └── metrics.json               # evaluation results
 
 answers/
 └── {experiment_name}/
     ├── gpt-4.1-2025-04-14.json
     ├── rag.json
     ├── finetuned_3_2_1b.json
-    ├── finetuned_3_1_8b.json
-    └── slg.json
+    ├── slg.json                   # SLG predictions (chapter/title/question/experts/answer/status)
+    └── slg_diagnostics/
+        ├── slg_routes.json        # experts tried per question
+        ├── route_traces.json      # router reasoning traces
+        ├── critic_log.json        # verifier verdicts (pass/fail, confidence, checks)
+        ├── competence_log.json    # (A) online learning signal
+        └── calibration_log.json   # (C) threshold history + coverage
 ```

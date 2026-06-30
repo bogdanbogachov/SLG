@@ -152,18 +152,24 @@ class ExpertRetriever:
         self,
         query_embedding: np.ndarray,
         top_k: int,
-        penalties: Optional[Dict[str, float]] = None,
+        adjustments: Optional[Dict[str, float]] = None,
     ) -> List[Tuple[str, float]]:
-        """Rank experts by cosine similarity (minus any penalty), return top_k."""
+        """Rank experts by cosine similarity plus signed competence adjustments.
+
+        ``adjustments`` are the online-competence deltas (see
+        :mod:`inference.slg.competence`): positive boosts an expert that has
+        proven reliable on similar questions, negative demotes one that has
+        failed. They are added to the raw cosine score before ranking.
+        """
         if self._matrix.shape[0] == 0:
             return []
         sims = self._matrix @ query_embedding  # both L2-normalized -> cosine
         scores: Dict[str, float] = {
             eid: float(sims[i]) for i, eid in enumerate(self.expert_ids)
         }
-        if penalties:
-            for eid, weight in penalties.items():
+        if adjustments:
+            for eid, delta in adjustments.items():
                 if eid in scores:
-                    scores[eid] -= weight
+                    scores[eid] += delta
         ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
         return ranked[: max(top_k, 0)]

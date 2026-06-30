@@ -124,19 +124,34 @@ slg:
   max_description_words: 10
   out_of_scope_token: "NONE"
 
-# Routing pipeline: cosine pre-filter -> reasoning router -> critic -> reroute -> aggregate -> compress
+# Routing pipeline: cosine pre-filter -> reasoning router -> domain verifier -> reroute -> aggregate -> compress
+# Three online mechanisms learn across one run/session: (A) competence router,
+# (B) domain verifier, (C) calibrated abstention.
 routing:
   top_k_cosine: 5                       # Jina cosine shortlist size handed to the reasoning router
-  max_reroutes: 3                       # critic-reject reroute attempts before giving up on a question
+  max_reroutes: 3                       # verifier-reject reroute attempts before giving up on a question
   interactive_multi_expert: true        # interactive chat may pick >1 expert; batch inference always forces 1
   embedding_dimension: 768              # jina-v2-base-en
   embedding_batch_size: 100             # batch size when embedding expert training answers
-  penalty_similarity_threshold: 0.85    # incoming question counts as "the same" (for penalties) at >= this cosine
-  penalty_weight: 0.2                   # cosine down-weight applied per accumulated penalty point
   compression_max_tokens: 256           # token budget for the compressed answer carried across chat turns
+
+  # (A) Online competence-learning router — every verifier verdict updates a
+  # per-expert, per-query-region reliability estimate that signs the cosine rank.
+  competence_similarity_threshold: 0.85 # a question is "in the same region" at >= this cosine
+  competence_weight: 0.3                # scale of the cosine adjustment per unit of reliability above/below the prior
+
+  # (B) Domain-grounded verifier
+  verifier_require_units: true          # flag quantitative answers that omit units on their numbers
+
+  # (C) Calibrated abstention — self-supervised confidence threshold over verifier confidence
+  abstention_target_error: 0.10         # max tolerated error rate among accepted answers
+  abstention_confidence_floor: 0.5      # threshold used until min_calibration observations accrue
+  abstention_min_calibration: 20        # observations needed before the calibrated threshold is trusted
+
   # Sentinels returned to the user / written to predictions
   rejection_message: "A suitable expert was not found for your question."
   exhausted_message: "The experts were not able to answer your question."
+  low_confidence_message: "No expert could answer this with sufficient confidence."
 
 # Generation constants
 generation:

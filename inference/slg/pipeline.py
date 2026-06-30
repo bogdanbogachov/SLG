@@ -1,16 +1,28 @@
 """Small Language Router orchestrator.
 
 Per question the pipeline runs: cosine shortlist -> reasoning router -> expert
-answer -> critic -> (reroute on failure) -> aggregate -> compress.
+answer -> domain verifier -> (reroute on failure) -> aggregate -> compress, with
+three online mechanisms learning across the whole run/session:
+
+* **(A) competence router** — every verifier verdict updates a per-expert,
+  per-query-region reliability estimate that signs the cosine ranking, so the
+  router learns who to trust without labels or retraining.
+* **(B) domain verifier** — deterministic engineering checks (numeric/unit
+  sanity, format) combined with the 8B critic; emits a pass/fail plus a
+  confidence used downstream.
+* **(C) calibrated abstention** — a self-supervised confidence threshold decides
+  when to answer vs. withhold; an answer the critic passes but whose confidence
+  is below the calibrated bar is *not* returned.
 
 Two entry points share the same building blocks:
 
 * :meth:`ask`  — automated batch inference over a QA file. Exactly one expert
   per question, single answer, no multi-turn. To keep model load/unload churn
   low under tight VRAM, questions are processed in *rounds*: route all pending
-  questions, answer them grouped by expert, critic them all, then reroute the
+  questions, answer them grouped by expert, verify them all, then reroute the
   failures into the next round.
-* :meth:`chat` — interactive multi-turn session (implemented in a later step).
+* :meth:`chat` — interactive multi-turn session that surfaces the router
+  reasoning and each verifier verdict to the user.
 """
 
 import json
@@ -34,12 +46,14 @@ from inference.slg.experts import ExpertRunner
 from inference.slg.reasoner import Reasoner
 from inference.slg.retriever import ExpertRetriever
 from inference.slg.session import SessionState
+from inference.slg.verifier import DomainVerifier
 
 # Per-question terminal states
 PENDING = "pending"
 RESOLVED = "resolved"
-REJECTED = "rejected"    # router found no suitable expert
-EXHAUSTED = "exhausted"  # critic rejected every attempt
+REJECTED = "rejected"      # router found no suitable expert
+EXHAUSTED = "exhausted"    # verifier rejected every attempt
+ABSTAINED = "abstained"    # an answer passed but never cleared the confidence bar
 
 
 class SmallLanguageRouter:
@@ -50,6 +64,10 @@ class SmallLanguageRouter:
         self._max_reroutes = int(self._routing["max_reroutes"])
         self._rejection_message = self._routing["rejection_message"]
         self._exhausted_message = self._routing["exhausted_message"]
+        self._low_confidence_message = self._routing.get(
+            "low_confidence_message",
+            "No expert could answer this with sufficient confidence.",
+        )
 
         experiments_dir = CONFIG["paths"]["experiments"]
         self._slg_path = get_slg_path(experts_location, experiments_dir)
@@ -81,6 +99,10 @@ class SmallLanguageRouter:
         self._retriever = ExpertRetriever(experiment, allowed_experts=self._valid_experts)
         self._runner = ExpertRunner(self._slg_path)
         self._reasoner = Reasoner()
+        self._verifier = DomainVerifier(
+            self._reasoner,
+            require_units=bool(self._routing.get("verifier_require_units", True)),
+        )
 
     # ------------------------------------------------------------- setup
     def _resolve_valid_experts(self) -> set:
@@ -124,7 +146,8 @@ class SmallLanguageRouter:
         logger.info("Embedding %d questions for cosine routing...", len(questions))
         q_emb = [self._retriever.embed_query(q) for q in questions]
 
-        state = self._run_rounds(questions, q_emb)
+        session = SessionState()
+        state = self._run_rounds(questions, q_emb, session)
 
         # Assemble answers in original order for evaluation alignment.
         answers_list = []
@@ -140,18 +163,18 @@ class SmallLanguageRouter:
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(answers_list, f, indent=4)
 
-        self._write_diagnostics(state)
+        self._write_diagnostics(state, session)
         self._log_summary(state)
 
-    def _run_rounds(self, questions: List[str], q_emb: List[np.ndarray]) -> Dict:
+    def _run_rounds(self, questions: List[str], q_emb: List[np.ndarray], session: SessionState) -> Dict:
         n = len(questions)
-        session = SessionState()
         state = {
             "status": [PENDING] * n,
             "answer": [None] * n,
-            "history": [[] for _ in range(n)],   # experts tried, in order
+            "history": [[] for _ in range(n)],     # experts tried, in order
             "route_traces": [[] for _ in range(n)],
             "critic_log": [[] for _ in range(n)],
+            "best_lowconf": [None] * n,            # (answer, confidence) passed-but-withheld
         }
 
         for attempt in range(self._max_reroutes):
@@ -161,19 +184,24 @@ class SmallLanguageRouter:
             logger.info("=== Routing round %d/%d — %d pending question(s) ===",
                         attempt + 1, self._max_reroutes, len(pending))
 
-            # --- Route phase (8B resident) ---
+            # --- Route phase (8B resident, online-competence adjusted) ---
             self._reasoner.load()
             assignment: Dict[int, str] = {}
             for i in pending:
-                penalties = session.penalty_weights(q_emb[i])
-                shortlist = [eid for eid, _ in self._retriever.shortlist(q_emb[i], self._top_k, penalties)]
+                adjustments = session.routing_adjustments(q_emb[i])
+                shortlist = [eid for eid, _ in self._retriever.shortlist(q_emb[i], self._top_k, adjustments)]
                 trace, chosen = self._reasoner.route(
-                    questions[i], shortlist, self._descriptions, max_experts=1, penalized=penalties
+                    questions[i], shortlist, self._descriptions, max_experts=1,
+                    adjustments=adjustments,
                 )
                 state["route_traces"][i].append(trace)
                 if not chosen:
-                    state["status"][i] = REJECTED
-                    state["answer"][i] = self._rejection_message
+                    # No expert: terminal rejection only if we never chose one
+                    # before; otherwise the question has run out of alternatives
+                    # and is classified after the loop.
+                    if not state["history"][i]:
+                        state["status"][i] = REJECTED
+                        state["answer"][i] = self._rejection_message
                 else:
                     assignment[i] = chosen[0]
                     state["history"][i].append(chosen[0])
@@ -189,31 +217,50 @@ class SmallLanguageRouter:
                 for i, out in zip(idxs, outs):
                     round_answers[i] = out
 
-            # --- Critic phase (8B resident) ---
+            # --- Verify phase (8B resident: domain verifier B + competence A + calibration C) ---
             self._reasoner.load()
             for i, out in round_answers.items():
                 expert = assignment[i]
-                passed, critique = self._reasoner.criticize(
+                verdict = self._verifier.verify(
                     questions[i], expert, self._descriptions.get(expert, ""), out
                 )
-                state["critic_log"][i].append({"expert": expert, "passed": passed, "critique": critique})
-                if passed:
+                session.observe_verdict(expert, q_emb[i], verdict)
+                entry = {"expert": expert, **verdict.to_dict()}
+                state["critic_log"][i].append(entry)
+
+                if verdict.passed and session.accept(verdict.confidence):
                     state["status"][i] = RESOLVED
                     state["answer"][i] = out
+                elif verdict.passed:
+                    # Passed the critic but below the calibrated confidence bar:
+                    # keep the best such answer in case every attempt is withheld.
+                    best = state["best_lowconf"][i]
+                    if best is None or verdict.confidence > best[1]:
+                        state["best_lowconf"][i] = (out, verdict.confidence)
+                    logger.info("Q%d expert '%s' passed but below confidence bar (%.2f).",
+                                i + 1, expert, verdict.confidence)
                 else:
-                    count = session.penalize(expert, q_emb[i])
-                    logger.info("Critic FAIL on Q%d expert '%s' (penalty count=%d).", i + 1, expert, count)
+                    logger.info("Verifier FAIL on Q%d expert '%s' (confidence=%.2f).",
+                                i + 1, expert, verdict.confidence)
             self._reasoner.unload()
 
-        # Anything still pending exhausted its reroute budget.
+        # Classify anything still pending after the reroute budget is spent.
         for i in range(n):
-            if state["status"][i] == PENDING:
+            if state["status"][i] != PENDING:
+                continue
+            if state["best_lowconf"][i] is not None:
+                state["status"][i] = ABSTAINED
+                state["answer"][i] = self._low_confidence_message
+            elif state["history"][i]:
                 state["status"][i] = EXHAUSTED
                 state["answer"][i] = self._exhausted_message
+            else:
+                state["status"][i] = REJECTED
+                state["answer"][i] = self._rejection_message
         return state
 
     # -------------------------------------------------------- diagnostics
-    def _write_diagnostics(self, state: Dict) -> None:
+    def _write_diagnostics(self, state: Dict, session: SessionState) -> None:
         d = self._diagnostics_dir()
         with open(os.path.join(d, "slg_routes.json"), "w", encoding="utf-8") as f:
             json.dump(state["history"], f, indent=2)
@@ -221,13 +268,28 @@ class SmallLanguageRouter:
             json.dump(state["critic_log"], f, indent=2)
         with open(os.path.join(d, "route_traces.json"), "w", encoding="utf-8") as f:
             json.dump(state["route_traces"], f, indent=2)
+        # (A) online-competence learning signal and (C) calibration trace — the
+        # data behind the paper's "routing improves online" and reliability figures.
+        with open(os.path.join(d, "competence_log.json"), "w", encoding="utf-8") as f:
+            json.dump(session.competence.log, f, indent=2)
+        with open(os.path.join(d, "calibration_log.json"), "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "target_error": session.calibrator.target_error,
+                    "final_threshold": session.calibrator.threshold(),
+                    "coverage": session.calibrator.coverage(),
+                    "threshold_history": session.calibrator.threshold_history,
+                },
+                f, indent=2,
+            )
 
     def _log_summary(self, state: Dict) -> None:
         from collections import Counter
         counts = Counter(state["status"])
         logger.info(
-            "SLG batch complete — resolved=%d rejected=%d exhausted=%d",
-            counts.get(RESOLVED, 0), counts.get(REJECTED, 0), counts.get(EXHAUSTED, 0),
+            "SLG batch complete — resolved=%d rejected=%d exhausted=%d abstained=%d",
+            counts.get(RESOLVED, 0), counts.get(REJECTED, 0),
+            counts.get(EXHAUSTED, 0), counts.get(ABSTAINED, 0),
         )
 
     # ================================================================ chat
@@ -235,10 +297,11 @@ class SmallLanguageRouter:
         """Interactive multi-turn session.
 
         The router may select multiple experts (when ``interactive_multi_expert``
-        is set); each answer is criticized, failures punish their expert and
-        trigger rerouting, the surviving answers are aggregated, and a compressed
-        form is carried into the next turn. The router's reasoning and each critic
-        verdict are surfaced to the user.
+        is set); each answer is verified, failures update the competence model
+        and trigger rerouting, the surviving answers are aggregated, and a
+        compressed form is carried into the next turn. The router's reasoning and
+        each verifier verdict (with confidence) are surfaced to the user, and the
+        system abstains when no answer clears the calibrated confidence bar.
         """
         multi = bool(self._routing.get("interactive_multi_expert", True))
         session = SessionState()
@@ -262,13 +325,14 @@ class SmallLanguageRouter:
     def _chat_turn(self, question: str, session: SessionState, multi: bool, output_fn) -> None:
         q_emb = self._retriever.embed_query(question)
         accepted: List[tuple] = []   # (expert_id, answer)
+        best_lowconf = None          # (expert_id, answer, confidence)
         ever_chose = False
 
         for attempt in range(self._max_reroutes):
-            penalties = session.penalty_weights(q_emb)
+            adjustments = session.routing_adjustments(q_emb)
             taken = {e for e, _ in accepted}
             shortlist = [
-                e for e, _ in self._retriever.shortlist(q_emb, self._top_k, penalties)
+                e for e, _ in self._retriever.shortlist(q_emb, self._top_k, adjustments)
                 if e not in taken
             ]
             if not shortlist:
@@ -278,7 +342,7 @@ class SmallLanguageRouter:
             self._reasoner.load()
             trace, chosen = self._reasoner.route(
                 question, shortlist, self._descriptions, max_experts,
-                penalized=penalties, carried_context=session.carried_context,
+                adjustments=adjustments, carried_context=session.carried_context,
             )
             self._reasoner.unload()
             output_fn(f"\n[router reasoning]\n{trace}\n[router chose] {chosen or 'NONE'}")
@@ -292,24 +356,29 @@ class SmallLanguageRouter:
                 e: self._runner.answer(e, question, session.carried_context) for e in chosen
             }
 
-            # Critic each answer; surface verdict; punish failures.
+            # Verify each answer; surface verdict; update competence + calibration.
             self._reasoner.load()
             for expert in chosen:
-                passed, critique = self._reasoner.criticize(
+                verdict = self._verifier.verify(
                     question, expert, self._descriptions.get(expert, ""), answers[expert]
                 )
-                output_fn(f"\n[critic · {expert}] {'PASS' if passed else 'FAIL'}\n{critique}")
-                if passed:
+                session.observe_verdict(expert, q_emb, verdict)
+                output_fn(
+                    f"\n[verifier · {expert}] {'PASS' if verdict.passed else 'FAIL'} "
+                    f"(confidence={verdict.confidence:.2f})\n{verdict.critique}"
+                )
+                if verdict.passed and session.accept(verdict.confidence):
                     accepted.append((expert, answers[expert]))
+                elif verdict.passed:
+                    output_fn(f"[abstain-guard] '{expert}' passed but below the confidence bar; withholding.")
+                    if best_lowconf is None or verdict.confidence > best_lowconf[2]:
+                        best_lowconf = (expert, answers[expert], verdict.confidence)
                 else:
-                    count = session.penalize(expert, q_emb)
-                    output_fn(f"[penalty] '{expert}' penalized (count={count}); will reroute.")
+                    output_fn(f"[competence] '{expert}' demoted for similar questions; will reroute.")
             self._reasoner.unload()
 
-            if accepted and not multi:
-                break
-            if accepted and multi:
-                # Got at least one good answer this round; stop rerouting.
+            if accepted:
+                # Got at least one confident answer this round; stop rerouting.
                 break
 
         if accepted:
@@ -319,6 +388,8 @@ class SmallLanguageRouter:
             session.set_context(self._reasoner.compress(combined))
             self._reasoner.unload()
             output_fn(f"\nassistant> {final}")
+        elif best_lowconf is not None:
+            output_fn(f"\nassistant> {self._low_confidence_message}")
         elif not ever_chose:
             output_fn(f"\nassistant> {self._rejection_message}")
         else:

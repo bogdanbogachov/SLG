@@ -38,15 +38,18 @@ _ROUTER_USER = (
     "Question: {question}\n"
     "{context_block}"
     "Candidate experts:\n{expert_list}\n"
-    "{penalty_block}"
+    "{competence_block}"
     "\nReason about which expert(s) (at most {max_experts}) can best answer this "
     "question, then on the final line output the expert name(s) or NONE."
 )
 
 _CRITIC_SYSTEM = (
-    "You are a strict quality critic for an engineering question-answering system. "
-    "You are given a user question, the specialist expert that produced an answer "
-    "(with its domain description), and the answer itself. Check whether the answer:\n"
+    "You are a strict, domain-grounded quality critic for an engineering "
+    "question-answering system. You are given a user question, the specialist "
+    "expert that produced an answer (with its domain description), and the answer "
+    "itself. Engineering answers carry real risk: a wrong number, an inconsistent "
+    "unit, or a violated physical constraint is worse than a fluent but empty "
+    "reply. Check whether the answer:\n"
     "1. directly answers the user's question\n"
     "2. uses the selected expert's domain appropriately\n"
     "3. avoids unsupported claims\n"
@@ -54,16 +57,21 @@ _CRITIC_SYSTEM = (
     "5. follows the requested format\n"
     "6. is complete but concise\n"
     "7. does not contradict the expert's known limitations\n"
-    "Briefly note any problems you find. On the very last line output exactly "
-    "'VERDICT: PASS' if the answer is acceptable on all critical points, or "
-    "'VERDICT: FAIL' otherwise."
+    "8. is numerically and dimensionally sound — quantities carry consistent "
+    "units, magnitudes are physically plausible, and no calculation contradicts "
+    "itself\n"
+    "Briefly note any problems you find. Then output TWO final lines, each on its "
+    "own line and nothing after them:\n"
+    "CONFIDENCE: <integer 0-100, your confidence that the answer is correct and safe to return>\n"
+    "VERDICT: PASS   (if acceptable on all critical points) or VERDICT: FAIL (otherwise)"
 )
 
 _CRITIC_USER = (
     "Question: {question}\n\n"
     "Expert: {expert_id} — {description}\n\n"
     "Answer:\n{answer}\n\n"
-    "Evaluate the answer against the seven criteria, then output the verdict line."
+    "Evaluate the answer against the eight criteria, then output the CONFIDENCE "
+    "and VERDICT lines."
 )
 
 _AGGREGATOR_SYSTEM = (
@@ -128,10 +136,17 @@ class Reasoner:
         shortlist: List[str],
         descriptions: Dict[str, str],
         max_experts: int,
-        penalized: Optional[Dict[str, float]] = None,
+        adjustments: Optional[Dict[str, float]] = None,
         carried_context: str = "",
     ) -> Tuple[str, List[str]]:
-        """Return (reasoning_trace, chosen_expert_ids) restricted to the shortlist."""
+        """Return (reasoning_trace, chosen_expert_ids) restricted to the shortlist.
+
+        ``adjustments`` are the signed online-competence deltas for this query
+        region (see :mod:`inference.slg.competence`): positive means the expert
+        has proven reliable on similar questions, negative means it has failed.
+        They are surfaced to the router as soft guidance — the model still
+        reasons over the descriptions and makes the final choice.
+        """
         if not shortlist:
             return "", []
 
@@ -141,22 +156,27 @@ class Reasoner:
         context_block = (
             f"Conversation context so far:\n{carried_context}\n\n" if carried_context else ""
         )
-        penalized = penalized or {}
-        flagged = [eid for eid in shortlist if penalized.get(eid, 0) > 0]
-        penalty_block = (
-            "Previously-failed experts (avoid unless necessary): "
-            + ", ".join(flagged)
-            + "\n"
-            if flagged
-            else ""
-        )
+        adjustments = adjustments or {}
+        proven = [eid for eid in shortlist if adjustments.get(eid, 0.0) > 1e-6]
+        struggling = [eid for eid in shortlist if adjustments.get(eid, 0.0) < -1e-6]
+        competence_block = ""
+        if proven:
+            competence_block += (
+                "Experts that have answered similar questions well (prefer): "
+                + ", ".join(proven) + "\n"
+            )
+        if struggling:
+            competence_block += (
+                "Experts that have failed similar questions (avoid unless necessary): "
+                + ", ".join(struggling) + "\n"
+            )
 
         system = _ROUTER_SYSTEM.format(max_experts=max_experts)
         user = _ROUTER_USER.format(
             question=question,
             context_block=context_block,
             expert_list=expert_list,
-            penalty_block=penalty_block,
+            competence_block=competence_block,
             max_experts=max_experts,
         )
         raw = self._generate(system, user, max_new_tokens=512)
@@ -201,8 +221,13 @@ class Reasoner:
     # ------------------------------------------------------------ criticize
     def criticize(
         self, question: str, expert_id: str, description: str, answer: str
-    ) -> Tuple[bool, str]:
-        """Return (passed, critique_text)."""
+    ) -> Tuple[bool, float, str]:
+        """Return (passed, confidence, critique_text).
+
+        ``confidence`` is the critic's self-reported probability (in [0, 1]) that
+        the answer is correct and safe to return. It is the LLM half of the
+        domain verifier and feeds the abstention calibrator.
+        """
         user = _CRITIC_USER.format(
             question=question,
             expert_id=expert_id,
@@ -211,8 +236,12 @@ class Reasoner:
         )
         raw = self._generate(_CRITIC_SYSTEM, user, max_new_tokens=512)
         passed = self._parse_verdict(raw)
-        logger.info("Critic verdict for '%s': %s", expert_id, "PASS" if passed else "FAIL")
-        return passed, raw
+        confidence = self._parse_confidence(raw, passed)
+        logger.info(
+            "Critic verdict for '%s': %s (confidence=%.2f)",
+            expert_id, "PASS" if passed else "FAIL", confidence,
+        )
+        return passed, confidence, raw
 
     @staticmethod
     def _parse_verdict(raw: str) -> bool:
@@ -224,6 +253,19 @@ class Reasoner:
         # No explicit verdict line: be conservative and treat as failure.
         logger.warning("Critic produced no parseable verdict; treating as FAIL.")
         return False
+
+    @staticmethod
+    def _parse_confidence(raw: str, passed: bool) -> float:
+        """Parse the 'CONFIDENCE: <0-100>' line into [0, 1]."""
+        if "assistant" in raw:
+            raw = raw.split("assistant")[-1]
+        matches = re.findall(r"CONFIDENCE\s*:\s*(\d{1,3})", raw, flags=re.IGNORECASE)
+        if matches:
+            value = max(0, min(100, int(matches[-1]))) / 100.0
+            return value
+        # No parseable confidence: fall back to a verdict-consistent default so a
+        # PASS is not silently treated as low confidence (and vice-versa).
+        return 0.6 if passed else 0.4
 
     # ------------------------------------------------------------- aggregate
     def aggregate(self, question: str, labeled_answers: List[Tuple[str, str]]) -> str:
