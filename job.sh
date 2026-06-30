@@ -22,5 +22,11 @@ source ENV/bin/activate
 # Export a dummy variable for Open AI API
 export OPENAI_API_KEY="dummy"
 
-# Run the Python script
-python main.py --slg_descriptions=True --finetune=True --infer_slg=True
+# Run the full pipeline:
+#   --slg_descriptions  expert descriptions (prereq)
+#   --finetune          LoRA experts (+ 3_2_1b / 3_1_8b baselines per config)
+#   --infer_finetuned   single fine-tuned LLaMA baseline (#1)
+#   --slg_all           SLG suite: ablations (#2, incl. the full run) -> scalability (#5) -> metrics (#3,#4)
+# Cloud baselines (--infer_baseline/--infer_rag) and --evaluate are omitted:
+# they need a real OPENAI_API_KEY (the export below is a dummy).
+python main.py --slg_descriptions=True --finetune=True --infer_finetuned=True --slg_all=True

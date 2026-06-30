@@ -21,6 +21,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--infer_slg", type=bool, default=False)
     parser.add_argument("--chat_slg", type=bool, default=False)
 
+    # SLG ablation / experiment tooling
+    parser.add_argument("--slg_ablation", type=str, default="")
+    parser.add_argument("--slg_ablations", type=bool, default=False)
+    parser.add_argument("--slg_scalability", type=bool, default=False)
+    parser.add_argument("--slg_metrics", type=bool, default=False)
+    parser.add_argument("--slg_all", type=bool, default=False)
+
     parser.add_argument("--infer_baseline", type=bool, default=False)
     parser.add_argument("--infer_rag", type=bool, default=False)
 

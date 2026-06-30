@@ -42,6 +42,7 @@ from utils.path_utils import (
     validate_file_exists,
 )
 
+from inference.slg.ablation import AblationConfig
 from inference.slg.experts import ExpertRunner
 from inference.slg.reasoner import Reasoner
 from inference.slg.retriever import ExpertRetriever
@@ -57,8 +58,19 @@ ABSTAINED = "abstained"    # an answer passed but never cleared the confidence b
 
 
 class SmallLanguageRouter:
-    def __init__(self, experts_location: str, experiment: str):
+    def __init__(
+        self,
+        experts_location: str,
+        experiment: str,
+        ablation: AblationConfig = None,
+        expert_subset=None,
+    ):
         self.experiment = experiment
+        # Ablation condition for this run (full system by default). Non-full runs
+        # write under answers/<experiment><suffix>/ so they never clobber the
+        # full run's outputs.
+        self.ablation = ablation or AblationConfig()
+        self._output_label = experiment + self.ablation.suffix
         self._routing = CONFIG["routing"]
         self._top_k = int(self._routing["top_k_cosine"])
         self._max_reroutes = int(self._routing["max_reroutes"])
@@ -91,6 +103,9 @@ class SmallLanguageRouter:
             self._descriptions: Dict[str, str] = json.load(f)
 
         self._valid_experts = self._resolve_valid_experts()
+        if expert_subset is not None:
+            # Scalability harness: restrict routing to a fixed pool of experts.
+            self._valid_experts &= set(expert_subset)
         if not self._valid_experts:
             raise ValueError(
                 "No routable experts: need both a LoRA adapter on disk and a description."
@@ -102,6 +117,7 @@ class SmallLanguageRouter:
         self._verifier = DomainVerifier(
             self._reasoner,
             require_units=bool(self._routing.get("verifier_require_units", True)),
+            deterministic=self.ablation.deterministic,
         )
 
     # ------------------------------------------------------------- setup
@@ -119,7 +135,7 @@ class SmallLanguageRouter:
         return adapters & desc
 
     def _diagnostics_dir(self) -> str:
-        d = os.path.join(CONFIG["paths"]["answers"], self.experiment, "slg_diagnostics")
+        d = os.path.join(CONFIG["paths"]["answers"], self._output_label, "slg_diagnostics")
         ensure_dir(d)
         return d
 
@@ -129,7 +145,7 @@ class SmallLanguageRouter:
         with open(file, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        output_dir = os.path.join(CONFIG["paths"]["answers"], self.experiment)
+        output_dir = os.path.join(CONFIG["paths"]["answers"], self._output_label)
         ensure_dir(output_dir)
         output_path = os.path.join(output_dir, "slg.json")
         if os.path.exists(output_path):
@@ -146,7 +162,7 @@ class SmallLanguageRouter:
         logger.info("Embedding %d questions for cosine routing...", len(questions))
         q_emb = [self._retriever.embed_query(q) for q in questions]
 
-        session = SessionState()
+        session = SessionState(ablation=self.ablation)
         state = self._run_rounds(questions, q_emb, session)
 
         # Assemble answers in original order for evaluation alignment.
@@ -304,7 +320,7 @@ class SmallLanguageRouter:
         system abstains when no answer clears the calibrated confidence bar.
         """
         multi = bool(self._routing.get("interactive_multi_expert", True))
-        session = SessionState()
+        session = SessionState(ablation=self.ablation)
         output_fn(
             "SLG interactive session. Type your engineering question "
             "('exit' or 'quit' to leave).\n"

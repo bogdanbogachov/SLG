@@ -62,6 +62,7 @@ files:
   qa: 'question_answer/qa.json'
   qa_train: 'question_answer/qa_train.json'
   qa_test: 'question_answer/qa_test.json'
+  qa_scalability: 'question_answer/qa_test.json'   # synthetic set for the scalability sweep (#5); point at the large synthetic QA file
   srm_pdf: 'question_answer/srm.pdf'
   om_pdf: 'question_answer/om.pdf'
   mm_pdf: 'question_answer/mm.pdf'
@@ -130,6 +131,7 @@ slg:
 routing:
   top_k_cosine: 5                       # Jina cosine shortlist size handed to the reasoning router
   max_reroutes: 3                       # verifier-reject reroute attempts before giving up on a question
+  scalability_sizes: [5, 10, 20]        # expert-pool sizes for the scalability sweep (#5, synthetic data)
   interactive_multi_expert: true        # interactive chat may pick >1 expert; batch inference always forces 1
   embedding_dimension: 768              # jina-v2-base-en
   embedding_batch_size: 100             # batch size when embedding expert training answers
@@ -171,5 +173,5 @@ adapters:
 # Controls which models/components to train
 training_components:
   train_slg_system: true            # Train SLG experts (routing: prompt-based SLM + descriptions.json)
-  train_3_2_1b: false               # Train baseline 3_2_1b model
-  train_3_1_8b: false                 # Train baseline 3_1_8b model
+  train_3_2_1b: true               # Train baseline 3_2_1b model
+  train_3_1_8b: true                 # Train baseline 3_1_8b model

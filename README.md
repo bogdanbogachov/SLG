@@ -86,6 +86,11 @@ python main.py --chat_slg             # SLG — interactive multi-turn session
 # 6. Evaluate
 python main.py --evaluate
 python main.py --evaluate --training_metrics
+
+# 7. Ablation experiments (see "Experiments" below)
+python main.py --slg_ablations        # full suite: full, -A, -B, -C, base
+python main.py --slg_scalability      # expert-pool scaling sweep (synthetic)
+python main.py --slg_metrics          # routing-curve + selective-prediction metrics
 ```
 
 ## Pipeline flow
@@ -297,6 +302,44 @@ error guarantees.**
 
 `target_error` (default 0.10) is therefore the tolerated fraction of
 critic-FAIL answers above the line, not a guaranteed bound on real error.
+
+## Experiments
+
+The mechanisms are evaluated by ablation. Each run reuses the same batch
+pipeline; non-full runs write to `answers/<experiment>__<label>/` so they never
+clobber each other.
+
+| Experiment | Command | Proves |
+|---|---|---|
+| Leave-one-out ablation | `--slg_ablations` | each of A/B/C earns its place |
+| Routing-accuracy curve | `--slg_metrics` | A learns online *(headline)* |
+| Risk–coverage curve | `--slg_metrics` | C keeps the better answers |
+| Scalability sweep | `--slg_scalability` | system scales with the expert pool |
+
+**Leave-one-out (`--slg_ablations`).** Runs five conditions — `full`, `no_competence`
+(−A), `no_verifier` (−B, deterministic engineering checks off → critic-only),
+`no_abstention` (−C, answer everything), and `base` (all three off). A single
+condition can also be run with `--infer_slg --slg_ablation no_competence`.
+
+**Metrics (`--slg_metrics`).** Deterministic post-processing over each finished
+run — no models, no API calls. The correctness signal is **routing correctness**:
+a question's ground-truth expert is the topic split it came from (`slug(title)`),
+and a route is correct when the first chosen expert matches. It writes
+`slg_diagnostics/selective_metrics.json` with:
+- `routing_curve` — cumulative first-route accuracy vs. #questions; plot `full`
+  against `no_competence` to show A improves online.
+- `risk_coverage` — selective accuracy as coverage shrinks (answered questions
+  ordered by verifier confidence); shows C trades coverage for accuracy.
+- `summary` — coverage, overall and selective routing accuracy, status counts.
+
+**Scalability (`--slg_scalability`).** Times batch inference over growing expert
+pools (`routing.scalability_sizes`), recording latency and routing accuracy per
+size to `slg_diagnostics/scalability.json`. Point `files.qa_scalability` at the
+**synthetic** QA set — this is the one place synthetic data is used, explicitly,
+as a stress test.
+
+All four run automatically once the models are in place; only the leave-one-out
+and scalability runs need the 8B (GPU), the metrics step is pure CPU.
 
 ## Project Structure
 

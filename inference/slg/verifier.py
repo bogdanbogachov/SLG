@@ -77,9 +77,12 @@ class Verdict:
 class DomainVerifier:
     """Combine deterministic engineering checks with the LLM critic."""
 
-    def __init__(self, reasoner, require_units: bool = True):
+    def __init__(self, reasoner, require_units: bool = True, deterministic: bool = True):
         self._reasoner = reasoner
         self._require_units = require_units
+        # When False (the -B ablation) the deterministic engineering layer is
+        # skipped and verification falls back to the generic 8B critic alone.
+        self._deterministic_enabled = deterministic
 
     # ---------------------------------------------------- deterministic
     def _deterministic(self, question: str, answer: str) -> Tuple[float, bool, Dict[str, bool]]:
@@ -127,7 +130,10 @@ class DomainVerifier:
 
     # ----------------------------------------------------------- verify
     def verify(self, question: str, expert_id: str, description: str, answer: str) -> Verdict:
-        det_score, veto, checks = self._deterministic(question, answer)
+        if self._deterministic_enabled:
+            det_score, veto, checks = self._deterministic(question, answer)
+        else:
+            det_score, veto, checks = 1.0, False, {}
         llm_passed, llm_conf, critique = self._reasoner.criticize(
             question, expert_id, description, answer
         )

@@ -20,6 +20,7 @@ import numpy as np
 
 from config import CONFIG
 
+from inference.slg.ablation import AblationConfig
 from inference.slg.abstention import AbstentionCalibrator
 from inference.slg.competence import CompetenceModel
 from inference.slg.verifier import Verdict
@@ -28,7 +29,8 @@ from inference.slg.verifier import Verdict
 class SessionState:
     """Online competence + abstention calibration + carried chat context."""
 
-    def __init__(self, carried_context: str = ""):
+    def __init__(self, carried_context: str = "", ablation: AblationConfig = None):
+        self.ablation = ablation or AblationConfig()
         routing = CONFIG["routing"]
         threshold = float(
             routing.get(
@@ -55,12 +57,24 @@ class SessionState:
 
     # ----------------------------------------------------------- routing (A)
     def routing_adjustments(self, q_emb: np.ndarray):
-        """Signed cosine adjustments for experts seen near this question."""
+        """Signed cosine adjustments for experts seen near this question.
+
+        Returns no adjustments when competence (A) is ablated, leaving the
+        ranking to raw cosine similarity. Verdicts are still observed so the
+        competence log is comparable across conditions.
+        """
+        if not self.ablation.competence:
+            return {}
         return self.competence.adjustments(q_emb)
 
     # -------------------------------------------------------- abstention (C)
     def accept(self, confidence: float) -> bool:
-        """Whether an answer of this confidence clears the calibrated threshold."""
+        """Whether an answer of this confidence clears the calibrated threshold.
+
+        With abstention (C) ablated, every critic-passed answer is accepted.
+        """
+        if not self.ablation.abstention:
+            return True
         return self.calibrator.accept(confidence)
 
     # ---------------------------------------------------------------- context
