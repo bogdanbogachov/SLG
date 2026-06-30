@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
-#SBATCH --gpus=h100_2g.20gb:1
+#SBATCH --gpus=h100_3g.40gb:1
 
 module load python/3.11.5
 module load rust
