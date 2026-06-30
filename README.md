@@ -332,11 +332,17 @@ and a route is correct when the first chosen expert matches. It writes
   ordered by verifier confidence); shows C trades coverage for accuracy.
 - `summary` — coverage, overall and selective routing accuracy, status counts.
 
-**Scalability (`--slg_scalability`).** Times batch inference over growing expert
-pools (`routing.scalability_sizes`), recording latency and routing accuracy per
-size to `slg_diagnostics/scalability.json`. Point `files.qa_scalability` at the
-**synthetic** QA set — this is the one place synthetic data is used, explicitly,
-as a stress test.
+**Scalability (`--slg_scalability`).** Distractor scaling on a **fixed** question
+set. The *core* experts that actually answer the questions are always present;
+the pool is grown by adding **distractor** experts the questions never need
+(`routing.scalability_sizes` = total pool sizes). Because the task is held
+constant and every question stays answerable, this isolates the effect of a
+larger pool — latency should stay roughly flat (the 8B router only ever sees the
+top-k shortlist, not all N experts) and routing accuracy should hold as
+irrelevant competitors are added. Results per size go to
+`slg_diagnostics/scalability.json`. Point `files.qa_scalability` at the
+**synthetic** QA set, which supplies the distractor experts — this is the one
+place synthetic data is used, explicitly, as a stress test.
 
 All four run automatically once the models are in place; only the leave-one-out
 and scalability runs need the 8B (GPU), the metrics step is pure CPU.

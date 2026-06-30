@@ -131,7 +131,7 @@ slg:
 routing:
   top_k_cosine: 5                       # Jina cosine shortlist size handed to the reasoning router
   max_reroutes: 3                       # verifier-reject reroute attempts before giving up on a question
-  scalability_sizes: [5, 10, 20]        # expert-pool sizes for the scalability sweep (#5, synthetic data)
+  scalability_sizes: [5, 10, 20]        # total pool sizes (core + distractor experts) for the scalability sweep (#5, synthetic data)
   interactive_multi_expert: true        # interactive chat may pick >1 expert; batch inference always forces 1
   embedding_dimension: 768              # jina-v2-base-en
   embedding_batch_size: 100             # batch size when embedding expert training answers
