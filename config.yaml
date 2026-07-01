@@ -54,6 +54,7 @@ paths:
     jina_embeddings: 'jina-v2-base-en'
   split_by_title: 'question_answer/split_by_title'
   charts: 'experiments/charts'
+  paper_assets: 'paper_assets'   # copy-paste-ready LaTeX tables + figures (--paper_assets)
 
 # Files
 files:

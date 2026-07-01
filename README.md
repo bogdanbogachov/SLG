@@ -91,6 +91,8 @@ python main.py --evaluate --training_metrics
 python main.py --slg_ablations        # full suite: full, -A, -B, -C, base
 python main.py --slg_scalability      # expert-pool scaling sweep (synthetic)
 python main.py --slg_metrics          # routing-curve + selective-prediction metrics
+python main.py --slg_all              # all of the above, in order, as one job
+python main.py --paper_assets         # aggregate everything -> LaTeX tables + figures
 ```
 
 ## Pipeline flow
@@ -315,6 +317,7 @@ clobber each other.
 | Routing-accuracy curve | `--slg_metrics` | A learns online *(headline)* |
 | Risk–coverage curve | `--slg_metrics` | C keeps the better answers |
 | Scalability sweep | `--slg_scalability` | system scales with the expert pool |
+| Paper tables + figures | `--paper_assets` | aggregates all of the above for the paper |
 
 **Leave-one-out (`--slg_ablations`).** Runs five conditions — `full`, `no_competence`
 (−A), `no_verifier` (−B, deterministic engineering checks off → critic-only),
@@ -344,8 +347,24 @@ irrelevant competitors are added. Results per size go to
 **synthetic** QA set, which supplies the distractor experts — this is the one
 place synthetic data is used, explicitly, as a stress test.
 
-All four run automatically once the models are in place; only the leave-one-out
-and scalability runs need the 8B (GPU), the metrics step is pure CPU.
+**Paper assets (`--paper_assets`).** One aggregator turns every result into
+copy-paste-ready deliverables under `paper_assets/<experiment>/`:
+- `tables/` — LaTeX `booktabs` floats: `main_quality.tex` (SLG vs. baselines),
+  `ablation.tex` (leave-one-out A/B/C), `scalability.tex`. Drop in with `\input{}`.
+- `figures/` — PDF (for the paper) + PNG (for preview): routing-learning curve,
+  risk–coverage curve, scalability, ablation bars. Add with `\includegraphics{}`.
+- `README.md` — index of what each asset is and which flag produced it.
+
+Every source is optional, so it degrades gracefully. Run `--paper_assets` **last** —
+after `--slg_all` (behaviour metrics) **and** `--evaluate` (answer quality) — so it
+captures everything; the quality table and Semantic/AI-Expert columns only appear
+once `--evaluate` has produced `metrics.json`.
+
+`--slg_all` chains the experiment runs in one job — ablations → scalability →
+metrics (each step guarded) — but does **not** aggregate; call `--paper_assets`
+separately at the end. Only the leave-one-out and scalability runs need the 8B
+(GPU); metrics and `--paper_assets` are pure CPU and run anywhere, including the
+login node.
 
 ## Project Structure
 

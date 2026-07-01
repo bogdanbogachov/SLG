@@ -210,6 +210,18 @@ def run_slg_all(experiment: str):
             logger.exception("SLG suite step '%s' failed; continuing.", name)
 
 
+def run_paper_assets(experiment: str):
+    """Aggregate all results (quality, ablation behaviour, scalability) into
+    paper-ready LaTeX tables + figures under paper_assets/<experiment>/.
+
+    Pure CPU post-processing; every source is optional. Run this last — after
+    ``--slg_all`` and ``--evaluate`` — so it captures both the ablation/scalability
+    behaviour and the answer-quality metrics."""
+    from evaluate.paper_assets import build
+    out_dir = build(experiment)
+    logger.info("Paper assets written to %s", out_dir)
+
+
 def run_slg_chat(experiment: str):
     from inference.slg import SmallLanguageRouter
     router = SmallLanguageRouter(experts_location=experiment, experiment=experiment)

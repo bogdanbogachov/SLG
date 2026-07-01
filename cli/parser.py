@@ -27,6 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--slg_scalability", type=bool, default=False)
     parser.add_argument("--slg_metrics", type=bool, default=False)
     parser.add_argument("--slg_all", type=bool, default=False)
+    parser.add_argument("--paper_assets", type=bool, default=False)
 
     parser.add_argument("--infer_baseline", type=bool, default=False)
     parser.add_argument("--infer_rag", type=bool, default=False)

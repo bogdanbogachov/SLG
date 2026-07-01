@@ -5,6 +5,7 @@ from commands.slg_descriptions import run_slg_descriptions
 from commands.inference import (
     run_baseline, run_rag, run_finetuned, run_slg, run_slg_chat,
     run_slg_ablations, run_slg_scalability, run_slg_metrics, run_slg_all,
+    run_paper_assets,
 )
 from commands.evaluation import run_evaluation
 from commands.plot_metrics import plot_experiments_metrics
@@ -52,4 +53,7 @@ if __name__ == '__main__':
 
     # Evaluation
     run_evaluation(experiment, include_training_metrics=args.training_metrics) if args.evaluate else None
+
+    # Aggregate every result into paper-ready LaTeX tables + figures
+    run_paper_assets(experiment) if args.paper_assets else None
     plot_experiments_metrics() if args.plot_metrics else None
