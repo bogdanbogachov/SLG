@@ -2,15 +2,13 @@ import os
 from openai import OpenAI
 from logging_config import logger
 from config import CONFIG
-from utils.path_utils import ensure_dir
+from utils.path_utils import ensure_dir, get_answers_root
 
 
 def run_baseline(experiment: str):
     from inference.baseline import ask_baseline
     client = OpenAI(api_key=CONFIG['open_ai_api_key'])
-    paths_config = CONFIG['paths']
-    answers_dir = paths_config['answers']
-    ensure_dir(os.path.join(answers_dir, experiment))
+    ensure_dir(os.path.join(get_answers_root(experiment), experiment))
     files_config = CONFIG['files']
     model = CONFIG['models']['gpt_4_1']
     ask_baseline(file=files_config['qa_test'], model=model, experiment=experiment, client=client)
@@ -34,11 +32,10 @@ def run_finetuned(experiment: str):
     paths_config = CONFIG['paths']
     models_paths = paths_config['models']
     adapters_config = CONFIG['adapters']
-    answers_dir = paths_config['answers']
     experiments_dir = paths_config['experiments']
     downloaded_models_dir = paths_config['downloaded_models']
     
-    ensure_dir(os.path.join(answers_dir, experiment))
+    ensure_dir(os.path.join(get_answers_root(experiment), experiment))
     files_config = CONFIG['files']
     
     base_model_3_2_1b = os.path.join(downloaded_models_dir, models_paths['3_2_1b'])
@@ -60,11 +57,10 @@ def run_finetuned(experiment: str):
 
 def run_slg(experiment: str, ablation: str = "full"):
     """Batch SLG inference. ``ablation`` selects a leave-one-out preset (#2);
-    non-full runs write to answers/<experiment>__<ablation>/."""
+    non-full runs write to answers/<experiment>/<experiment>__<ablation>/."""
     from inference.slg import SmallLanguageRouter
     from inference.slg.ablation import get_ablation
-    paths_config = CONFIG['paths']
-    ensure_dir(os.path.join(paths_config['answers'], experiment))
+    ensure_dir(os.path.join(get_answers_root(experiment), experiment))
     files_config = CONFIG['files']
     router = SmallLanguageRouter(
         experts_location=experiment, experiment=experiment,
@@ -102,10 +98,9 @@ def run_slg_scalability(experiment: str):
     from inference.slg import SmallLanguageRouter
     from evaluate.slg_metrics import compute, slug_title
 
-    paths_config = CONFIG['paths']
     files_config = CONFIG['files']
     routing_cfg = CONFIG['routing']
-    answers_dir = paths_config['answers']
+    answers_root = get_answers_root(experiment)
 
     qa_file = files_config.get('qa_scalability', files_config['qa_test'])
     sizes = routing_cfg.get('scalability_sizes', [5, 10, 20])
@@ -153,7 +148,7 @@ def run_slg_scalability(experiment: str):
         start = time.perf_counter()
         router.ask(file=qa_file)
         elapsed = time.perf_counter() - start
-        metrics = compute(os.path.join(answers_dir, label))
+        metrics = compute(os.path.join(answers_root, label))
         results.append({
             "n_experts": k,
             "n_core": len(core),
@@ -164,11 +159,10 @@ def run_slg_scalability(experiment: str):
             "coverage": metrics["summary"]["coverage"],
         })
 
-    out_dir = os.path.join(answers_dir, experiment, "slg_diagnostics")
+    out_dir = os.path.join(answers_root, experiment, "slg_diagnostics")
     ensure_dir(out_dir)
     with open(os.path.join(out_dir, "scalability.json"), "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2)
-    logger.info("Scalability sweep complete: %s", results)
     logger.info("Scalability sweep complete: %s", results)
 
 
@@ -179,12 +173,12 @@ def run_slg_metrics(experiment: str):
     from inference.slg.ablation import PRESETS
     from evaluate.slg_metrics import run as run_metrics
 
-    answers_dir = CONFIG['paths']['answers']
+    answers_root = get_answers_root(experiment)
     labels = [experiment] + [
         f"{experiment}{p.suffix}" for p in PRESETS.values() if p.suffix
     ]
     for label in labels:
-        if not _os.path.isfile(_os.path.join(answers_dir, label, "slg.json")):
+        if not _os.path.isfile(_os.path.join(answers_root, label, "slg.json")):
             continue
         m = run_metrics(label)
         logger.info("Metrics for %s: %s", label, m["summary"])

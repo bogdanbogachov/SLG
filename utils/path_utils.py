@@ -64,6 +64,19 @@ def get_model_path(model_name: str, base_dir: str) -> str:
     return os.path.join(base_dir, model_name)
 
 
+def get_answers_root(experiment: str, answers_dir: str = None) -> str:
+    """Umbrella directory that holds every run folder for one experiment.
+
+    Under it live the full run + baselines (``<experiment>/``) and each
+    non-full condition as a sibling (``<experiment>__no_competence/``,
+    ``<experiment>__scale10/``, ...), so a single experiment maps to a single
+    top-level folder in ``answers/``.
+    """
+    if answers_dir is None:
+        answers_dir = CONFIG["paths"]["answers"]
+    return os.path.join(answers_dir, experiment)
+
+
 def get_experiment_path(experiment_name: str, base_dir: str) -> str:
     """
     Get the full path to an experiment directory.

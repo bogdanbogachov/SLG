@@ -1,6 +1,6 @@
 import os
 import json
-from utils.path_utils import ensure_dir
+from utils.path_utils import ensure_dir, get_answers_root
 from config import CONFIG
 
 
@@ -13,28 +13,25 @@ def _is_predictions(data) -> bool:
     )
 
 
-def run_evaluation(experiment: str, include_training_metrics: bool = False):
-    from evaluate.evaluate import load_data, evaluate, pull_training_metrics
-    from logging_config import logger
+def _score_run_dir(answers_dir: str, experiment_dir: str, ground_truth_file: str, logger) -> str:
+    """Score every predictions file in one run folder into experiment_dir/metrics.json.
 
-    files_config = CONFIG['files']
-    paths_config = CONFIG['paths']
-    ground_truth_file = files_config['qa_test']
-    experiments_dir = paths_config['experiments']
-    answers_dir = os.path.join(paths_config['answers'], experiment)
+    Resumable per file (per-question checkpoints) and idempotent (a stem already
+    present in metrics.json is skipped unless a checkpoint forces a re-score).
+    Returns the metrics.json path.
+    """
+    from evaluate.evaluate import load_data, evaluate
 
-    experiment_dir = os.path.join(experiments_dir, experiment)
     ensure_dir(experiment_dir)
     eval_ckpt_dir = os.path.join(experiment_dir, 'evaluation_checkpoints')
     ensure_dir(eval_ckpt_dir)
 
-    metrics_path = os.path.join(experiment_dir, files_config['metrics'])
+    metrics_path = os.path.join(experiment_dir, CONFIG['files']['metrics'])
     by_stem = {}
     if os.path.isfile(metrics_path):
         with open(metrics_path, encoding='utf-8') as f:
-            existing = json.load(f)
-        for item in existing:
-            by_stem.update(item)
+            for item in json.load(f):
+                by_stem.update(item)
 
     for predictions_file in sorted(os.listdir(answers_dir)):
         if not predictions_file.endswith('.json'):
@@ -52,29 +49,69 @@ def run_evaluation(experiment: str, include_training_metrics: bool = False):
             continue
 
         if os.path.isfile(checkpoint_path):
-            results = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
-            by_stem[stem] = results
+            by_stem[stem] = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
         elif stem in by_stem:
             logger.info(
-                'Skipping evaluation for %s (already in %s; remove that entry to force re-evaluation).',
-                stem,
-                metrics_path,
+                'Skipping %s (already in %s; remove that entry to force re-evaluation).',
+                stem, metrics_path,
             )
             continue
         else:
-            results = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
-            by_stem[stem] = results
+            by_stem[stem] = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
 
         metrics_list = [{k: by_stem[k]} for k in sorted(by_stem.keys())]
         with open(metrics_path, 'w', encoding='utf-8') as f:
             json.dump(metrics_list, f, indent=4)
 
+    return metrics_path
+
+
+def run_evaluation(experiment: str, include_training_metrics: bool = False,
+                   include_scalability: bool = False):
+    """Score answer quality for every run under the experiment's umbrella.
+
+    Sweeps ``answers/<exp>/`` — the full run + baselines (``<exp>/``) and each
+    leave-one-out ablation (``<exp>__no_competence/`` ...) — writing one
+    ``experiments/<label>/metrics.json`` per run so ``--paper_assets`` can pull
+    quality for all of them (main table + per-ablation columns). Scalability runs
+    (``<exp>__scale*``) are skipped by default: they repeat the same task and no
+    table consumes their quality; pass ``include_scalability=True`` to force them.
+    """
+    from evaluate.evaluate import pull_training_metrics
+    from logging_config import logger
+
+    files_config = CONFIG['files']
+    experiments_dir = CONFIG['paths']['experiments']
+    ground_truth_file = files_config['qa_test']
+    umbrella = get_answers_root(experiment)
+
+    if not os.path.isdir(umbrella):
+        logger.warning('No answers found at %s; nothing to evaluate.', umbrella)
+        return
+
+    labels = sorted(
+        d for d in os.listdir(umbrella)
+        if os.path.isdir(os.path.join(umbrella, d))
+    )
+    for label in labels:
+        if not include_scalability and '__scale' in label:
+            logger.info('Skipping scalability run %s (quality eval not needed; '
+                        'pass include_scalability=True to force).', label)
+            continue
+        answers_dir = os.path.join(umbrella, label)
+        if not any(f.endswith('.json') for f in os.listdir(answers_dir)):
+            continue  # no predictions in this folder
+        logger.info('=== Evaluating run: %s ===', label)
+        _score_run_dir(answers_dir, os.path.join(experiments_dir, label),
+                       ground_truth_file, logger)
+
     if include_training_metrics:
         experiment_dir = os.path.join(experiments_dir, experiment)
         metrics_path = os.path.join(experiment_dir, files_config['metrics'])
-        training_metrics = pull_training_metrics(experiment_dir)
-        with open(metrics_path, "r") as f:
-            data = json.load(f)
-        data.extend(training_metrics)
-        with open(metrics_path, "w") as f:
-            json.dump(data, f, indent=4)
+        if os.path.isfile(metrics_path):
+            training_metrics = pull_training_metrics(experiment_dir)
+            with open(metrics_path, "r") as f:
+                data = json.load(f)
+            data.extend(training_metrics)
+            with open(metrics_path, "w") as f:
+                json.dump(data, f, indent=4)

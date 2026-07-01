@@ -36,6 +36,7 @@ from config import CONFIG
 from logging_config import logger
 from utils.path_utils import (
     ensure_dir,
+    get_answers_root,
     get_slg_descriptions_path,
     get_slg_path,
     validate_dir_exists,
@@ -135,7 +136,7 @@ class SmallLanguageRouter:
         return adapters & desc
 
     def _diagnostics_dir(self) -> str:
-        d = os.path.join(CONFIG["paths"]["answers"], self._output_label, "slg_diagnostics")
+        d = os.path.join(get_answers_root(self.experiment), self._output_label, "slg_diagnostics")
         ensure_dir(d)
         return d
 
@@ -145,7 +146,7 @@ class SmallLanguageRouter:
         with open(file, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        output_dir = os.path.join(CONFIG["paths"]["answers"], self._output_label)
+        output_dir = os.path.join(get_answers_root(self.experiment), self._output_label)
         ensure_dir(output_dir)
         output_path = os.path.join(output_dir, "slg.json")
         if os.path.exists(output_path):

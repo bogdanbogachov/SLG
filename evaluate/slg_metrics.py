@@ -121,9 +121,9 @@ def run(label: Optional[str] = None) -> Dict:
     ``label`` is the answers sub-directory (e.g. ``my_exp__no_competence``);
     defaults to the configured experiment (the full run).
     """
-    answers = CONFIG["paths"]["answers"]
+    from utils.path_utils import get_answers_root
     label = label or CONFIG["experiment"]
-    run_dir = os.path.join(answers, label)
+    run_dir = os.path.join(get_answers_root(CONFIG["experiment"]), label)
     metrics = compute(run_dir)
     out_path = os.path.join(run_dir, "slg_diagnostics", "selective_metrics.json")
     os.makedirs(os.path.dirname(out_path), exist_ok=True)

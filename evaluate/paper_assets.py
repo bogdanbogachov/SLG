@@ -144,10 +144,10 @@ def _ablation_summaries(answers_dir: str, experiment: str) -> "Dict[str, dict]":
             "n": summary.get("n"),
         }
         # Optional per-ablation answer quality, if --evaluate was run on it.
-        q = _quality_rows(experiments_dir, label)
-        slg_q = q.get("slg", {})
+        slg_q = _quality_rows(experiments_dir, label).get("slg", {})
         row["Semantic"] = slg_q.get("Semantic")
         row["AI-Expert"] = slg_q.get("AI-Expert")
+        row["quality"] = slg_q  # full metric dict for the ablation-quality table
         out[name] = row
     return out
 
@@ -225,6 +225,45 @@ def _table_ablation(abl: "Dict[str, dict]", out_dir: str) -> Optional[str]:
         header=header,
     )
     path = os.path.join(out_dir, "tables", "ablation.tex")
+    _write(path, tex)
+    return path
+
+
+def _table_ablation_quality(abl: "Dict[str, dict]", out_dir: str) -> Optional[str]:
+    """Full answer-quality metrics per ablation (needs --evaluate on each run)."""
+    rows = {n: abl[n].get("quality") or {} for n in _ABLATION_ORDER if n in abl}
+    rows = {n: q for n, q in rows.items() if any(v is not None for v in q.values())}
+    if not rows:
+        logger.info("paper_assets: no per-ablation quality (run --evaluate); "
+                    "skipping ablation-quality table.")
+        return None
+    best = {}
+    for c in _QUALITY_COLS:
+        vals = [rows[n].get(c) for n in rows if rows[n].get(c) is not None]
+        best[c] = max(vals) if vals else None
+    lines = []
+    for name in _ABLATION_ORDER:
+        if name not in rows:
+            continue
+        cells = [_ABLATION_LABEL[name]]
+        for c in _QUALITY_COLS:
+            v = rows[name].get(c)
+            s = _fmt(v)
+            if v is not None and best[c] is not None and abs(v - best[c]) < 1e-9:
+                s = f"\\textbf{{{s}}}"
+            cells.append(s)
+        lines.append("    " + " & ".join(cells) + " \\\\\n")
+    header = "Configuration & " + " & ".join(_QUALITY_COLS)
+    tex = _wrap_table(
+        "".join(lines),
+        caption="Answer quality of each ablated configuration on the test set "
+                "(best per column in bold). Complements the routing/selective view "
+                "in Table~\\ref{tab:ablation}.",
+        label="tab:ablation-quality",
+        colspec="l" + "r" * len(_QUALITY_COLS),
+        header=header,
+    )
+    path = os.path.join(out_dir, "tables", "ablation_quality.tex")
     _write(path, tex)
     return path
 
@@ -403,7 +442,8 @@ def _write_readme(out_dir: str, produced: "Dict[str, List[str]]") -> None:
     ]
     tbl = {
         "main_quality.tex": "Answer-quality vs. baselines (needs `--evaluate`).",
-        "ablation.tex": "Leave-one-out A/B/C ablation (needs `--slg_metrics`; quality cols need `--evaluate`).",
+        "ablation.tex": "Leave-one-out A/B/C ablation routing/selective view (needs `--slg_metrics`).",
+        "ablation_quality.tex": "Full answer-quality per ablation (needs `--evaluate` on each run).",
         "scalability.tex": "Distractor-growth scalability (needs `--slg_scalability`).",
     }
     for f in produced.get("tables", []):
@@ -428,10 +468,11 @@ def _write_readme(out_dir: str, produced: "Dict[str, List[str]]") -> None:
 # --------------------------------------------------------------------------- #
 def build(experiment: Optional[str] = None) -> str:
     """Aggregate all results for ``experiment`` into paper_assets/<experiment>/."""
+    from utils.path_utils import get_answers_root
     experiment = experiment or CONFIG["experiment"]
     paths = CONFIG["paths"]
     experiments_dir = paths["experiments"]
-    answers_dir = paths["answers"]
+    answers_dir = get_answers_root(experiment)  # umbrella holding every run folder
     out_dir = os.path.join(paths.get("paper_assets", "paper_assets"), experiment)
 
     quality = _quality_rows(experiments_dir, experiment)
@@ -444,6 +485,7 @@ def build(experiment: Optional[str] = None) -> str:
     for p in (
         _table_main_quality(quality, out_dir),
         _table_ablation(ablation, out_dir),
+        _table_ablation_quality(ablation, out_dir),
         _table_scalability(scalability, out_dir),
     ):
         if p:

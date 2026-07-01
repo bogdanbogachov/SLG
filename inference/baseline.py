@@ -8,7 +8,7 @@ from typing import Dict, Any, List
 from logging_config import logger
 from config import CONFIG
 from utils.model_loader import load_model_with_adapter, cleanup_model_memory
-from utils.path_utils import ensure_dir
+from utils.path_utils import ensure_dir, get_answers_root
 
 
 def ask_baseline(file: str, model: str, experiment: str, client) -> None:
@@ -32,7 +32,7 @@ def ask_baseline(file: str, model: str, experiment: str, client) -> None:
         data = json.load(f)
 
     paths_config = CONFIG['paths']
-    output_dir = os.path.join(paths_config['answers'], experiment)
+    output_dir = os.path.join(get_answers_root(experiment), experiment)
     ensure_dir(output_dir)
     output_path = os.path.join(output_dir, f"{model}.json")
 
@@ -112,7 +112,7 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
     )
     
     paths_config = CONFIG['paths']
-    output_dir = os.path.join(paths_config['answers'], experiment)
+    output_dir = os.path.join(get_answers_root(experiment), experiment)
     ensure_dir(output_dir)
     output_file = os.path.join(output_dir, f"{os.path.basename(adapter)}.json")
 
@@ -283,10 +283,10 @@ class AskRag:
         with open(self.questions_file, 'r') as file:
             data = json.load(file)
 
-        from utils.path_utils import ensure_dir
+        from utils.path_utils import ensure_dir, get_answers_root
         
         paths_config = CONFIG['paths']
-        output_dir = os.path.join(paths_config['answers'], self.experiment)
+        output_dir = os.path.join(get_answers_root(self.experiment), self.experiment)
         ensure_dir(output_dir)
         output_path = os.path.join(output_dir, "rag.json")
 

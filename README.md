@@ -83,7 +83,7 @@ python main.py --infer_finetuned      # Single fine-tuned LLaMA
 python main.py --infer_slg            # SLG — automated batch inference
 python main.py --chat_slg             # SLG — interactive multi-turn session
 
-# 6. Evaluate
+# 6. Evaluate (scores the full run + baselines AND every ablation in the umbrella)
 python main.py --evaluate
 python main.py --evaluate --training_metrics
 
@@ -244,9 +244,12 @@ verdict as a self-supervised label, which sets the threshold τ).
   - `exhausted` — the verifier rejected every attempt within the reroute budget.
   - `abstained` — an answer passed the critic but never cleared the calibrated
     confidence bar, so the system withholds it.
-- Writes `answers/<exp>/slg.json` (one record per question, original order) plus
-  diagnostics under `answers/<exp>/slg_diagnostics/` (routes, route traces,
-  verifier log, **competence learning curve**, **calibration trace**).
+- Writes `answers/<exp>/<exp>/slg.json` (one record per question, original order)
+  plus diagnostics under `answers/<exp>/<exp>/slg_diagnostics/` (routes, route
+  traces, verifier log, **competence learning curve**, **calibration trace**).
+  Everything for an experiment sits under one umbrella `answers/<exp>/`: the full
+  run + baselines in `answers/<exp>/<exp>/`, and each ablation / scalability size
+  as a sibling (`answers/<exp>/<exp>__no_competence/`, `.../<exp>__scale10/`, ...).
 
 ### Interactive session (`--chat_slg`)
 
@@ -308,7 +311,7 @@ critic-FAIL answers above the line, not a guaranteed bound on real error.
 ## Experiments
 
 The mechanisms are evaluated by ablation. Each run reuses the same batch
-pipeline; non-full runs write to `answers/<experiment>__<label>/` so they never
+pipeline; non-full runs write to `answers/<experiment>/<experiment>__<label>/` so they never
 clobber each other.
 
 | Experiment | Command | Proves |
@@ -347,10 +350,17 @@ irrelevant competitors are added. Results per size go to
 **synthetic** QA set, which supplies the distractor experts — this is the one
 place synthetic data is used, explicitly, as a stress test.
 
+**Evaluation sweep (`--evaluate`).** Scores answer quality for **every run** under
+the experiment's umbrella — the full run + baselines and each leave-one-out
+ablation — writing one `experiments/<label>/metrics.json` per run. Scalability
+runs (`<exp>__scale*`) are skipped (they repeat the task; no table needs their
+quality). Resumable per file and idempotent, so re-running only scores what's new.
+
 **Paper assets (`--paper_assets`).** One aggregator turns every result into
 copy-paste-ready deliverables under `paper_assets/<experiment>/`:
 - `tables/` — LaTeX `booktabs` floats: `main_quality.tex` (SLG vs. baselines),
-  `ablation.tex` (leave-one-out A/B/C), `scalability.tex`. Drop in with `\input{}`.
+  `ablation.tex` (leave-one-out A/B/C routing/selective), `ablation_quality.tex`
+  (full answer quality per ablation), `scalability.tex`. Drop in with `\input{}`.
 - `figures/` — PDF (for the paper) + PNG (for preview): routing-learning curve,
   risk–coverage curve, scalability, ablation bars. Add with `\includegraphics{}`.
 - `README.md` — index of what each asset is and which flag produced it.
