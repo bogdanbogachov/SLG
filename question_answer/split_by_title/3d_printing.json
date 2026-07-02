@@ -1,0 +1,74 @@
+[
+    {
+        "chapter": "Stack Exchange: 3D Printing",
+        "title": "3D Printing",
+        "question": "Why doesn't PLA stick to heated bed?\n\nI have a basic Creality Ender-3 with a black rough bed cover. I'm printing with PLA.\n\nAfter assembly, I printed 3 or 4 small toys sliced by Cura with basic settings. All were printed very well!\n\nHowever, after that, extruded filament would not stick to the bed. I tried the following:\n\nBed calibration with A4 paper (each corner with a tight nozzle to paper and repeated calibration again)\nOnce raised up the bed temperature from stock 50 to 60 °C\nWashed the bed with a soap and water (and dried)\nSprayed with a hair spray\nChanged the filament\n\nNothing helped so far.\n\nWhat else can I try?",
+        "answer": "I think you may have used the wrong substance to clean your bed. Try using Isopropyl Alcohol (IPA). You may have left some residue behind from the soap, which is now interfering with adhesion. When that is done, ensure you've gone through the steps for bed leveling again. It's amazing how much of a difference proper bed leveling makes in adhesion. If it still doesn't work, post some pictures up of your results, which will help tremendously in getting you a better answer.",
+        "source_url": "https://3dprinting.stackexchange.com/q/11285",
+        "tags": [],
+        "score": 11,
+        "author": "11242",
+        "question_author": "19035",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: 3D Printing",
+        "title": "3D Printing",
+        "question": "SLA prints not sticking to build plate\n\nI have been working with our SLA printer (Facture Draken) for a couple weeks now printing in makerjuice waxcast. . I have had some successful prints, but the majority (80%) end up as pancakes stuck to the bottom of the resin tray. Some others break in half mid print. \n\nI have experimented with laying my models (round circular diks) flat on the build plate, but most of the times I place them on supports which stem from a square baseplate. \n\nIt seems clear to me that there is allot of force being put on the models while curing on the bottom of the resin tray. I have noticed that printing objects with a larger projection area are more likely to stick in the vat. I assume this is because of the increased contact with the tray. Usually it seems ~10 layers are built before my baseplate breaks away. \n\nThings I have tried\n\nPulling out the build plate, cleaning it with Acetone. Sanding it with 80 grit sandpaper. \nEmptying the resin tray and replacing with new resin. \nUpping base-layer cure-time from from 30seconds up to 3 minutes, and variations between.\nUpping base-layer count from 2 to 4.\nRotating model base 45% to start the tray peel process from a corner rather than from a long edge to reduce initial tear force. \n\nAnyone with experience got more suggestions on how to continue troubleshooting?",
+        "answer": "Prints could end up on tray for couple of reasons. \n\nVacuum force on early layers - Usually you should lose pieces on the center of platform\n\nPut holes or channels on platform\nVery slow speed on early layers\nUse smaller platform\nUse tilt mechanism\nUse larger support structures\nUse stickier platform - Anodized aluminum is specially good \n\nNon-aligned platform - Pieces on side of platform end up on tray \n\nAlign platform / tray\n\nLow cure times - you could lose pieces around platform for DLP and whole platform for LCD ones\nResin related issues\n\nResin designed for thinner layers - Decrease layer thickness\nPigment settled down - Shake resin before use",
+        "source_url": "https://3dprinting.stackexchange.com/q/4353",
+        "tags": [],
+        "score": 10,
+        "author": "5007",
+        "question_author": "7445",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: 3D Printing",
+        "title": "3D Printing",
+        "question": "Volcano hot end adapter orientation?\n\nNow that V6 nozzles are getting more advanced, as in Nickel coated brass/copper nozzles (e.g. Bondtech CHT® nozzles) the availability for Volcano hot ends seem to lag behind...\nA Volcano heat break adapter/nozzle extender has been spotted on the online market places to be used together with the shorter E3D V6 nozzles.\n\nThere seems to be confusion about the mounting of the adapter.\nEither from the top of the heater block:\n\nor, from the bottom:\n\nWhat is the correct positioning of the adapter considering a hex key insert is in the path of the filament, e.g. effects on retraction performance?",
+        "answer": "I'm not sure what the intended mounting is, but I would put the hex socket downward towards the nozzle. Especially with a CHT, the opening to the nozzle (3 openings rather) is significantly wider than the normal filament path (usually actually 1.85-2.00 mm), and having the adapter widen just before it should help the filament reach the entire opening smoothly once it's molten and expanded in the space.\nConversely, mounting it with the hex socket pointed upwards creates a point in the melt zone where the path widens then narrows again. Due to the way viscous fluids work, material that gets into this space is very unlikely to merge back with the main flow; it's going to stay there and bake. This could lead to jams or at least increased friction from the molten filament having to pass by carbonized gunk. Even if not, it could leave mismatched color/material filament inside the hotend after a purge, only to have it randomly come out later and ruin your print (or at least make it look ugly).",
+        "source_url": "https://3dprinting.stackexchange.com/q/19477",
+        "tags": [],
+        "score": 1,
+        "author": "11157",
+        "question_author": "5740",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: 3D Printing",
+        "title": "3D Printing",
+        "question": "CoreXY limit switch locations\n\nI am trying to set up RepRap firmware for a CoreXY shown below. There are 4 limit switches in the top plane and one for the Z-axis.\nI believe that LS1 & 2 are considered for the X-axis and LS3 & 4 are for the Y-axis. My question is do I need all of these switches? Is it even possible to program this many in the firmware?",
+        "answer": "LS1 & 2 are considered for the X-axis\n\nYes, these correspond to X-max and X-min, respectfully.\n\nLS3 & 4 are for the Y-axis\n\nYes, these correspond to Y-min and Y-max, respectfully.\n\ndo I need all of these switches?\n\nTechnically, no, you need one switch for each axis (if homing is used), but it can be saving your printer when somehow a layer shift has occurred which forces the head to move outside the bed dimensions.\nNote that you even can use zero switches, but then you would need to position the print head yourself before each print and condition the G-code with a starting position, this is seen in some CNC machines.\nIt is a good idea to use min and max switches, but not necessary. (My CoreXY printer doesn't have the Y-max endstop as there was a little too less space to place it, restricting Y bed size...)\n\nIs it even possible to program this many in the firmware?\n\nYes, firmwares allow for min and max switches, sometimes even multiple min or max switches for a single axis. The problem is whether your controller board has enough pins exposed and connectors added on the circuit board. But, min and max switches for X, Y and Z axis are not uncommon anymore, look at the specs of the controller board.",
+        "source_url": "https://3dprinting.stackexchange.com/q/16544",
+        "tags": [],
+        "score": 1,
+        "author": "5740",
+        "question_author": "27750",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: 3D Printing",
+        "title": "3D Printing",
+        "question": "Adding a TMC2209 driver to BIGTREETECH SKR mini E3 V3.0 control board using Marlin\n\nI haven't started on the hardware for this project yet as I'm still waiting for delivery, but I would just like to sense-check my current software mods and hardware plans to see if I'm along the right lines. I am going to take the BIGTREETECH SKR mini E3 V3.0 board and add a 5th stepper driver to get independent control of the Z axes on my printer. Having studied the pins on the board and the schematics of the various ICs, my plan is to connect the TMC2209 to some spare pins on the board.\nUsing the BIGTREETECH PCB version of the driver:\n\nI plan to attach the enable pin to PD0 on the SKR, MS1, and MS2 to ground, UART Tx/Rx to the first PDN as detailed in the manual, VM to the power supply, GND to the power supply, A2/A1/B1/B2 to the motor, VDD to a 3.3V pin from the SPI 1 block of pins on the SKR, and GND to ground.\nI think this makes sense as the driver runs in UART mode - it is set to 0x0 by tying MS1 and MS2 to ground - and my present understanding is that in UART mode the CLK, STP, and DIR pins are not needed. I am not 100% on that point so I could be wrong there. If I do need to add it then STP and DIR are easy, CLK would be a bit more challenging but I believe UART does not require a clock signal.\nAs far as software changes are concerned, the main additions are in pins.h of Marlin 2.1.x where I have added:\n#define Z2_ENABLE_PIN PD0 \n#define Z2_STEP_PIN PD2 // not needed in uart mode? \n#define Z2_DIR_PIN PD3 // not needed in uart mode? \n\nAnd then to hijack some hardware serial pins:\n#define X_HARDWARE_SERIAL MSerial4 // original code\n#define Y_HARDWARE_SERIAL MSerial4 // original code\n#define Z_HARDWARE_SERIAL MSerial4 // original code\n#define Z2_HARDWARE_SERIAL MSerial1 // my addition\n#define E0_HARDWARE_SERIAL MSerial4 // original code\n\nHere is where I have the most doubt, I'm assuming that MSerial1 corresponds to the Rx1 and Tx1 pins in the EXP1 block on the board.\nIn summary, ...",
+        "answer": "I have the same idea on the same board, but I think to stay with the DIR/STEP mode first.\nThe CLK is useless for the DIR/STEP mode, then I suppose that it is useful for UART mode.\nBut this datasheet is very strange, often there is Rx and Tx UART close to STEP pin\n\nWhen I read the Bigtreetech documentation from your link, only one wire is used for the UART (Rx/Tx). This is strange, or it is to be compatible with other driver and the CLK is useless.\nI never used the TMC2209 with the uart, only in STEP/DIR mode and directly drove with a Raspberry Pico.",
+        "source_url": "https://3dprinting.stackexchange.com/q/20484",
+        "tags": [],
+        "score": 1,
+        "author": "37219",
+        "question_author": "36951",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: 3D Printing",
+        "title": "3D Printing",
+        "question": "Show build date and time in Marlin 2.1 firmware?\n\nI'm trying to find out how to format the __DATE__ and __TIME__ options in Marlin.\nThis is NOT a duplicate of (Show Build date and time in Marlin 2.0).\nWhen compiling my firmware I have a line in my configuration.h\n#define CUSTOM_MACHINE_NAME __DATE__ \" \" __TIME__ \" Ender-3\"\nBut on the printer it is showing\n\nDec 5 2022 18:25:13 Ender-3\n\nI want the format mm/dd/yyyy hh:mm. Example \"12/05/2022 18:25 Ender-3\"",
+        "answer": "__DATE__ and __TIME__ are C++ pre-processor macros with a predefined format. I don't think that there's any way to change them at compile time.",
+        "source_url": "https://3dprinting.stackexchange.com/q/20287",
+        "tags": [],
+        "score": 1,
+        "author": "3953",
+        "question_author": "36357",
+        "license": "CC BY-SA 4.0"
+    }
+]

@@ -1,0 +1,86 @@
+[
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "Is there an algorithm to find an almost-convex hull given a tolerance angle?\n\nI'd like to know if there is an algorithm that given a set o points and an angle computes the convex-hull if the angle is $\\alpha = 0$ and given an $\\alpha > 0$ computes an envelope that follows more closely the \"perimeter\".\n\nAnd if there is a definition of a non intersecting perimeter of a set of points, in this case the resulting polygon when $\\alpha$ is big.\n\nAnother view of the problem can be to find an algorithm that can be parametrized to find for $\\alpha = 0$ the minimum perimeter solution (convex-hull) and for $\\alpha = 1$ (normalized) the minimum area polyline enclosing all the points.",
+        "answer": "You might investigate the so-called alpha-hull, for example: \nCRAN package, Wikipedia on alpha shapes:\n      \n\n      [Image from this link.]\n\nThe alpha-hull has very nice geometric properties, and has been heavily\nstudied, but it still might not serve your purposes.",
+        "source_url": "https://scicomp.stackexchange.com/q/2911",
+        "tags": [],
+        "score": 4,
+        "author": "673",
+        "question_author": "1812",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "Determine image of hypercube under linear map\n\nLet $A$ be an $3\\times N$ matrix (where $N$ is large) with nonnegative real entries. I'd like an algorithm for determining when a vector $v\\in\\Bbb R^3$ can be written as $Aw$ for some vector $w\\in\\Bbb R^N$ with each entry of $w$ in the range $[0,1]$. In other words I'd like to find the image of the unit hypercube in $\\Bbb R^N$ under the map represented by $A$. Does there exist an algorithm which is fast even when $N$ is large?\n\nEverything I've thought of so far is exponential, basically looping over the $2^N$ vertices of the hypercube. The problem is similar to that of determining the convex hull of a given set of points, except that the entries in $w$ needn't sum to $1$. Obviously taking the convex hull of all $2^N$ points would work, but it's exponential again.\n\nMy motivation is that I want to determine the range of colours that can be seen under a given light source, based on the spectral power distribution of the light source and the responsivity curves of the three cone cells in the eye.",
+        "answer": "I eventually found an answer. The image of a hypercube in $\\Bbb R^3$ under a linear map is called a zonohedron. They can be calculated efficiently, for example using the algorithm in An Efficient Algorithm for Generating Zonohedra (PostScript file) by Paul Heckbert.",
+        "source_url": "https://scicomp.stackexchange.com/q/31409",
+        "tags": [],
+        "score": 4,
+        "author": "30442",
+        "question_author": "30442",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "Rational functions in Python\n\nI would like use Python to verify the following identities:\n\n$ \\frac{1}{1-z} = 1 + z + z^2 + z^3 + \\dots $\n$ \\frac{1}{1-z - z^2} = 1 + z + 2z^2 + 3z^3 + \\dots $\n$ q \\prod_{n \\geq 1} (1 - q^n)^{24} = q - 24 q^2 + 252 q^3 + \\dots$\n\nThe last one could be evaluated by checking the poly1d class in numpy. \n\nPython doesn't seem to have a Laurent series or rational functions capability for the first two examples.\n\nPerhaps there are numerical methods for generating these coefficients very quickly. I am not sure what a good data type for storing series with potentially negative exponents.\n\nAnother possibility might be to manipulate generators.",
+        "answer": "I think you are looking for capabilities not available in Python itself nor Numpy, but that are available in SymPy. Sympy is a computer algebra package developed in Python. You can try it \"live\" in its on-line shell. Documentation on series development can be found here.",
+        "source_url": "https://scicomp.stackexchange.com/q/10417",
+        "tags": [],
+        "score": 9,
+        "author": "414",
+        "question_author": "4006",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "4th order Runge-Kutta for $y' = y$\n\nMy question is quite simple, but the more I look at it, the less content I am. My question is how to do a RK4 method for $y'=y$. At first I would assume the following:\n\n$$k_1=y_n$$\n\n$$k_2=y_n+\\frac{h}{2}k_1$$\n\nand right here you can actually start to see part of the issue that I have, namely that it seems in the second equation we are adding apples and oranges since $h$ is not unitless. Nonetheless, in continuing onward:\n\n$$k_3=y_n+\\frac{h}{2}k_2$$\n\n$$k_4=y_n+h\\ k_3$$\n\nand now put all together,\n\n$$y_{n+1}=y_n+\\frac{h}{6}(k_1+2k_2+2k_3+k_4)$$.\n\nSo for all of these it seems as though we are adding apples and oranges (my case is exactly this pretty much, finding position by taking the derivative of the velocity). Furthermore, in this last equation to solve for the next step, $y'$ does not appear in it at all, which to me seems really weird (not right at all). To clarify why I am confused on this point, is because normally the first step is an Euler Step, in which case the whole thing put together would look like:\n\n$$y_{n+1}=y_n+h\\ y'_{n}$$\n\nPart of the reason I bring this up is because I am given $y'$ and need to now map it's derivative (just like the above Euler Method). I have used RK4 many times on more complicated equations, but for some reason this one just doesn't seem quite right. Thanks!",
+        "answer": "The answer is quite simple. You are already comparing apples and oranges in the first equation. Garbage in, garbage out.\nThe equation $y'=y$ if written properly is $$dy/dx=y.$$ Do you see it now? To correct it, simply write: $dy/dx=ay,$ where $a$ is a constant and in our example, $a=1$ in units of $1/x$.",
+        "source_url": "https://scicomp.stackexchange.com/q/27317",
+        "tags": [],
+        "score": 9,
+        "author": "24772",
+        "question_author": "24134",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "How to construct a function in $H^3(\\Omega)$, but not in $H^4(\\Omega)$?\n\nAs the title mentioned, some suggestions and references are needed to help me to construct a function in $H^3(\\Omega)$, but not in $H^4(\\Omega)$？The domain $\\Omega=[0,1]\\times[0,1]$ and has zero trace. I'm very glad to receive some suggestions.\n\nMore precisely, I want to construct a function satisfying\n\\begin{align}\n&-\\Delta u=f\\quad in~~\\Omega=[0,1]\\times[0,1],\\\\\n&~~u=0,~~~~~~~~~on ~~~~\\partial\\Omega.\n\\end{align}\nIt may be like $r^{2/3}\\sin(2/3\\theta)$ on a L-shape domain $[-1,1]\\times [-1,1]\\backslash[0,1]\\times[-1,0]$, which has singularity in $(0,0)$.",
+        "answer": "There are fundamentally two options you have:\n\nYou construct a function based on the radial distance $r=\\sqrt{x^2+y^2}$ and make the ansatz $w(x,y)=r^\\alpha$ as suggested by Praveen Chandrashekar in the comments. Then compute the $H^s$ norm of this function on the unit disk via\n$$\n \\|w\\|^2_{H^s} = 2\\pi \\int_0^1 |\\partial^s_r w(r)|^2 \\, r\\, dr, \n$$\nwhich yields, up to constants\n$$\n \\|w\\|^2_{H^s} \\propto \\int_0^1 r^{2(\\alpha-s)} \\, r\\, dr. \n$$\nThis integral is only finite if $2(\\alpha-s)+1 > -1$, or in other words if $\\alpha > -1+s$. That is, the function $w=r^\\alpha$ is in $H^3$ if $\\alpha>2$ but it is not in $H^4$ if $\\alpha\\le 3$. Praveen C.'s choice of $\\alpha=\\frac 52$ is a valid choice then.\nYou construct a one dimensional function $w(x,y)=|x|^\\beta$ that simply doesn't depend on the $y$ coordinate at all. Consequently, all two-dimensional norms really just come down to one dimensional ones. By a similar argument as above, the norm of $w$ is given by \n$$\n \\|w\\|^2_{H^s} = \\int_{-1}^1 |\\partial^s_x w(x)|^2\\, dr, \n$$\nwhich yields again, up to constants\n$$\n \\|w\\|^2_{H^s} \\propto \\int_0^1 |x|^{2(\\beta-s)}\\, dr. \n$$\nThis is again finite if $2(\\beta-s)>-1$, or $\\beta>-\\frac 12 + s$. So $w\\in H^3$ but $w\\not\\in H^4$ if $\\frac 52 < \\beta \\le \\frac 72$.\n\nIn both cases, $w$ does not satisfy the boundary conditions you ask for. But that can be addressed in the following way: Let $u_0$ satisfy the equation\n$$\n -\\Delta u_0 = 0 \\qquad \\text{on $\\Omega=(-1,1)^2$},\n$$\nwith boundary values $u_0|_{\\partial\\Omega}=-w|_{\\partial\\Omega}$, then $u=w+u_0$ does satisfy the equation you are looking for.\n\nIt is, of course, not a priori clear that $u_0$ actually has at least $H^3$ regularity, to ensure that $u$ is also in $H^3$. But a bit of functional analysis shows that since $w\\in H^3$ by construction, $w|_{\\partial\\Omega}\\in H^{5/2}(\\partial\\Omega)$, which in turn again implies that $u_0\\in H^3$.",
+        "source_url": "https://scicomp.stackexchange.com/q/26291",
+        "tags": [],
+        "score": 3,
+        "author": "393",
+        "question_author": "7494",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "Boundary condition for Pressure in Navier-Stokes equation\n\nI am reading the paper, http://math.mit.edu/~gs/cse/codes/mit18086_navierstokes.pdf\n\nI could not really understand the description. Could someone explain a little bit more?\n\nIt says,\n\"For the lid driven cavity problem this means that homogeneous Neumann boundary conditions are prescribe everywhere. This implies in particular that the pressure $P$ is only defined up to a constant, which is fine, since only the gradient of $P$ enters the momentum equation.\"\n\nWhat does it mean \"only defined up to a constant\"? By solving the Poisson equation, you obtain the values of $P$ and can calculate its gradient. The constant means this pressure value? And if it's not \"only up to constant\", what do we get? derivative or integral?",
+        "answer": "When we say that the pressure is only defined \"up to a constant\", what we mean is this: If $u,p$ is a solution to the Navier-Stokes equations, then $u,p+c$ for any constant $c$ is also a solution. In other words, the solution is not unique, but the non-uniqueness has a very particular structure: two solutions $u,p$ and $u,p'$ can only differ in a way where $p-p'=const$.",
+        "source_url": "https://scicomp.stackexchange.com/q/25250",
+        "tags": [],
+        "score": 6,
+        "author": "393",
+        "question_author": "14387",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Computational Science",
+        "title": "Computational Science",
+        "question": "Update QR decomposition when one column is exchanged\n\nI have got an input series of matrices\n\n$A_1, A_2, A_3, \\dots $\n\nand the difference between $A_i$ and $A_{i+1}$ is the replacement of one single column. Before i get to know $A_{i+1}$, I have to compute $A_i^{-1} b$ for some fixed vector $b$, so I also have a series of vectors\n\n$A_1^{-1}b, A_2^{-1}b, A_3^{-1}b, \\dots $\n\nto compute. For your interest, this appears in implementations of the simplex method, but I prefer to approach with the point of view of numerical linear algebra. Questions:\n\nWhere can I find a reference on updating the QR decomposition after replacing one column?\nSince I am only interested in the QR decomposition in order to solve a sequence of linear problems, can this be exploited in the algorithms,too?\n\nI use the QR decomposition only because this is a standard method - in the case that you have a better recommendation for the above setting, feel free to provide your advice.",
+        "answer": "There is an extensive literature on numerical aspects of the implementation of the simplex method including methods for updating the factorization of the basis as well as techniques that maintain the inverse of the basis in product form. Replacing a column of the basis matrix is a \"rank-one update\" since it can be written in terms of adding a matrix to the basis that has only one nonzero column and is thus of rank one. \n\nThe QR factorization is not typically used in implementations of the simplex method, since it is very slow in comparison with alternative approaches. In practice an initial LU factorization of the basis is typically combined with rank one updates to the factorization for each iteration. Because too many rank one updates can lead to numerical problems, the basis is typically refactored every so often (e.g. once every 50 iterations.) \n\nThere are efficient algorithms for rank one updates to the QR factorization. A classic reference is:\n\nJ. W. Daniel, W. B. Gragg, L. Kaufman, and G. Stewart, Reorthogonalization and Stable Algorithms for Updating the Gram-Schmidt QR Factorization. Mathematics of Computation 30:",
+        "source_url": "https://scicomp.stackexchange.com/q/7825",
+        "tags": [],
+        "score": 8,
+        "author": "2150",
+        "question_author": "238",
+        "license": "CC BY-SA 4.0"
+    }
+]

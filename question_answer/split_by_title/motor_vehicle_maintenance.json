@@ -1,0 +1,74 @@
+[
+    {
+        "chapter": "Stack Exchange: Motor Vehicle Maintenance",
+        "title": "Motor Vehicle Maintenance",
+        "question": "This came off in my car. Car is Honda Accord sport 2014\n\nWas driving my car just fine, then was on a road going up hill and I heard like a thumping noise. Parked and saw this thing unconnected. What is the name of this, what does it do, how much to fix, or can I do it myself? I just had my front wheel bearing replaced a couple days ago and my uncle (guy who replaced the wheel bearing) saw that it was unconnected and either knew it didn’t matter and didn’t connect it. Or connected it and it came off again.",
+        "answer": "I'm going to be honest and say now that this might be the worst picture I've seen taken in the last 5 years, but that looks like one of your front swaybar end-links (also referred to as the anti-roll bar end-link or stabilizer link).\n\nThe end-link connects your sway bar to your suspension arm or wheel knuckle. The sway bar somewhat connects the suspension on the left side of your car to the right side, which can reduce body roll while turning, or \"stabilize\" the car. If you've worked on your car before, you should be able to replace the end-link, although they can be a bit fussy to disconnect/reconnect. If your uncle can replace your wheel bearing, then he can replace the end-link.\n\nThe reason why it didn't really \"matter\" to your uncle is because your car doesn't need the swaybar to drive. It can improve handling in general, but it isn't an absolutely necessary component. However, as others have commented, you should get it fixed soon because it's not good to leave parts broken on your car, and the handling balance may be thrown off - it'll be biased towards oversteer now.",
+        "source_url": "https://mechanics.stackexchange.com/q/67918",
+        "tags": [],
+        "score": 4,
+        "author": "42308",
+        "question_author": "49595",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Motor Vehicle Maintenance",
+        "title": "Motor Vehicle Maintenance",
+        "question": "Remove Transmission Oil Pan Stuck Bolt\n\nI'm still in the process of changing my 2009 Nissan Sentra CVT fluid. But now I'm stuck, well, me and the pan bolt are stuck.\n\nI tried the combination wrench but couldn't get enough leverage. Took the ratchet and socket out, used a hollow metal tube as leverage and all I could get was the poor ratchet broken in pieces.\n\nThe bolt is a 19mm with a metal washer underneath it:\n\nI don't want to heat the thing up, since the pan is full of flammable oil. \n\nAny help will be immensely apreciated!",
+        "answer": "I finally dit it. I tried the penetrating fluid but with no avail. I figured I needed more torque, but did not want to damage another ratchet. So I went ahead and welded the broken rachet head and also welded a 2 foot long tube to the end of the old ratchet. With this makeshift breaker bar I managed to apply enough torque to loosen the bold.",
+        "source_url": "https://mechanics.stackexchange.com/q/18599",
+        "tags": [],
+        "score": 4,
+        "author": "11171",
+        "question_author": "11171",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Motor Vehicle Maintenance",
+        "title": "Motor Vehicle Maintenance",
+        "question": "Why can't you kick-start a bike if it's in gear?\n\nIn a car with a manual transmission, you can start it by taking the car out of gear and pressing the clutch, then turning the ignition. You can also start it by pressing the clutch without actually taking the car out of gear.\n\nBikes, with kickstart mechanism, on the other hand (at least in my experience) can only be started after you take them out of gear, regardless of whether you press the clutch. Why is this?",
+        "answer": "Actually you could BUT... Motorcycles have WET multiple disc clutches in contrast with cars that usually have a single dry plate clutch engagement. \nThe friction and mainly the drag produced by these multiple discs is often very hard to overcome by kick starter, especially when the engine is cold. \nYou can simulate this by trying to push your bike in gear with disengaged clutch and in neutral. \nYou will feel substantially greater friction when in gear and disengaged clutch. \nIf you had something more powerful than your leg (the electric starter motor for example) you could actually start your bike in gear and the clutch disengaged.",
+        "source_url": "https://mechanics.stackexchange.com/q/61069",
+        "tags": [],
+        "score": 5,
+        "author": "40441",
+        "question_author": "43442",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Motor Vehicle Maintenance",
+        "title": "Motor Vehicle Maintenance",
+        "question": "What to Inspect / Clean / Change After Buying a Used Car Without A Service Record\n\nLet's say you've bought a second hand car that seems decent, but has no service record. What are the things you would inspect, clean or change right off the bat?",
+        "answer": "I can't disagree with mikes's answer, but I'd like to suggest an even stronger view: assuming that this is a car you'd like to keep for a while, treat it as if no service has ever been done. The age and mileage will then dictate what you need to check out. Find a list of regular car maintenance items (in your repair manual if you have one, or online), and go through everything up to the current mileage. This should be something a mechanic can do for you if you aren't inclined to do it yourself.\n\nAs a quick explicit list, basic low-interval maintenance items should definitely be checked (most are easy): lights, tire pressure, battery charge and capacity, wipers, engine oil and filter, air filter, plugs and wires. Then move on to stuff like transmission fluid, fuel filter, belts, hoses, and cables. (Fluids should be changed without question.) I also agree with mikes on the timing belt: that and transmission problems seem to be common reasons for people to dump cars.\n\nRegardless of your plans for the car, higher-interval, but safety-related items should be looked at ASAP: brake pads, fluid, and hoses; steering fluid; and tire condition. If for some reason you didn't get a pre-sale safety inspection, also make sure someone looks at the axles, wheels, and steering connections for soundness.",
+        "source_url": "https://mechanics.stackexchange.com/q/15579",
+        "tags": [],
+        "score": 6,
+        "author": "401",
+        "question_author": "7132",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Motor Vehicle Maintenance",
+        "title": "Motor Vehicle Maintenance",
+        "question": "My mazda milenia wont rev past 2500 rpm\n\nSo I just recently bought a 2000 Mazda Milenia s Millennium edition,and on my first day out with it, I experienced a very unusual problem. After about 20 minutes of driving the car wouldn't rev past 2500 rpm. Even If I would floor the accelerator the car would simply not rev past 2500 rpm. It feels as if the car is being electronically limited to 2500 rpm. After start up, for the first 20 minutes or so, the car drives great I can feel no mechanical issues with the car, but then I out of no where this problem occurs. I am at my wits end with this, so any help or solution to this problem would be greatly appreciated.",
+        "answer": "Apparently, this is the Mazda limp home mode. If you check that link, two common causes are:\n\nVacuum leaks\nBad ABV solenoids\n\nIn discussing with your mechanic, I would suggest first having them scan for codes to see what is triggering the limp mode.",
+        "source_url": "https://mechanics.stackexchange.com/q/4528",
+        "tags": [],
+        "score": 7,
+        "author": "57",
+        "question_author": "2320",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Motor Vehicle Maintenance",
+        "title": "Motor Vehicle Maintenance",
+        "question": "Soldering wires in a wiring harness\n\nMy Toyota Vitz 2007 has some trouble with its engine wiring harness. Engine idles roughly and wire harness damaged in several places and I had to solder wires several times. I suspect the rough idling is also probably due to the problems in the harness.\n\nI tried to find an an aftermarket wiring harness but the best one I could find has its wires that are going to the fuse box cut. I found the fuse box and could buy the socket that connects to the fuse box too. Now I am going to solder the wires.\n\nThere are about 20 wires I have to solder. My question is, would it be appropriate to solder wires? Would it make the resistance of the wires different and cause problems?",
+        "answer": "Soldering wires in a particularly old harness will actually reduce resistance in that portion of the wire. It won't be noticeable except for allowing for greater signal/line integrity. I.e. In a wire with failing spots (where conductor has been damaged or has broken) or exposed conductors, rejoining via soldering will restore the reliability of that particular wire.\n\nSoldering broken wires, extending stretched wires to reduce stress, etc. are very common processes. When done correctly, you will not affect the performance of the conductor. What actually will affect your harness more is the age and growing parasitic resistance of the harness itself.\n\nIdeally however, best practice dictates that whenever replacing the harness, it's best to replace it connector to connector instead of splicing wherever possible. This is because for every solder joint, you theoretically introduce a possible failure point. Is that of major concern? Not particularly if you are skilled enough to produce good solder joints without cold jointing, insufficient wetting, and the numerous problems that can plague a solder joint. This will affect reliability, as well as introduce interesting anomalies.\n\nIn summation, provided you can terminate solder joints effectively, and protect them adequately (please don't use electrical tape to cover your solder joints - heatshrink is certainly a worthy investment for the longevity of your harness to prevent moisture and corrosion from penetrating the insulation) you should have absolutely no issues. Ideally you should just replace the harness from one major connector to another if possible, however in some cases this is not possible, and soldering wires is the only remaining option. This isn't to say soldering can't be as effective or durable, there are just many variables that can make it particularly difficult for novices or the inexperienced to maintain quality, repeatable, and effective solder joints.",
+        "source_url": "https://mechanics.stackexchange.com/q/29655",
+        "tags": [],
+        "score": 7,
+        "author": "16773",
+        "question_author": "11037",
+        "license": "CC BY-SA 4.0"
+    }
+]

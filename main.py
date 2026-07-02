@@ -1,5 +1,8 @@
 from cli.parser import build_parser
-from commands.data_processing import create_qa, combine_all_qa, inflate_overshadowing, split_qa, data_overlap_check
+from commands.data_processing import (
+    create_qa, combine_all_qa, inflate_overshadowing, split_qa, data_overlap_check,
+    download_qa, build_qa,
+)
 from commands.train import run_training
 from commands.slg_descriptions import run_slg_descriptions
 from commands.inference import (
@@ -23,11 +26,15 @@ if __name__ == '__main__':
     # Download models
     download_models() if args.download_models else None
 
+    # Real-world QA acquisition (Stack Exchange dumps -> qa.json)
+    download_qa(args.dumps_dir, args.se_communities) if args.download_qa else None
+    build_qa(args.dumps_dir, args.se_communities, args.qa_cap) if args.build_qa else None
+
     # Data processing
     create_qa() if args.create_qa else None
     combine_all_qa() if args.combine_all_qa else None
     inflate_overshadowing() if args.inflate_overshadowing else None
-    split_qa() if args.split_qa else None
+    split_qa(subset=args.qa_subset) if args.split_qa else None
 
     # Analysis
     data_overlap_check() if args.data_overlap_check else None

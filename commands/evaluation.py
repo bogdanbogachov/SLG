@@ -1,6 +1,6 @@
 import os
 import json
-from utils.path_utils import ensure_dir, get_answers_root
+from utils.path_utils import ensure_dir, get_answers_root, get_experiments_root, get_experiment_path
 from config import CONFIG
 
 
@@ -81,35 +81,38 @@ def run_evaluation(experiment: str, include_training_metrics: bool = False,
     from logging_config import logger
 
     files_config = CONFIG['files']
-    experiments_dir = CONFIG['paths']['experiments']
     ground_truth_file = files_config['qa_test']
-    umbrella = get_answers_root(experiment)
+    answers_umbrella = get_answers_root(experiment)
+    experiments_umbrella = get_experiments_root(experiment)
 
-    if not os.path.isdir(umbrella):
-        logger.warning('No answers found at %s; nothing to evaluate.', umbrella)
+    if not os.path.isdir(answers_umbrella):
+        logger.warning('No answers found at %s; nothing to evaluate.', answers_umbrella)
         return
 
     labels = sorted(
-        d for d in os.listdir(umbrella)
-        if os.path.isdir(os.path.join(umbrella, d))
+        d for d in os.listdir(answers_umbrella)
+        if os.path.isdir(os.path.join(answers_umbrella, d))
     )
     for label in labels:
         if not include_scalability and '__scale' in label:
             logger.info('Skipping scalability run %s (quality eval not needed; '
                         'pass include_scalability=True to force).', label)
             continue
-        answers_dir = os.path.join(umbrella, label)
+        answers_dir = os.path.join(answers_umbrella, label)
         if not any(f.endswith('.json') for f in os.listdir(answers_dir)):
             continue  # no predictions in this folder
         logger.info('=== Evaluating run: %s ===', label)
-        _score_run_dir(answers_dir, os.path.join(experiments_dir, label),
+        # Eval outputs mirror the answers umbrella: experiments/<exp>/<label>/.
+        _score_run_dir(answers_dir, os.path.join(experiments_umbrella, label),
                        ground_truth_file, logger)
 
     if include_training_metrics:
-        experiment_dir = os.path.join(experiments_dir, experiment)
-        metrics_path = os.path.join(experiment_dir, files_config['metrics'])
+        # Training logs live in the experiment's training home; append them to the
+        # full run's metrics.json (experiments/<exp>/<exp>/metrics.json).
+        training_home = get_experiment_path(experiment, CONFIG['paths']['experiments'])
+        metrics_path = os.path.join(experiments_umbrella, experiment, files_config['metrics'])
         if os.path.isfile(metrics_path):
-            training_metrics = pull_training_metrics(experiment_dir)
+            training_metrics = pull_training_metrics(training_home)
             with open(metrics_path, "r") as f:
                 data = json.load(f)
             data.extend(training_metrics)

@@ -5,9 +5,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("--download_models", type=bool, default=False)
 
+    # Real-world QA (Stack Exchange dumps)
+    parser.add_argument("--download_qa", type=bool, default=False)
+    parser.add_argument("--build_qa", type=bool, default=False)
+    parser.add_argument("--dumps_dir", type=str, default="data/stackexchange")
+    parser.add_argument("--se_communities", nargs="*", default=None)
+    parser.add_argument("--qa_cap", type=int, default=5000)
+
     parser.add_argument("--create_qa", type=bool, default=False)
     parser.add_argument("--combine_all_qa", type=bool, default=False)
     parser.add_argument("--split_qa", type=bool, default=False)
+    parser.add_argument("--qa_subset", type=int, default=0,
+                        help="if >0, split only a stratified subset of N QA pairs (pipeline smoke test)")
 
     parser.add_argument("--data_overlap_check", type=bool, default=False)
 

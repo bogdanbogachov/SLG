@@ -77,6 +77,20 @@ def get_answers_root(experiment: str, answers_dir: str = None) -> str:
     return os.path.join(answers_dir, experiment)
 
 
+def get_experiments_root(experiment: str, experiments_dir: str = None) -> str:
+    """Umbrella directory for an experiment's per-run *evaluation* outputs.
+
+    Mirrors ``get_answers_root``: each run's ``metrics.json`` +
+    ``evaluation_checkpoints/`` live under ``experiments/<experiment>/<label>/``
+    (full run at ``.../<experiment>/``, ablations as siblings). It is the same
+    ``experiments/<experiment>/`` folder that already holds this experiment's
+    training artifacts (adapters, descriptions, index).
+    """
+    if experiments_dir is None:
+        experiments_dir = CONFIG["paths"]["experiments"]
+    return os.path.join(experiments_dir, experiment)
+
+
 def get_experiment_path(experiment_name: str, base_dir: str) -> str:
     """
     Get the full path to an experiment directory.

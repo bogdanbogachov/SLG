@@ -1,0 +1,98 @@
+[
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "VLANs over internet\n\nHow does VLANs work over the internet and span across multiple geographical locations? \nVLAN headers are removed when frames move to another switch or a router?\nHow does it happen?",
+        "answer": "Normally VLANs are only used within a site or at least within a network that is controlled by a single entity. \n\nIt is possible, to carry encapsulated Ethernet traffic (potentially including VLAN headers) over an IP network using a variety of tunneling protocols and it is sometimes done. The problem is that to do so efficiently requires the \"underlay\" network to have a higher MTU than the \"overlay\" network.\n\nThat is manageable if the underlay network is a network specifically built for the purpose, on most modern network gear it's no problem to increase the MTU a bit to accomodate the encapsulation overhead.\n\nHowever if the underlay network is not a purpose built network then this is much harder. Ethernet has no protocol for negotiating MTU, so if you want to use a lower MTU on the overlay network you will need to reconfigure every single device. On the underlay side most of the internet won't pass packets bigger than the default Ethernet MTU.\n\nYou can work around this by fragmenting the packets, either using IP fragmentation on the underlay or implementing fragmentation as part of the tunneling soloution. However this has problems of it's own, firstly a nieve fragmentation soloution will result in a near-doubling in the number of packets carried by the underlay network. Secondly re-assembly can be an expensive process, especially if the underlay network re-orders packets.",
+        "source_url": "https://networkengineering.stackexchange.com/q/64505",
+        "tags": [],
+        "score": 25,
+        "author": "20201",
+        "question_author": "64032",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "Accessing devices on different subnets using a switch\n\nI have two devices which come up with default IP addresses:\n\nDevice 1 - 192.168.168.168 mask 255.255.255.0\nDevice 2 - 192.168.1.254 mask 255.255.255.0\n\nI can commonly deduce that both the devices are part of the 192.168.0.0/16 network. Is that a correct assumption?\n\nThe reason I ask is because I want to manage both the devices at the same time, and I will be connecting both of these devices to a dumb ethernet switch (no VLANs etc. - really dumb). I plan to also connect a PC to the switch.\n\nI am thinking of using 192.168.2.5/16 as the IP address of the PC. Let me know if I will be able to access the device, or is this not a good practice.\n\nEdit:\n\nI cannot change the default IP addresses the devices have when they come up. When the devices go to a bad state, and I factory default them, these are the IP addresses they come up with.\n\nSo when the packet from the PC with \nsrc-ip : 192.168.2.5/16 & dst-ip : 192.168.168.168\n\ncomes to device 1 (assuming that the dumb switch just sent it on all ports), why will device-1 not respond?",
+        "answer": "Now I can commonly deduce that both the devices are part of the 192.168.0.0/16 network. Is that a correct assumption.\n\nNo, that's incorrect. You're using netmask 255.255.255.0, so that are two different /24s. Just because you can summarize them to a /16 doesn't make it a /16.\n\nIf you want this to work, you'll need to change the netmask on all devices to /16, or place a router which is connected to both /24s and routes packets between them.",
+        "source_url": "https://networkengineering.stackexchange.com/q/28780",
+        "tags": [],
+        "score": 7,
+        "author": "509",
+        "question_author": "23786",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "Fat-Tree topology\n\nFat tree network topology looks like a tree topology like below figure. In tree topology, we have same terminologies like Root, parent, child etc. This is mainly used to connect a large number of physical servers/computers in a large data center.\n\nIn the tree structure topology, leaf nodes are physical servers or computers. Rest other nodes are switches. Switches are basically 3 types: Core switches, Aggregation switches, and Edge switches. My question is what's the purpose of such a structure, and i want to know the functionality of each layer (ex: which layer has a routing role ...).",
+        "answer": "The purpose of a \"fat tree\" structure is to provide uniform bandwidth between any two nodes. Compare this to a traditional core-distribution-access model, where traffic gets oversubscribed at the core.\n\nThere are different ways of implementing a fat tree. You can have all the layers perform routing.\n\nThe article you copied this picture from has a good, if technical, explanation.",
+        "source_url": "https://networkengineering.stackexchange.com/q/67729",
+        "tags": [],
+        "score": 4,
+        "author": "2142",
+        "question_author": "64200",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "GRE, guarantee 1500 bytes MTU for end hosts\n\nIs it possible to achieve 1500 byte MTU at the end host connections ignoring fragmentation overhead in this simple scenario using GRE.\nI would like to configure R1 and R2 to do the fragmentation silently and present this network as standard MTU 1500 byte network between this 2 hosts.\nthe vendor is HPE comware and I'm missing the dfbit enable command under tunnel, anyway i'm trying to clarify is this doable because every manual online is focused on performance issue and guide to go with lower mtu that goes un fragmented between this sites.\nIn my case i would like to abstract a 1500 bytes spanned network over a lower mtu overlay network.\ninterface Tunnel2 mode gre\n mtu 1500\n ip address 10.0.12.1 255.255.255.0\n rip 1 enable\n ip mtu 1500\n source 10.0.1.1\n destination 10.0.2.1",
+        "answer": "When there's additional overhead eating into the MTU size, there are three basic approaches: increase outer MTU/frame size, decrease inner MTU, or live with fragmentation.\nRouters may fragment (for IPv4) but they don't reassemble. Reassembly is done by the end destination. Trying to move reassembly from the end node to the last-hop router has no advantage in performance, latency or other (if at all, the end node may be faster with reassembly anyway).\nIf possible you should increase the outer frame (and MTU) size for the GRE connection to accomodate the extra overhead. Using \"baby giants\" removes the need to fragment and reassemble entirely. Of course, you'd need to be in control of the network for the entire path which often isn't the case when you're tunneling.\nIf you can't use baby giants for the tunnel, another approach is to reduce the MTU before tunneling. That removes the need for fragmentation and reassembly altogether and improves performance lost due to fragmentation.\nA better approach without general MTU decrease is to use path MTU discovery (PMTUD) just like with IPv6, but that isn't always possible.",
+        "source_url": "https://networkengineering.stackexchange.com/q/74368",
+        "tags": [],
+        "score": 5,
+        "author": "36720",
+        "question_author": "15277",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "Is a pfSense router w/ a LAN gateway using a /20 bits subnet mask common?\n\nObviously I'm lacking some networking knowledge, and I wish somebody could help me understand something fishy I found on a pfSense router in an organization yesterday. The pfSense router forces subnet mask of 255.255.240.0 on a LAN gateway like 9.9.192.1. Is this common? It's on ipv4 but it also has a turned off option for ipv6 currently, if that matters.\n\nIt's valid, because it works, but the minute you add a new computer or printer to the network and forget about this /20 bits subnet mask quirk, that newly added device acts super wonky and ends up freezing, crashing and/or dropping out of the network. For instance, a printer that had 255.255.255.0 as its subnet mask was receiving only a third of a page to print and would freeze until it's rebooted. I suspect it was receiving more bits and overflowed its RAM or something, hence the freezing. It's not the case of a single cheap printer, it did that to 4 printers out of 5 at this office. Different brands, different models, some 350$ printers, some 80$ printers.\n\nOptional meditation on that gateway:\n\nIf a computer AND a printer are both on the 255.255.255.0 subnet mask, they can access the internet, but cannot communicate with each other on the LAN. Computers on 255.255.255.0 can communicate no problem with another computer on the LAN still. Just not computer <--> printer.\n\nIf a computer OR a printer has a 255.255.255.0 subnet mask while the other one has a 255.255.240.0 subnet mask, they can communicate to extremely wonky fashion and the printer almost immediately freezes when sent packets, never prints anything more than a third of a page and it crashes/freezes to a point it has to be rebooted (unusable really). Tough, both devices still can access the internet fine.\n\nIf both the computer AND a printer have the 255.255.240.0 subnet mask, they communicate super efficiently (instantaneously) without any problem at all, super stable and fast.\n\nQ ...",
+        "answer": "9.9.192.1 is an address owned by IBM - so unless they've given it to you, you can't use it on your LAN without causing problems.\n\nA subnet mask of 255.255.240.0 or /20 is completely fine as long as the address range you're using is large enough and either private (192.168.0.0/16, 172.16.0.0/12 or 10.0.0.0/8) or granted to you. Mixing devices with differing network addresses or masks doesn't usually work as you've already noticed.\n\nUsually, your network devices are configured by DHCP, so possibly you just need to correct the scope there. If you're not using DHCP now is a good time to start.\n\nedit 1: You might want to read up on how subnetting works in this good question/answer: How do you calculate the prefix, network, subnet, and host numbers?\n\nedit 2: The subnet mask defines the size of the subnet. Your mask 255.255.240.0 allows for 12 bits = 4,094 host addresses which might be a bit oversized. It doesn't hurt though, except that /24 might be slightly easier to handle.\n\nedit 3: If your can't change the LAN subnet mask on the router just don't do it. Change the mask in the DHCP options and simply don't use the extra 4 bits of host addresses.\n\nedit 4: your screenshot in the other comment - you should add additional details to your question instead - shows the DHCP options. These are most probably inherited from the NIC's network settings which may be the reason why you can't change them. Check the NIC's IP settings and correct the mask there if possible; the DHCP scope is likely to follow.",
+        "source_url": "https://networkengineering.stackexchange.com/q/46797",
+        "tags": [],
+        "score": 4,
+        "author": "36720",
+        "question_author": "42767",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "2960S IOS on 2950? Consequences?\n\nWe have some new 2960's inbound and I had a 2950 laying around. Was wondering if I loaded the 2960S IOS onto it (to get the config setup ahead of time) if there would be any permanent negative impact outside of the device not booting properly? Is there an easy way to recover from this situation if that happens? Can I create config on say 12.4 on the 2950 and just copy/paste into the new switch (2960 running likely 15.X) or will that cause problems? Thanks in advance!",
+        "answer": "Aside from the switch checking to make sure the firmware is for that model and any number of boot issues you would have if you could force it to install, the 2960S firmware wouldn't fit on the flash of a 2950. The new switch firmware is too large.\n\nI believe the 2950 has an 8MB flash card while the 2960S firmware is ~13MB.\n\nEDIT: \n\n if there would be any permanent negative impact outside of the device\n not booting properly? Is there an easy way to recover from this situation if that happens?\n\nIt won't load, so there is no other impact and there is nothing to recover from.\n\n Can I create config on say 12.4 on the 2950 and just copy/paste into the new switch (2960 running likely 15.X) or will that cause problems?\n\nThe 2950 capped at 12.1 from what I saw on Cisco's support site. I don't know what changed from 12.1 -> 15.0.2-SE6. You'd have to look into that. \n\nYou could probably get away with some basic stuff but considering the port counts are possibly different and the port types are almost certainly different (Ethernet/FastEthernet on the 2950? to GigabitEthernet on the 2960S) you wouldn't be able to do a direct copy and past. You could copy and paste it into notepad or your text editor of choice and do a replace on FastEthernet for GigabitEthernet and add or remove ports that either did or did not exist on the 2950.\n\nPersonally I'd wait and do the config from scratch on the 2960S. It shouldn't take long to do and that way you're not missing a step in converting an old config to a new config and messing with different ports and such.\n\nEDIT 2:\n\nIf you were to load a bad IOS image on a router, switch or AP, you can boot into rommon/recovery mode on the device and use TFTP to download a working image to the unit. I have yet to see a Cisco device without this ability.",
+        "source_url": "https://networkengineering.stackexchange.com/q/9847",
+        "tags": [],
+        "score": 4,
+        "author": "1291",
+        "question_author": "1353",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "Packet vs Circuit switching\n\nI have a 1Mb/s link each user uses 100Kb/s when active. \n\nWith 10 user active 10% of the time, I can have 10 users in a circuit switched environment. Packet switching with 35 users, probability > 10 active at the same time is less than .0004. \n\nHow did the author come to this conclusion.\n\nReference: Network Top Down Approach 7th",
+        "answer": "Circuit switched: each user needs 1/10 of link, so can reserve only 10 channels on the link, whether they are using it 10% or 100%.\n\nPacket switched: Each user is using the channel 10% of the time, so probability of a given user being active is p = 0.1, and inactive q = 0.9. It's a binomial distribution X ~ B(35, 0.1), so probability Pr(X=k) = C(35, k) pk q(35-k). You need Pr(X>10) which is 1 - Pr(X<=10) which is 1-(Pr(X=0) + Pr(X=1) + ... Pr(X=10)).\n\nI actually get 0.000424, not \"less than 0.0004\".\n\nDescription https://en.wikipedia.org/wiki/Binomial_distribution#Cumulative_distribution_function\nCalculate it here: https://stattrek.com/online-calculator/binomial.aspx\n\n[EDIT to add] It needs to be said both of those include a great deal of assumption and modelling simplifications. In the case of circuit switching, you can do overbooking (in the way of airlines), especially if you know that the channels are only used a certain percentage and you have enough of them to average well. In the case of packet switching, the model assumes they are independent and evenly distributed; again these are reasonable if the number of hosts is large.",
+        "source_url": "https://networkengineering.stackexchange.com/q/52008",
+        "tags": [],
+        "score": 5,
+        "author": "40371",
+        "question_author": "22298",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Network Engineering",
+        "title": "Network Engineering",
+        "question": "Is it possible to avoid the traditional handoff when using Wi-Fi?\n\nHere are some real-world issues:\n\nCertain client devices struggle to hop across APs in <2.5 seconds, even while awake and in an unsecured network.\nMany applications don't function with hiccups due to roaming (e.g. VoIP).\n\nHere's my ideal solution:\n\nAs you connect to an AP, other APs nearby will also transmit/receive the same mirrored packets using the same MAC address.\nClient operating systems will have no technical capacity to discern when a hop occurs.\n\nThoughts? What is the closest we can get to that?\n\nEDIT: Perhaps I wasn't explicit enough.\n\nThink of a cell phone. The phone will have a shortlist of multiple connected towers.\n\nWhen you make a phone call, it uses the strongest connection. When connection to said tower degrades, the call is transferred over to the next available tower with <1ms of Layer 7 hiccup. I want that end result over Wi-Fi.",
+        "answer": "It is mostly possible, by using solutions which speed-up association/authentication.\n\nThose are often controller-based, where the central controller is what you're authenticated against, not the individual APs. It manages the APs and global authentication, so it knows you're already authenticated and that you're roaming, letting you associate with its APs much more quickly than if you were using stand-alone APs\n\nMany vendors have such setup, but I'm only familiar with Cisco's and Aruba's\n\nCisco's WLC (Wireless Lan Controller\nAruba's Mobility Controller\n\nAruba has a nice solution for small offices/networks, with their Instant AP, where a Stand-Alone AP can be used as a (limited) Controller for 15 other APs",
+        "source_url": "https://networkengineering.stackexchange.com/q/9634",
+        "tags": [],
+        "score": 4,
+        "author": "1645",
+        "question_author": "6283",
+        "license": "CC BY-SA 4.0"
+    }
+]

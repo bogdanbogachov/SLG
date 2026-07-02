@@ -64,11 +64,19 @@ pip install --upgrade --upgrade-strategy eager -r requirements.txt
 # 1. Download models (LLaMA 3.2-1B, LLaMA 3.1-8B, jina-v2-base-en)
 python main.py --download_models
 
-# 2. Generate QA pairs from source documents
+# 2a. Real-world QA (Stack Exchange dumps -> question_answer/qa.json)
+python main.py --download_qa                       # fetch+extract default communities
+python main.py --build_qa --qa_cap 5000            # build qa.json (<=5k per expert)
+#   (needs a 7z extractor: `pip install py7zr` or a system 7z/7za/7zr)
+
+# 2b. …or generate synthetic QA pairs from source documents (scalability set only)
 python main.py --create_qa
 python main.py --combine_all_qa
 python main.py --inflate_overshadowing
+
+# 2c. Split -> full qa_train.json + qa_test.json, then per-expert split_by_title/
 python main.py --split_qa
+python main.py --split_qa --qa_subset 100   # smoke test: 100 pairs (80 train/20 test), all experts kept
 
 # 3. Generate expert descriptions (after split_qa, before inference)
 python main.py --slg_descriptions
@@ -94,6 +102,68 @@ python main.py --slg_metrics          # routing-curve + selective-prediction met
 python main.py --slg_all              # all of the above, in order, as one job
 python main.py --paper_assets         # aggregate everything -> LaTeX tables + figures
 ```
+
+## Dataset construction (real-world QA)
+
+Paper-facing methodology for the core (non-synthetic) evaluation set. Modules:
+`question_answer/download_stackexchange.py` and `question_answer/build_stackexchange_qa.py`
+(exposed as `--download_qa` / `--build_qa`).
+
+**Source & snapshot.** Stack Exchange Data Dump, per-community archives from the
+Internet Archive (`https://archive.org/download/stackexchange/<host>.7z`). The dump
+has **no DOI**; cite the Internet Archive item (identifier `stackexchange`), the
+specific communities, and the **snapshot date** — record the date you downloaded,
+since the dump is versioned by date. The most recent snapshots may only be
+available via Stack Exchange's own request flow (policy changed ~2024).
+
+**License (report this explicitly).** All content is **CC BY-SA** (Attribution +
+ShareAlike). Obligations: (1) attribute each item — the extractor stores
+`source_url`, `author` (answer), `question_author` per record; (2) any *published*
+derivative dataset must be released under the **same CC BY-SA** (copyleft). State
+the exact CC version matching your snapshot.
+
+**Experts = communities.** Each community is one expert; `title` = community label
+so `slug(title)` is the expert id (plugs into `split_qa_pairs_by_title`). Default
+engineering set (12): Aviation, Engineering, Electrical Engineering (`electronics`),
+Physics, Chemistry, Space Exploration, Robotics, 3D Printing, Signal Processing
+(`dsp`), Motor Vehicle Maintenance (`mechanics`), Network Engineering,
+Computational Science (`scicomp`).
+
+**Answer selection.** From each question's answers, take the **accepted** answer;
+if none, the **highest-scored** answer with score ≥ `--min_score` (default 1).
+Questions with no qualifying answer are dropped. `question` = question title + body;
+`answer` = selected answer body. Both are **HTML-stripped** (tags removed, entities
+unescaped, whitespace normalized) and truncated to `--max_q_chars` / `--max_a_chars`
+(2000 / 3000).
+
+**Deduplication (leak-free).** Records are deduplicated on a normalized question key
+(lowercased alphanumerics), keeping the highest-scored answer — applied within each
+community and again globally across communities, so the later 80/20 split cannot
+leak a question across train/test. *(This is the fix for the memorization observed
+on the synthetic set.)*
+
+**Balancing.** Per expert, keep the top-`--qa_cap` records by answer score
+(default 5000; ties shuffled with `--seed`). With the default 12 communities, set
+`--qa_cap 2500` for ~30k balanced, or `5000` and let the big sites cap out.
+
+**Splitting.** `--split_qa` → `split_train_test(qa.json)` writes full
+`qa_train.json` + `qa_test.json` (80/20, `random_state = CONFIG.seed`, dropping any
+`title == answer`), then `split_qa_pairs_by_title(qa_train)` writes one per-expert
+file under `question_answer/split_by_title/`. Experts train on `qa_train` only; test
+is held out.
+
+**Record schema** (extra provenance keys are ignored by the pipeline, kept for the
+paper): `chapter`, `title` (expert), `question`, `answer`, `source_url`, `tags`,
+`score`, `author`, `question_author`, `license`.
+
+**Numbers to report.** The build step prints a per-community table (raw → dedup →
+capped); record total pairs, #experts, per-expert counts, test-set size and
+per-domain test counts (from `qa_test.json`). Target ~10k–30k total across ~12
+distinct domains with a ≥1k leak-free test split; run each condition on ≥3 seeds.
+
+**Reproducibility.** Fixed with `--seed` (build cap/shuffle) and `CONFIG.seed`
+(train/test split). To reproduce: record the snapshot date, community list,
+`--qa_cap`, `--min_score`, and both seeds.
 
 ## Pipeline flow
 
@@ -352,8 +422,10 @@ place synthetic data is used, explicitly, as a stress test.
 
 **Evaluation sweep (`--evaluate`).** Scores answer quality for **every run** under
 the experiment's umbrella — the full run + baselines and each leave-one-out
-ablation — writing one `experiments/<label>/metrics.json` per run. Scalability
-runs (`<exp>__scale*`) are skipped (they repeat the task; no table needs their
+ablation — writing one `experiments/<exp>/<label>/metrics.json` per run. The eval
+outputs mirror the answers umbrella (full at `experiments/<exp>/<exp>/`, ablations
+as siblings), so nothing lands at the `experiments/` top level. Scalability runs
+(`<exp>__scale*`) are skipped (they repeat the task; no table needs their
 quality). Resumable per file and idempotent, so re-running only scores what's new.
 
 **Paper assets (`--paper_assets`).** One aggregator turns every result into

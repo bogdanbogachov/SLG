@@ -127,7 +127,8 @@ def _quality_rows(experiments_dir: str, experiment: str) -> "Dict[str, dict]":
 
 def _ablation_summaries(answers_dir: str, experiment: str) -> "Dict[str, dict]":
     """{ablation_name -> {behaviour summary (+ quality if evaluated)}}."""
-    experiments_dir = CONFIG["paths"]["experiments"]
+    from utils.path_utils import get_experiments_root
+    experiments_dir = get_experiments_root(experiment)  # eval umbrella
     out: Dict[str, dict] = {}
     for name in _ABLATION_ORDER:
         label = experiment if name == "full" else f"{experiment}__{name}"
@@ -468,11 +469,11 @@ def _write_readme(out_dir: str, produced: "Dict[str, List[str]]") -> None:
 # --------------------------------------------------------------------------- #
 def build(experiment: Optional[str] = None) -> str:
     """Aggregate all results for ``experiment`` into paper_assets/<experiment>/."""
-    from utils.path_utils import get_answers_root
+    from utils.path_utils import get_answers_root, get_experiments_root
     experiment = experiment or CONFIG["experiment"]
     paths = CONFIG["paths"]
-    experiments_dir = paths["experiments"]
-    answers_dir = get_answers_root(experiment)  # umbrella holding every run folder
+    experiments_dir = get_experiments_root(experiment)  # eval umbrella: experiments/<exp>/<label>/
+    answers_dir = get_answers_root(experiment)          # answers umbrella: answers/<exp>/<label>/
     out_dir = os.path.join(paths.get("paper_assets", "paper_assets"), experiment)
 
     quality = _quality_rows(experiments_dir, experiment)

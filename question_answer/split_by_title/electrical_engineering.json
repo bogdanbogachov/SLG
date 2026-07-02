@@ -1,0 +1,74 @@
+[
+    {
+        "chapter": "Stack Exchange: Electrical Engineering",
+        "title": "Electrical Engineering",
+        "question": "Is it possible to calculate how much heat dissipation and temperature rise will take place in a resistor\n\nSuppose I have a 100 mAh battery at 20V. I connect a 1000 kohm resistor across it. How much heat will be generated and how can I find the temperature rise in the resistor? As the battery operates I think that the current flow will reduce over time but am not sure about the voltage for a real battery. Perhaps I am not giving sufficient information here, I am sorry for that.\n\nI just wish to know, what information is needed to make such calculation? Have you ever done it? In the ideal case (taking only the most significant factors into consideration) what factors are considered to make an estimate of the heat dissipation and temperature rise and why would the real heat dissipation and temperature in the actual practical experiment be different?\n\nI know this question looks hard, but I will be very happy if I can finally have this mystery resolved.",
+        "answer": "The power delivered to a resistor, all of which it converts to heat, is the voltage accross it times the current thru it:\n\n    P = IV\n\nWhere P is power, I is current, and V is voltage. The current thru a resistor is related to the voltage accross it and the resistance:\n\n    I = V/R\n\nwhere R is the resistance. With this additional relation, you can rearrange the above equations to make power as a direct function of voltage or current:\n\n    P = V2/R\n\n    P = I2R\n\nIt so happens that if you stick to units of Volts, Amps, Watts, and Ohms, no additional conversion constants are required.\n\nIn your case you have 20 V accross a 1 kΩ resistor:\n\n    (20 V)2/(1 kΩ) = 400 mW\n\nThat's how much power the resistor will be dissipating.\n\nThe first step to dealing with this is to make sure the resistor is rated for that much power in the first place. Obviously, a \"¼ Watt\" resistor won't do. The next common size is is \"½ Watt\", which can take that power in theory with all appropriate conditions met. Read the datasheet carefully to see under what conditions your ½ Watt resistor can actually dissipate a ½ Watt. It might specify that ambient has to be 20 °C or less with a certain amount of ventillation. If this resistor is on a board that is in a box with something else that dissipates power, like a power supply, the ambient temperature could be significantly more than 20 °C. In that case, the \"½ Watt\" resistor can't really handle ½ Watt, unless perhaps there is air from a fan actively blowing accross its top.\n\nTo know how much the resistor's temperature will rise above ambient you will need one more figure, which is the thermal resistance of the resistor to ambient. This will be roughly the same for the same package types, but the true answer is available only from the resistor datasheet.\n\nLet's say just to pick a number (out of thin air, I didn't look anything up, example only) that the resistor with suitable copper pads has a thermal resistance of 200 °C/W. The resistor is dissipating 400 mW, so its temperature rise will be about (400 mW)(200 °C/W) = 80 °C. If it's on a open board on your desk, you can probably figure 25 °C maximum ambient, so the resistor could get to 105 °C. Note that's hot enough to boil water, but most resistors will be fine at this temperature. Just keep your finger away. If this is on a board in a box with a power supply that raises the temperature in the box 30 °C from ambient, then the resistor temp could reach (25 °C) + (30 °C) + (80 °C) = 135 °C. Is that OK? Don't ask me, check the datasheet.",
+        "source_url": "https://electronics.stackexchange.com/q/65200",
+        "tags": [],
+        "score": 33,
+        "author": "4512",
+        "question_author": "20711",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Electrical Engineering",
+        "title": "Electrical Engineering",
+        "question": "Best transistor to use for audio amplifier\n\nThis term, we will be designing an audio amplifier. So far in our lecture, we are still at BJT and based from what I've heard, FETs will just be partly discussed unlike the thorough one on BJT. Anyway, I would like to have an idea this early so I can plan on what transistor to use for best audio amplification. I have read some threads how the other transistor (BJT/FET) is better, but other forums say that the performance relies not on the component but on how the transistor is properly biased and how the circuit is properly designed.\n\nIn designing an audio amplifier, which of the four subtypes of transistors is the most efficient? (NPN/PNP/JFET/MOSFET) \n\nBy the way, the requirement of my professor is just this: impress me. Right now my group haven't decided yet on the specifics of the circuit (wattage, impedance, etc).",
+        "answer": "You could successfully build a audio amp from many different types of BJTs. It will be the circuit, not the transistor, that makes the amp work well. I'd pick jellybean parts like the 2N4401 (NPN) and 2N4403 (PNP) and stick with them for everything except for the final power output transistors. Lots of parts could fill that role. If you have your own favorite jellybean small signal transistors, use them if you prefer. The ones I mentioned have reasonable gain and can handle up to 40 V, which should be plenty good enough to allow for a amp to impress your profesor with.\n\nThere are lots of possible power transistors to use as the final output. If you are aiming for a few Watts, I'd probably go with basic parts like the TIP41 (NPN) and TIP42 (PNP).\n\nAgain though, it's not the choice of transistor that will make or break this project. You can certainly create a impressive audio amp with the transistors I mention, but you can also make a mess. It's really up to the design. In audio, overall noise and harmonic distortion are high priorities. Those come from careful circuit design and attention to these parameters at every step along the way.\n\nYou can also use other types of transistors, like JFETs or MOSFETs. Those would require a different circuit topology to utilize properly, but can be used to make a good amp too. Since you will be going over BJT details more thoroughly, I'd stick to them for now. This will be a great learning exercise. Designing a amp with very low noise and very low distortion is not trivial.",
+        "source_url": "https://electronics.stackexchange.com/q/97827",
+        "tags": [],
+        "score": 18,
+        "author": "4512",
+        "question_author": "31260",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Electrical Engineering",
+        "title": "Electrical Engineering",
+        "question": "Is it good practice to run large amounts of current through a MOSFET?\n\nI have been looking for a good way to control the flow of a lot of current in my project. This may at some points be 40-50 amperes at 12-15 V. While relays are a good choice, they are mechanical and therefore take time to activate and wear out over time.\n\nI have seen MOSFETs (like this IRL7833) that are advertised to be able to handle such demanding tasks. However, considering the size of the FET, it makes me uncomfortable to be putting that much power through it. Is this a valid concern?",
+        "answer": "Why can a thick copper wire handle a large current?\n\nBecause it has a low resistance. As long as you keep the resistance low (switch the MOSFET fully on, for example use Vgs = 10 V as in the datasheet of the IRL7833) then the MOSFET will not dissipate much power.\n\nDissipated power \\$P\\$ is: \\$P = I^2 * R\\$ so if R is kept low enough the MOSFET can handle this.\n\nHowever, there are some caveats:\n\nLet's look at the datasheet of the IRL7833.\n\nThat 150 A is at a case temperature of 25 degrees C. This means you will probably need a good heatsink. Any heat that is dissipated should be able to \"escape\" as the Rds,on of the NMOS will increase with increasing temperature. Which will increase power dissipation... See where that is going? It is called thermal runaway.\n\nThose very high currents are often pulsed currents, not continuous currents.\n\nPage 12, point 4: Package limitation current is 75 A\n\nSo in practice with one IRL7833 you're limited to 75 A, if you can keep the MOSFET cool enough.\n\nYou want to operate at 40 - 50 A, that's less than that 75 A. The further away you stay from the MOSFET's limits the better. So you might consider using an even more powerful MOSFET or use two (or more) in parallel.\n\nYou're also not putting that much power through the MOSFET, and the MOSFET is not handling 50 A * 15 V = 750 watt.\n\nWhen off the MOSFET will either handle 15 V at almost no current (just leakage), due to the low current that will not be enough power to heat up the MOSFET.\n\nWhen on the MOSFET will handle 50 A, but it will have less resistance than 4 mohm (when it is cool) so that means 10 watt. That's OK, but you have to keep the MOSFET cool.\n\nPay special attention to figure 8 of the datasheet, \"Maximum Safe Operating Area\" you must stay within that area or risk damaging the MOSFET.\n\nConclusion: so can you? Yes, you can, but you have to do some \"homework\" to determine if you are going to be within the safe limits. Just assuming that a MOSFET can handle a certain current because it is advertised as such is a recipe for disaster. You have to understand what goes on and what you're doing.\n\nFor example: since 50 A through 4 mohms already gives 10 W power dissipation, what does this mean for all the connections and traces on a PCB? They must have a very low resistance!",
+        "source_url": "https://electronics.stackexchange.com/q/394095",
+        "tags": [],
+        "score": 34,
+        "author": "77865",
+        "question_author": "122154",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Electrical Engineering",
+        "title": "Electrical Engineering",
+        "question": "Why do Arduinos ship w/ 16MHz crystal instead of 20MHz?\n\nWhy do Arduino boards ship w/ 16MHz crystal instead of 20MHz? They are spec'ed for operating at 20MHz, after all.\n\nI guess there are a few advantages to running more slowly (lower power consumption, longer life), but I must be missing something.",
+        "answer": "I'd buy into the answer on the Arduino Forum: \n\n The original ATmega8 Arduino ran at 16MHz, which was the top rated\n clock speed for the ATmega8 cpu used. When \"upgraded\" to ATmega168\n (with a 20MHz top cpu speed), the clock was left at 16MHz (probably)\n because the designers thought that more people/code would have\n backward compatibility issues with a new clock rate than would benefit\n from the extra 25% cpu performance. I certainly think they were\n right...",
+        "source_url": "https://electronics.stackexchange.com/q/33166",
+        "tags": [],
+        "score": 30,
+        "author": "771",
+        "question_author": "6094",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Electrical Engineering",
+        "title": "Electrical Engineering",
+        "question": "Why aren't FPGAs ubiquitous?\n\nReading about FPGAs, if I understand correctly, they are basically fully configurable logic gate circuits. Being this, one can design anything with them. One can design everything in the most customized way possible and hence, meet the same ends in a vastly more efficient manner which can be get using a microcontroller. Having this, it looks like an FPGA beats a microcontroller any time, any day. So my question is, if FPGAs are really this awesome, what keeps them from being much more prevalent than microcontrollers? From this point of view, to me it seems like FPGAs should have wiped out microcontrollers a long time ago. So why is this not the case? Is it the cost, difficulty to program an FPGA, or entirely something else?",
+        "answer": "You are ignoring a lot of factors that go into making design choices:\n\nCost. FPGAs are more expensive than micros for the same complexity of logic.\n\nLogic complexity. Executable code can implement far more complicated logic than the same number of gates in the micro used directly.\n\nEase of development. It's easier to write executable code than to define logic for all but small problems. Even modest microcontroller projects have thousands of lines of code. Developing the equivalent logic definitions would take much longer and be much more difficult to debug and verify.\n\nPower consumption. Since FPGAs are intended for high speed operations that micros can't handle (else you'd use a micro), they are not optimized for low power. This makes them unsuitable for some low power applications. Some micros have sleep currents under 1 µA, and can operate on just a few µA at slow clock rates. Try finding a FPGA that can do this.\n\nThe main advantages of FPGAs versus micros is that they are faster and can do more things in parallel. Other than that, you'd rather use a micro. Therefore in the design process, you usually start out with a micro, then grudgingly go to a FPGA when you really need the speed and/or concurrent high speed operation. Even then, you implement only the speed-critical parts in a FPGA, and leave the lower speed control functions and the like in the micro.",
+        "source_url": "https://electronics.stackexchange.com/q/190300",
+        "tags": [],
+        "score": 103,
+        "author": "4512",
+        "question_author": "58844",
+        "license": "CC BY-SA 4.0"
+    },
+    {
+        "chapter": "Stack Exchange: Electrical Engineering",
+        "title": "Electrical Engineering",
+        "question": "Possible to cut heat shrink tubing lengthwise and reattach?\n\nI need to get some heat shrink tubing around something that is too big on the ends for it to slide over. Is it possible to cut the heat shrink along it's length and somehow reattach it before applying heat to get it to shrink?\nIf you have any alternative suggestions I need the material to be transparent.",
+        "answer": "Actually it is possible. I did it myself.\n\n 1) You have to cut the shrink tube lengthwise.\n \n 2) Wrap it around the part where you want to apply.\n \n 3) Apply superglue to the separated part and reattach them (it is\n not necessary to attach the ends exactly at cut part, you can attach\n them as you desire).\n \n 4) Apply Heat and VOILA it works.\n\nPlease do some experiment before you commence this procedure.\n\nP.S - I know I am 4 years late. Just wanted to share.",
+        "source_url": "https://electronics.stackexchange.com/q/7303",
+        "tags": [],
+        "score": 36,
+        "author": "61339",
+        "question_author": "2115",
+        "license": "CC BY-SA 4.0"
+    }
+]
