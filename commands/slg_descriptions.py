@@ -2,7 +2,12 @@
 
 import json
 import os
+import random
 from typing import Dict, List
+
+# Descriptions are summarised from a sample of an expert's answers (an expert can
+# have thousands, which would overflow the model context). Keep this small.
+_DESCRIPTION_SAMPLE_SIZE = 25
 
 import torch
 
@@ -129,6 +134,11 @@ def run_slg_descriptions(experiment: str) -> None:
             if not answers:
                 logger.warning("No answers found for expert '%s'; skipping.", expert_id)
                 continue
+
+            # Sample a representative subset so the prompt fits the context window.
+            if len(answers) > _DESCRIPTION_SAMPLE_SIZE:
+                rng = random.Random(f"{CONFIG['seed']}:{expert_id}")
+                answers = rng.sample(answers, _DESCRIPTION_SAMPLE_SIZE)
 
             messages = _build_prompt(answers, descriptions, max_words)
             description = _generate(model, tokenizer, messages)

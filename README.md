@@ -80,6 +80,12 @@ python main.py --split_qa --qa_subset 100   # smoke test: 100 pairs (80 train/20
 
 # 3. Generate expert descriptions (after split_qa, before inference)
 python main.py --slg_descriptions
+#   Base LLaMA 3.1-8B-Instruct reads a random 25-answer sample of each expert's
+#   deduplicated answers (an expert may have thousands, which would overflow the
+#   context; sample is seeded, experts with <=25 use all) and writes a distinct
+#   <=10-word description per expert, iteratively (each prompt sees the prior
+#   descriptions) -> experiments/<exp>/slg_descriptions/descriptions.json.
+#   Skipped if that file already exists (delete to rebuild).
 
 # 4. Fine-tune one LoRA expert per topic split
 python main.py --finetune
