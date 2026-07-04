@@ -127,43 +127,42 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
         start_index = 0
         logger.info("Starting fresh fine-tuned inference run.")
     
+    # Batched greedy decoding to fill the GPU: the 8B baseline fills 80GB sooner
+    # than the 1B, so the batch size is model-size-aware (same keys the SLG
+    # pipeline uses). Answers are saved once per batch, so a crashed run resumes
+    # at batch granularity.
+    from inference.slg.generation import generate_batch
+
+    generation_config = CONFIG['generation']
+    max_new_tokens = int(generation_config['max_new_tokens'])
+    is_8b = "8b" in os.path.basename(os.path.normpath(base_model)).lower()
+    batch_size = int(generation_config.get(
+        'reasoner_batch_size' if is_8b else 'expert_batch_size', 1
+    ))
+
     try:
-        for i, item in enumerate(data[start_index:], start=start_index):
-            logger.info(f'Answering {i + 1}/{len(data)} questions.')
-            messages = [create_user_message(item['question'])]
-            
-            # Apply chat template
-            prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=True)
-            inputs = tokenizer(prompt, return_tensors='pt', padding=False, truncation=True).to("cuda")
-            logger.debug(f'Tokenized prompt for baseline fine-tuned: {inputs}')
-            
-            generation_config = CONFIG['generation']
-            # PeftModel.generate() forwards to the inner model; `generator=` is rejected by
-            # Transformers' model_kwarg validation on some versions. Global RNG is still
-            # seeded via config import (set_project_seed).
-            outputs = finetuned_model.generate(
-                **inputs,
-                max_new_tokens=generation_config['max_new_tokens'],
-                num_return_sequences=1,
-                temperature=generation_config['temperature'],
-                eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"),
+        for chunk_start in range(start_index, len(data), batch_size):
+            chunk = data[chunk_start:chunk_start + batch_size]
+            logger.info(
+                'Answering %d-%d/%d questions.',
+                chunk_start + 1, chunk_start + len(chunk), len(data),
             )
-            
-            text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-            output = text.split("assistant")[1] if "assistant" in text else text
+            messages_list = [[create_user_message(item['question'])] for item in chunk]
+            outputs = generate_batch(
+                messages_list, finetuned_model, tokenizer, max_new_tokens, batch_size
+            )
+            for item, output in zip(chunk, outputs):
+                answers.append({
+                    "chapter": item['chapter'],
+                    "title": item['title'],
+                    "question": item['question'],
+                    "answer": output,
+                })
 
-            new_dict = {
-                "chapter": item['chapter'],
-                "title": item['title'],
-                "question": item['question'],
-                "answer": output
-            }
-            answers.append(new_dict)
-
-            # Save incrementally
+            # Save incrementally (once per batch).
             with open(output_file, 'w') as f:
                 json.dump(answers, f, indent=4)
-    
+
     finally:
         # Always cleanup memory
         cleanup_model_memory(finetuned_model, tokenizer)

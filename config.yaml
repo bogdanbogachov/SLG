@@ -63,7 +63,7 @@ files:
   qa: 'question_answer/qa.json'
   qa_train: 'question_answer/qa_train.json'
   qa_test: 'question_answer/qa_test.json'
-  qa_scalability: 'question_answer/qa_test.json'   # synthetic set for the scalability sweep (#5); point at the large synthetic QA file
+  qa_scalability: 'question_answer/qa_scalability.json'   # scalability sweep (#5): fixed 100-question / 4-core-expert subset of qa_test (built by question_answer/build_scalability_subset.py); the other 8 real experts are used as distractors. Point at a larger synthetic set only to scale the pool past 12.
   srm_pdf: 'question_answer/srm.pdf'
   om_pdf: 'question_answer/om.pdf'
   mm_pdf: 'question_answer/mm.pdf'
@@ -140,7 +140,7 @@ slg:
 routing:
   top_k_cosine: 5                       # Jina cosine shortlist size handed to the reasoning router
   max_reroutes: 3                       # verifier-reject reroute attempts before giving up on a question
-  scalability_sizes: [5, 10, 20]        # total pool sizes (core + distractor experts) for the scalability sweep (#5, synthetic data)
+  scalability_sizes: [4, 6, 8, 10, 12]  # total pool sizes for the scalability sweep (#5): 4 = core only, up to 12 = core + all 8 real distractors. (Add larger sizes only with a synthetic distractor set.)
   interactive_multi_expert: true        # interactive chat may pick >1 expert; batch inference always forces 1
   embedding_dimension: 768              # jina-v2-base-en
   embedding_batch_size: 100             # batch size when embedding expert training answers

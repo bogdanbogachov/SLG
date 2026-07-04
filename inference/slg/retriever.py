@@ -155,6 +155,7 @@ class ExpertRetriever:
         query_embedding: np.ndarray,
         top_k: int,
         adjustments: Optional[Dict[str, float]] = None,
+        exclude: Optional[Set[str]] = None,
     ) -> List[Tuple[str, float]]:
         """Rank experts by cosine similarity plus signed competence adjustments.
 
@@ -162,6 +163,10 @@ class ExpertRetriever:
         :mod:`inference.slg.competence`): positive boosts an expert that has
         proven reliable on similar questions, negative demotes one that has
         failed. They are added to the raw cosine score before ranking.
+
+        ``exclude`` drops experts from consideration entirely — used on reroute
+        to keep already-tried experts out of the shortlist so the router is
+        forced toward a genuine alternative instead of re-picking a failure.
         """
         if self._matrix.shape[0] == 0:
             return []
@@ -169,7 +174,8 @@ class ExpertRetriever:
         scores: Dict[str, float] = {
             eid: float(sims[i])
             for i, eid in enumerate(self.expert_ids)
-            if self._allowed is None or eid in self._allowed
+            if (self._allowed is None or eid in self._allowed)
+            and (not exclude or eid not in exclude)
         }
         if adjustments:
             for eid, delta in adjustments.items():

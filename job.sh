@@ -3,27 +3,28 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=4-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=24
 #SBATCH --mem=200G
-#SBATCH --gpus-per-node=h100:5
+#SBATCH --gpus-per-node=h100:4
 # ^ Multi-GPU: the pipeline auto-scales to however many GPUs this job is given.
 #   Independent jobs (each LoRA expert, each ablation, each scalability size) are
 #   dispatched one-per-GPU, and each job also batches its own generation to fill
 #   that GPU (~75% of 80GB). Keep --ntasks=1 and --nodes=1 (parallelism is
-#   in-process, not srun tasks; all 5 GPUs must be on one node). If you change
-#   the GPU count, scale with it: ~4-5 CPUs/GPU and ~40G/GPU.
+#   in-process, not srun tasks; all GPUs must be on one node). If you change the
+#   GPU count, scale with it: ~4-5 CPUs/GPU and ~40G/GPU.
 #   NOTE: request *full* GPUs (--gpus-per-node=h100:N), not a MIG slice like
 #   h100_3g.40gb — a single MIG slice is one device and cannot be parallelised.
+#   RORQUAL: GPU nodes are Dell XE8640 = 4x H100 SXM5 80GB (324 GPUs / 81 nodes),
+#   so 4 is the per-node max — h100:5 would never schedule. Node also has 64
+#   cores / ~512G RAM, so cpus-per-task=24 and mem=200G are within one node.
 #
-#   TIME: 5 days is sized for the full DS with the fine-tuned *baseline*
-#   inference (ask_finetuned) still running one-question-at-a-time — the 8B
-#   baseline over 12k test Qs is ~2 days on its own and is the current pole.
-#   Estimated total ~3.8 days; 5 days leaves margin for the batching-speedup
-#   uncertainty and any restart. If ask_finetuned is batched too, this drops to
-#   ~2.3 days and --time=3-00:00:00 is enough.
+#   TIME: on 4 GPUs the 4 *coupled* ablations run one-per-GPU (~20h), then the
+#   `base` ablation is sharded data-parallel across all 4 GPUs (~5h) instead of
+#   running solo -> ablation phase ~25h. Baseline inference (ask_finetuned) is
+#   batched (~14h). Estimated total ~2.5 days, so 4 days has comfortable margin.
 
 module load python/3.11.5
 module load rust

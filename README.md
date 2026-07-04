@@ -103,7 +103,7 @@ python main.py --evaluate --training_metrics
 
 # 7. Ablation experiments (see "Experiments" below)
 python main.py --slg_ablations        # full suite: full, -A, -B, -C, base
-python main.py --slg_scalability      # expert-pool scaling sweep (synthetic)
+python main.py --slg_scalability      # expert-pool scaling sweep (real-data subset)
 python main.py --slg_metrics          # routing-curve + selective-prediction metrics
 python main.py --slg_all              # all of the above, in order, as one job
 python main.py --paper_assets         # aggregate everything -> LaTeX tables + figures
@@ -429,9 +429,13 @@ constant and every question stays answerable, this isolates the effect of a
 larger pool — latency should stay roughly flat (the 8B router only ever sees the
 top-k shortlist, not all N experts) and routing accuracy should hold as
 irrelevant competitors are added. Results per size go to
-`slg_diagnostics/scalability.json`. Point `files.qa_scalability` at the
-**synthetic** QA set, which supplies the distractor experts — this is the one
-place synthetic data is used, explicitly, as a stress test.
+`slg_diagnostics/scalability.json`. **Runs on real data by default:**
+`files.qa_scalability` → `question_answer/qa_scalability.json`, a fixed
+100-question / 4-core-expert subset of `qa_test` (built by
+`question_answer/build_scalability_subset.py`); the other 8 real experts are the
+distractors, so sizes `[4,6,8,10,12]` need no synthetic data. Point
+`files.qa_scalability` at a larger **synthetic** distractor set only to scale the
+pool past the real corpus's 12 experts.
 
 **Evaluation sweep (`--evaluate`).** Scores answer quality for **every run** under
 the experiment's umbrella — the full run + baselines and each leave-one-out
@@ -481,13 +485,27 @@ with no orchestration. Two independent layers of parallelism combine:
    (8B router/critic) and `generation.expert_batch_size` (1B experts), sized to
    load an 80GB GPU to ~75% without OOM.
 
+**Ablation scheduling.** The suite has 5 runs but a node has 4 GPUs, so a naive
+one-per-GPU dispatch leaves one preset running solo in a second wave. Instead,
+the four **coupled** presets (`full`, `no_competence`, `no_verifier`,
+`no_abstention` — each carries online A/C state that evolves across the question
+stream and must run as one ordered process) go one-per-GPU, and **`base`** (A and
+C off → questions independent) is **sharded data-parallel across all GPUs** and
+merged in original order. Sharding is applied *only* to `base`; the answers are
+bit-identical to a single-stream `base` run, and it fills the GPUs that would
+otherwise idle in wave 2 (`base` ~5 h sharded vs ~20 h solo).
+
 **Consistency.** Cross-run jobs are atomic and independent, so results are
 identical to a single-GPU run — only *which* GPU runs *which* job changes.
-Batching keeps the online mechanisms consistent by replaying the (A) competence
-and (C) calibration updates in the same per-question order the unbatched loop
-used; greedy decoding means answers match in practice (padding + float order can
-rarely flip a token, so it is consistent, not bit-identical). A round with a
-single question falls back to unbatched decoding and stays bit-identical.
+Batching matches the **unbatched round-based** run: batch inference is processed
+in *rounds* (route all pending → answer → verify all → reroute), so the (A)
+competence and (C) calibration state updates **once per round** from that round's
+verdicts — it is round-granular online, not per-question online (this predates
+batching; the round structure exists to bound model load/unload churn). Within a
+round, batching replays the A/C updates in the same order the unbatched loop
+used, and greedy decoding means answers match in practice (padding + float order
+can rarely flip a token → consistent, not bit-identical). A round with a single
+question falls back to unbatched decoding and stays bit-identical.
 
 **Single node, on purpose.** Parallelism is in-process (worker subprocesses +
 in-memory queues), which cannot span nodes, so **all GPUs must be on one node**
@@ -503,9 +521,9 @@ experts use `training.per_device_train_batch_size`, the 8B baseline the smaller
 2×2 setup, so it changes optimisation slightly over the fixed epoch budget —
 linear-scale the learning rate if you need to match older runs.
 
-> **Note:** the fine-tuned *baseline* inference (`ask_finetuned`) is still
-> one-question-at-a-time; over a large test set the 8B baseline is the run's pole.
-> Batching it is the next easy win — see `job.sh` time notes.
+The fine-tuned **baseline** inference (`ask_finetuned`) is batched the same way
+(model-size-aware batch size, saved once per batch so it resumes at batch
+granularity).
 
 ## Project Structure
 

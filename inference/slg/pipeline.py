@@ -68,6 +68,73 @@ def list_valid_experts(experiment: str, experts_location: str = None) -> set:
     return adapters & descriptions
 
 
+def _contiguous_shard(n: int, shard_index: int, num_shards: int) -> List[int]:
+    """Global indices of contiguous shard ``shard_index`` of ``n`` items split
+    into ``num_shards`` near-equal blocks (last block may be shorter/empty)."""
+    if num_shards <= 1:
+        return list(range(n))
+    size = -(-n // num_shards)  # ceil division
+    start = min(n, shard_index * size)
+    end = min(n, start + size)
+    return list(range(start, end))
+
+
+def merge_sharded_base(experiment: str, qa_file: str, shard_results: List[Dict]) -> None:
+    """Merge base-ablation shard results (from :meth:`SmallLanguageRouter.answer_shard`)
+    into the single ``__base`` run's ``slg.json`` + diagnostics, in original
+    question order. Pure CPU — no model or router construction needed."""
+    from collections import Counter
+
+    label = experiment + "__base"
+    with open(qa_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    n = len(data)
+
+    answers = [None] * n
+    history = [None] * n
+    traces = [None] * n
+    critic = [None] * n
+    competence_log: List = []
+    threshold_history: List = []
+    calib: Dict = {}
+
+    for res in sorted(shard_results, key=lambda r: r["indices"][0] if r["indices"] else -1):
+        for local, gi in enumerate(res["indices"]):
+            answers[gi] = res["records"][local]
+            history[gi] = res["history"][local]
+            traces[gi] = res["route_traces"][local]
+            critic[gi] = res["critic_log"][local]
+        competence_log.extend(res["competence_log"])
+        threshold_history.extend(res["calibration"]["threshold_history"])
+        calib = res["calibration"]
+
+    out_dir = os.path.join(get_answers_root(experiment), label)
+    ensure_dir(out_dir)
+    with open(os.path.join(out_dir, "slg.json"), "w", encoding="utf-8") as f:
+        json.dump(answers, f, indent=4)
+
+    d = os.path.join(out_dir, "slg_diagnostics")
+    ensure_dir(d)
+    for name, payload in (
+        ("slg_routes.json", history),
+        ("critic_log.json", critic),
+        ("route_traces.json", traces),
+        ("competence_log.json", competence_log),
+    ):
+        with open(os.path.join(d, name), "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+    with open(os.path.join(d, "calibration_log.json"), "w", encoding="utf-8") as f:
+        json.dump({
+            "target_error": calib.get("target_error"),
+            "final_threshold": calib.get("final_threshold"),
+            "coverage": calib.get("coverage"),
+            "threshold_history": threshold_history,
+        }, f, indent=2)
+
+    counts = Counter(a["status"] for a in answers if a)
+    logger.info("SLG base (sharded ×%d) complete — %s", len(shard_results), dict(counts))
+
+
 # Per-question terminal states
 PENDING = "pending"
 RESOLVED = "resolved"
@@ -201,6 +268,56 @@ class SmallLanguageRouter:
         self._write_diagnostics(state, session)
         self._log_summary(state)
 
+    # ---------------------------------------------------- sharded (base only)
+    def answer_shard(self, file: str, shard_index: int, num_shards: int) -> Dict:
+        """Process one contiguous shard of ``file`` and return picklable partial
+        results keyed by **global** question index.
+
+        Only valid for an **order-independent** run: the ``base`` ablation, where
+        competence (A) contributes no routing adjustment and abstention (C)
+        accepts everything, so a question's answer never depends on the session
+        state built by other questions. That makes the per-question answers
+        identical whether the run is one stream or sharded across GPUs — only the
+        inert A/C diagnostic logs differ in ordering. Do **not** shard any run
+        with A or C active.
+        """
+        validate_file_exists(file)
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        shard = _contiguous_shard(len(data), shard_index, num_shards)
+
+        questions = [data[i]["question"] for i in shard]
+        logger.info("Base shard %d/%d: %d question(s).", shard_index + 1, num_shards, len(questions))
+        q_emb = [self._retriever.embed_query(q) for q in questions]
+        session = SessionState(ablation=self.ablation)
+        state = self._run_rounds(questions, q_emb, session)
+
+        records = []
+        for local, gi in enumerate(shard):
+            item = data[gi]
+            records.append({
+                "chapter": item.get("chapter"),
+                "title": item.get("title"),
+                "question": item["question"],
+                "experts": state["history"][local],
+                "answer": state["answer"][local],
+                "status": state["status"][local],
+            })
+        return {
+            "indices": shard,
+            "records": records,
+            "history": state["history"],
+            "route_traces": state["route_traces"],
+            "critic_log": state["critic_log"],
+            "competence_log": session.competence.log,
+            "calibration": {
+                "target_error": session.calibrator.target_error,
+                "final_threshold": session.calibrator.threshold(),
+                "coverage": session.calibrator.coverage(),
+                "threshold_history": session.calibrator.threshold_history,
+            },
+        }
+
     def _run_rounds(self, questions: List[str], q_emb: List[np.ndarray], session: SessionState) -> Dict:
         n = len(questions)
         state = {
@@ -229,9 +346,14 @@ class SmallLanguageRouter:
             adj_list = []
             for i in pending:
                 adjustments = session.routing_adjustments(q_emb[i])
-                shortlists.append(
-                    [eid for eid, _ in self._retriever.shortlist(q_emb[i], self._top_k, adjustments)]
-                )
+                # Exclude experts already tried for this question so a reroute
+                # cannot re-select a failed expert and waste the attempt budget.
+                tried = set(state["history"][i])
+                shortlists.append([
+                    eid for eid, _ in self._retriever.shortlist(
+                        q_emb[i], self._top_k, adjustments, exclude=tried
+                    )
+                ])
                 adj_list.append(adjustments)
             route_results = self._reasoner.route_batch(
                 [questions[i] for i in pending], shortlists, self._descriptions,
@@ -381,13 +503,16 @@ class SmallLanguageRouter:
         accepted: List[tuple] = []   # (expert_id, answer)
         best_lowconf = None          # (expert_id, answer, confidence)
         ever_chose = False
+        tried: set = set()           # every expert already chosen this turn
 
         for attempt in range(self._max_reroutes):
             adjustments = session.routing_adjustments(q_emb)
-            taken = {e for e, _ in accepted}
+            # Exclude experts already tried this turn (accepted or failed) so a
+            # reroute proposes genuine alternatives, never a repeat.
             shortlist = [
-                e for e, _ in self._retriever.shortlist(q_emb, self._top_k, adjustments)
-                if e not in taken
+                e for e, _ in self._retriever.shortlist(
+                    q_emb, self._top_k, adjustments, exclude=tried
+                )
             ]
             if not shortlist:
                 break
@@ -404,6 +529,7 @@ class SmallLanguageRouter:
             if not chosen:
                 break
             ever_chose = True
+            tried.update(chosen)
 
             # Answer each chosen expert (carrying compressed context).
             answers = {

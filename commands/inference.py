@@ -97,17 +97,67 @@ def _slg_ablation_worker(task: dict) -> None:
     run_slg(task["experiment"], ablation=task["ablation"])
 
 
+def _slg_base_shard_worker(task: dict) -> dict:
+    """Answer one contiguous shard of the test set under the ``base`` ablation
+    (picklable for the GPU pool); returns picklable partial results by global
+    index. Safe to shard only because base has no online A/C coupling."""
+    from inference.slg import SmallLanguageRouter
+    from inference.slg.ablation import get_ablation
+    router = SmallLanguageRouter(
+        experts_location=task["experiment"], experiment=task["experiment"],
+        ablation=get_ablation("base"),
+    )
+    return router.answer_shard(task["file"], task["shard_index"], task["num_shards"])
+
+
 def run_slg_ablations(experiment: str):
     """Run the full leave-one-out ablation suite (#2): full, -A, -B, -C, base.
 
-    The presets are independent runs, dispatched one-per-GPU across all visible
-    GPUs. Each run processes the whole test set in order within a single process,
-    so its online competence/calibration state — and therefore its result — is
-    identical to a single-GPU run; only which GPU runs which preset changes."""
+    The four *coupled* presets (full, -A, -B, -C) carry online competence (A)
+    and/or calibration (C) state that evolves across the question stream, so
+    each must run as a single ordered process — they are dispatched one-per-GPU
+    (result identical to a single-GPU run; only which GPU runs which preset
+    changes). ``base`` turns A and C off, so its questions are independent: it is
+    instead **sharded data-parallel across all GPUs** and merged in order
+    (bit-identical answers), filling the GPUs that would otherwise sit idle while
+    the odd preset out runs solo."""
     from inference.slg.ablation import PRESETS
     _warm_expert_cache(experiment)
-    tasks = [{"experiment": experiment, "ablation": name} for name in PRESETS]
+
+    coupled = [name for name in PRESETS if name != "base"]
+    tasks = [{"experiment": experiment, "ablation": name} for name in coupled]
     run_parallel(("commands.inference", "_slg_ablation_worker"), tasks, label="slg_ablations")
+
+    if "base" in PRESETS:
+        _run_base_sharded(experiment)
+
+
+def _run_base_sharded(experiment: str):
+    """Run the ``base`` ablation sharded across every visible GPU, then merge."""
+    import json
+    from inference.slg.pipeline import merge_sharded_base
+    from utils.parallel import visible_gpu_ids
+
+    qa_file = CONFIG['files']['qa_test']
+    label = f"{experiment}__base"
+    out_path = os.path.join(get_answers_root(experiment), label, "slg.json")
+
+    with open(qa_file, "r", encoding="utf-8") as f:
+        n = len(json.load(f))
+    if os.path.exists(out_path):
+        with open(out_path, "r", encoding="utf-8") as f:
+            if len(json.load(f)) == n:
+                logger.info("Base ablation already complete (%d/%d); skipping.", n, n)
+                return
+
+    num_shards = max(1, len(visible_gpu_ids()))
+    tasks = [
+        {"experiment": experiment, "file": qa_file, "shard_index": k, "num_shards": num_shards}
+        for k in range(num_shards)
+    ]
+    logger.info("Base ablation: sharding %d question(s) across %d GPU(s).", n, num_shards)
+    results = run_parallel(("commands.inference", "_slg_base_shard_worker"), tasks, label="slg_base_shards")
+    merge_sharded_base(experiment, qa_file, [r for r in results if r])
 
 
 def _scalability_size_worker(task: dict) -> dict:
@@ -253,12 +303,24 @@ def run_slg_all(experiment: str):
         ("scalability", lambda: run_slg_scalability(experiment)),
         ("metrics", lambda: run_slg_metrics(experiment)),
     ]
+    outcomes = {}
     for name, fn in steps:
         try:
             logger.info("########## SLG suite: %s ##########", name)
             fn()
+            outcomes[name] = "OK"
         except Exception:
             logger.exception("SLG suite step '%s' failed; continuing.", name)
+            outcomes[name] = "FAILED"
+
+    # Each step is guarded so one failure does not abort the rest — which means
+    # the Slurm job can 'succeed' with steps missing. Surface a clear summary so
+    # a failure is not silent; check output files if anything is not OK.
+    summary = " ".join(f"{name}={outcomes[name]}" for name, _ in steps)
+    if all(v == "OK" for v in outcomes.values()):
+        logger.info("########## SLG suite summary: %s ##########", summary)
+    else:
+        logger.warning("########## SLG suite summary (INCOMPLETE): %s ##########", summary)
 
 
 def run_paper_assets(experiment: str):

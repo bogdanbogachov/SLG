@@ -10,6 +10,7 @@ from typing import Dict, List
 import torch
 
 from config import CONFIG
+from logging_config import logger
 from utils.prompt_utils import apply_chat_template
 
 
@@ -69,11 +70,40 @@ def generate_batch(
     results: List[str] = []
     for start in range(0, len(messages_list), batch_size):
         chunk = messages_list[start:start + batch_size]
-        if len(chunk) == 1:
-            results.append(generate(chunk[0], model, tokenizer, max_new_tokens))
-            continue
-        results.extend(_generate_chunk(chunk, model, tokenizer, max_new_tokens))
+        results.extend(_generate_chunk_safe(chunk, model, tokenizer, max_new_tokens))
     return results
+
+
+def _generate_chunk_safe(
+    chunk: List[List[Dict[str, str]]],
+    model,
+    tokenizer,
+    max_new_tokens: int,
+) -> List[str]:
+    """Decode ``chunk`` with an automatic batch-halving fallback on CUDA OOM.
+
+    Fixed batch sizes can occasionally overflow VRAM on an unusually long
+    prompt/answer. Rather than crash a multi-day job, we free the cache and retry
+    the chunk in two halves (recursively), degrading to smaller batches only for
+    the offending span. A single item that still OOMs is genuinely too large and
+    is re-raised.
+    """
+    if len(chunk) == 1:
+        return [generate(chunk[0], model, tokenizer, max_new_tokens)]
+    try:
+        return _generate_chunk(chunk, model, tokenizer, max_new_tokens)
+    except RuntimeError as e:
+        if "out of memory" not in str(e).lower():
+            raise
+        torch.cuda.empty_cache()
+        mid = len(chunk) // 2
+        logger.warning(
+            "CUDA OOM on a batch of %d; freeing cache and retrying as %d + %d.",
+            len(chunk), mid, len(chunk) - mid,
+        )
+        left = _generate_chunk_safe(chunk[:mid], model, tokenizer, max_new_tokens)
+        right = _generate_chunk_safe(chunk[mid:], model, tokenizer, max_new_tokens)
+        return left + right
 
 
 def _generate_chunk(
