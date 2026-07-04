@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from logging_config import logger
 from config import CONFIG
+from utils.parallel import run_parallel
 from utils.path_utils import ensure_dir, get_answers_root
 
 
@@ -27,32 +28,46 @@ def run_rag(experiment: str):
     rag.generate_responses()
 
 
-def run_finetuned(experiment: str):
+def _finetuned_infer_worker(task: dict) -> None:
+    """Run one fine-tuned-baseline inference pass (picklable for the GPU pool)."""
     from inference.baseline import ask_finetuned
+    ask_finetuned(**task)
+
+
+def run_finetuned(experiment: str):
     paths_config = CONFIG['paths']
     models_paths = paths_config['models']
     adapters_config = CONFIG['adapters']
     experiments_dir = paths_config['experiments']
     downloaded_models_dir = paths_config['downloaded_models']
-    
+
     ensure_dir(os.path.join(get_answers_root(experiment), experiment))
     files_config = CONFIG['files']
-    
+
     base_model_3_2_1b = os.path.join(downloaded_models_dir, models_paths['3_2_1b'])
     base_model_3_1_8b = os.path.join(downloaded_models_dir, models_paths['3_1_8b'])
-    
+
     training_components = CONFIG['training_components']
+    tasks = []
     if training_components.get('train_3_2_1b', False):
-        ask_finetuned(file=files_config['qa_test'],
-                      base_model=base_model_3_2_1b,
-                      adapter=os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_2_1b']),
-                      experiment=experiment)
-    
+        tasks.append({
+            "file": files_config['qa_test'],
+            "base_model": base_model_3_2_1b,
+            "adapter": os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_2_1b']),
+            "experiment": experiment,
+        })
     if training_components.get('train_3_1_8b', False):
-        ask_finetuned(file=files_config['qa_test'],
-                      base_model=base_model_3_1_8b,
-                      adapter=os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_1_8b']),
-                      experiment=experiment)
+        tasks.append({
+            "file": files_config['qa_test'],
+            "base_model": base_model_3_1_8b,
+            "adapter": os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_1_8b']),
+            "experiment": experiment,
+        })
+
+    if not tasks:
+        logger.info("No fine-tuned baselines selected; nothing to do.")
+        return
+    run_parallel(("commands.inference", "_finetuned_infer_worker"), tasks, label="infer_finetuned")
 
 
 def run_slg(experiment: str, ablation: str = "full"):
@@ -69,12 +84,58 @@ def run_slg(experiment: str, ablation: str = "full"):
     router.ask(file=files_config['qa_test'])
 
 
+def _warm_expert_cache(experiment: str) -> None:
+    """Build the shared expert-embedding cache once, before any parallel SLG
+    runs, so concurrent workers only ever *read* it (no write race). Cheap no-op
+    if the cache already exists."""
+    from inference.slg.retriever import ExpertRetriever
+    ExpertRetriever(experiment)  # builds experiments/<exp>/slg_index/ if missing
+
+
+def _slg_ablation_worker(task: dict) -> None:
+    """Run one SLG ablation preset (picklable for the GPU pool)."""
+    run_slg(task["experiment"], ablation=task["ablation"])
+
+
 def run_slg_ablations(experiment: str):
-    """Run the full leave-one-out ablation suite (#2): full, -A, -B, -C, base."""
+    """Run the full leave-one-out ablation suite (#2): full, -A, -B, -C, base.
+
+    The presets are independent runs, dispatched one-per-GPU across all visible
+    GPUs. Each run processes the whole test set in order within a single process,
+    so its online competence/calibration state — and therefore its result — is
+    identical to a single-GPU run; only which GPU runs which preset changes."""
     from inference.slg.ablation import PRESETS
-    for name in PRESETS:
-        logger.info("=== SLG ablation run: %s ===", name)
-        run_slg(experiment, ablation=name)
+    _warm_expert_cache(experiment)
+    tasks = [{"experiment": experiment, "ablation": name} for name in PRESETS]
+    run_parallel(("commands.inference", "_slg_ablation_worker"), tasks, label="slg_ablations")
+
+
+def _scalability_size_worker(task: dict) -> dict:
+    """Run the fixed question set at one pool size and return its metrics
+    (picklable for the GPU pool). Each size gets a dedicated GPU, so latency is
+    measured without cross-size contention."""
+    import time
+    from inference.slg import SmallLanguageRouter
+    from evaluate.slg_metrics import compute
+
+    router = SmallLanguageRouter(
+        experts_location=task["experiment"], experiment=task["experiment"],
+        expert_subset=task["subset"],
+    )
+    router._output_label = task["label"]  # each size keeps its own answers
+    start = time.perf_counter()
+    router.ask(file=task["qa_file"])
+    elapsed = time.perf_counter() - start
+    metrics = compute(os.path.join(get_answers_root(task["experiment"]), task["label"]))
+    return {
+        "n_experts": task["k"],
+        "n_core": task["n_core"],
+        "n_distractors": task["n_distractors"],
+        "latency_s": round(elapsed, 2),
+        "latency_per_q_s": round(elapsed / max(metrics["summary"]["n"], 1), 3),
+        "routing_accuracy": metrics["summary"]["routing_accuracy_overall"],
+        "coverage": metrics["summary"]["coverage"],
+    }
 
 
 def run_slg_scalability(experiment: str):
@@ -94,9 +155,8 @@ def run_slg_scalability(experiment: str):
     are skipped.
     """
     import json
-    import time
-    from inference.slg import SmallLanguageRouter
-    from evaluate.slg_metrics import compute, slug_title
+    from inference.slg.pipeline import list_valid_experts
+    from evaluate.slg_metrics import slug_title
 
     files_config = CONFIG['files']
     routing_cfg = CONFIG['routing']
@@ -105,15 +165,12 @@ def run_slg_scalability(experiment: str):
     qa_file = files_config.get('qa_scalability', files_config['qa_test'])
     sizes = routing_cfg.get('scalability_sizes', [5, 10, 20])
 
-    # Ground-truth experts the fixed question set actually needs.
+    # Ground-truth experts the fixed question set actually needs (CPU-only plan).
     with open(qa_file, "r", encoding="utf-8") as f:
         qa = json.load(f)
     needed = {slug_title(item.get("title")) for item in qa}
 
-    probe = SmallLanguageRouter(experts_location=experiment, experiment=experiment)
-    valid = set(probe._valid_experts)
-    del probe
-
+    valid = set(list_valid_experts(experiment))
     core = sorted(needed & valid)                 # always present (answer the task)
     distractors = sorted(valid - needed)          # added to grow the pool
     if not core:
@@ -126,7 +183,11 @@ def run_slg_scalability(experiment: str):
             "cannot be routed correctly at any size.", len(missing), sorted(missing)[:5],
         )
 
-    results = []
+    # Build one task per valid size; sizes are independent runs (each holds the
+    # task constant), dispatched one-per-GPU. Each size run always has a whole
+    # GPU to itself, so its latency is measured without contention — consistent
+    # with a single-GPU sweep.
+    tasks = []
     for k in sizes:
         n_distractors = k - len(core)
         if n_distractors < 0:
@@ -136,28 +197,24 @@ def run_slg_scalability(experiment: str):
             logger.info("Skipping size %d (need %d distractors, only %d available).",
                         k, n_distractors, len(distractors))
             continue
-        subset = core + distractors[:n_distractors]
-        label = f"{experiment}__scale{k}"
-        logger.info("=== SLG scalability: %d experts (%d core + %d distractors) ===",
-                    k, len(core), n_distractors)
-        router = SmallLanguageRouter(
-            experts_location=experiment, experiment=experiment, expert_subset=subset,
-        )
-        # Override the output label so each size keeps its own answers.
-        router._output_label = label
-        start = time.perf_counter()
-        router.ask(file=qa_file)
-        elapsed = time.perf_counter() - start
-        metrics = compute(os.path.join(answers_root, label))
-        results.append({
-            "n_experts": k,
+        tasks.append({
+            "experiment": experiment,
+            "qa_file": qa_file,
+            "subset": core + distractors[:n_distractors],
+            "label": f"{experiment}__scale{k}",
+            "k": k,
             "n_core": len(core),
             "n_distractors": n_distractors,
-            "latency_s": round(elapsed, 2),
-            "latency_per_q_s": round(elapsed / max(metrics["summary"]["n"], 1), 3),
-            "routing_accuracy": metrics["summary"]["routing_accuracy_overall"],
-            "coverage": metrics["summary"]["coverage"],
         })
+
+    if not tasks:
+        logger.warning("Scalability: no valid pool sizes to run for %s.", qa_file)
+        return
+
+    _warm_expert_cache(experiment)
+    results = run_parallel(("commands.inference", "_scalability_size_worker"),
+                           tasks, label="slg_scalability")
+    results = sorted((r for r in results if r), key=lambda r: r["n_experts"])
 
     out_dir = os.path.join(answers_root, experiment, "slg_diagnostics")
     ensure_dir(out_dir)

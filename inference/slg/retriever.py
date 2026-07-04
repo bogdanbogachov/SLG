@@ -50,15 +50,17 @@ class ExpertRetriever:
 
     # ------------------------------------------------------------------ build
     def _expert_files(self) -> List[Tuple[str, str]]:
-        """(expert_id, data_path) for every split file kept by the allow-list."""
+        """(expert_id, data_path) for *every* split file.
+
+        The cache is built for the full expert set regardless of ``allowed`` —
+        an expert's mean-answer vector does not depend on which other experts are
+        in the pool. The allow-list is applied at query time (see ``shortlist``)
+        instead, so subset runs (ablations, scalability sizes) all share one
+        cache and never rebuild or clobber it. This makes concurrent runs across
+        GPUs safe and avoids re-embedding per subset.
+        """
         files = sorted(f for f in os.listdir(self._split_dir) if f.endswith(".json"))
-        pairs = []
-        for file in files:
-            expert_id = os.path.splitext(file)[0]
-            if self._allowed is not None and expert_id not in self._allowed:
-                continue
-            pairs.append((expert_id, os.path.join(self._split_dir, file)))
-        return pairs
+        return [(os.path.splitext(f)[0], os.path.join(self._split_dir, f)) for f in files]
 
     def _load_model(self):
         if self._model is None:
@@ -165,7 +167,9 @@ class ExpertRetriever:
             return []
         sims = self._matrix @ query_embedding  # both L2-normalized -> cosine
         scores: Dict[str, float] = {
-            eid: float(sims[i]) for i, eid in enumerate(self.expert_ids)
+            eid: float(sims[i])
+            for i, eid in enumerate(self.expert_ids)
+            if self._allowed is None or eid in self._allowed
         }
         if adjustments:
             for eid, delta in adjustments.items():

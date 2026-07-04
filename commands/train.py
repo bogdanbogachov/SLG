@@ -1,14 +1,27 @@
 import os
-from typing import List
 
-from finetune.finetune import finetune
 from config import CONFIG
 from logging_config import logger
+from utils.parallel import run_parallel
 
 
-def run_training(experiment: str):
-    """
-    Run training for specified model components.
+def _finetune_worker(task: dict) -> None:
+    """Run one LoRA fine-tune. Top-level (picklable) so it can be dispatched to
+    the multi-GPU pool; imports torch lazily after the worker has pinned its
+    device."""
+    from finetune.finetune import finetune
+
+    finetune(**task)
+
+
+def run_training(experiment: str) -> None:
+    """Fine-tune every requested model.
+
+    Each expert adapter and each baseline is an independent job, so the whole
+    set is dispatched across all visible GPUs (one job per GPU). With a single
+    GPU this runs sequentially, exactly as before — the per-adapter result is
+    identical either way since an adapter depends only on its data and the seed,
+    not on execution order.
 
     Args:
         experiment: Experiment identifier
@@ -18,9 +31,7 @@ def run_training(experiment: str):
     models_paths = paths_config['models']
     adapters_config = CONFIG['adapters']
 
-    # Get training configuration from config
     training_config = CONFIG.get('training_components', {})
-
     train_slg_system = training_config.get('train_slg_system', False)
     train_3_2_1b = training_config.get('train_3_2_1b', False)
     train_3_1_8b = training_config.get('train_3_1_8b', False)
@@ -31,54 +42,54 @@ def run_training(experiment: str):
 
     os.makedirs(experiments_dir, exist_ok=True)
 
-    # Finetune SLG experts per title (routing uses prompt-based SLM router + descriptions.json)
+    tasks = []
+
+    # One LoRA expert per title split (routing uses the prompt-based router +
+    # descriptions.json).
     if train_slg_system:
-        logger.info("Training SLG experts...")
-        split_by_title_files = sorted(
-            [f for f in os.listdir(split_by_title_dir) if f.endswith(".json")]
+        split_files = sorted(
+            f for f in os.listdir(split_by_title_dir) if f.endswith(".json")
         )
-
-        for file in split_by_title_files:
-            logger.info(f"Training SLG expert for: {file}")
-            adapter_name = os.path.splitext(file)[0]
-            data_path = os.path.join(split_by_title_dir, file)
-
-            finetune(
-                model_to_tune=os.path.join(
-                    downloaded_models_dir, models_paths["3_2_1b"]
-                ),
-                adapter_name=adapter_name,
-                data=data_path,
-                experiment_number=experiment,
-                slg=True,
-            )
-
-        if not split_by_title_files:
+        if not split_files:
             logger.warning("No JSON files in split_by_title; no SLG experts were trained.")
-
+        for file in split_files:
+            tasks.append({
+                "model_to_tune": os.path.join(downloaded_models_dir, models_paths["3_2_1b"]),
+                "adapter_name": os.path.splitext(file)[0],
+                "data": os.path.join(split_by_title_dir, file),
+                "experiment_number": experiment,
+                "slg": True,
+            })
     else:
         logger.info("Skipping SLG system training")
 
     # Baseline 3_2_1b
     if train_3_2_1b:
-        logger.info("Training baseline model: 3_2_1b")
-        finetune(
-            model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
-            adapter_name=adapters_config['finetuned_3_2_1b'],
-            data=files_config['qa_train'],
-            experiment_number=experiment
-        )
+        tasks.append({
+            "model_to_tune": os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
+            "adapter_name": adapters_config['finetuned_3_2_1b'],
+            "data": files_config['qa_train'],
+            "experiment_number": experiment,
+            "slg": False,
+        })
     else:
         logger.info("Skipping baseline 3_2_1b training")
 
     # Baseline 3_1_8b
     if train_3_1_8b:
-        logger.info("Training baseline model: 3_1_8b")
-        finetune(
-            model_to_tune=os.path.join(downloaded_models_dir, models_paths['3_1_8b']),
-            adapter_name=adapters_config['finetuned_3_1_8b'],
-            data=files_config['qa_train'],
-            experiment_number=experiment
-        )
+        tasks.append({
+            "model_to_tune": os.path.join(downloaded_models_dir, models_paths['3_1_8b']),
+            "adapter_name": adapters_config['finetuned_3_1_8b'],
+            "data": files_config['qa_train'],
+            "experiment_number": experiment,
+            "slg": False,
+        })
     else:
         logger.info("Skipping baseline 3_1_8b training")
+
+    if not tasks:
+        logger.info("No training tasks selected; nothing to do.")
+        return
+
+    logger.info("Fine-tuning %d model(s)...", len(tasks))
+    run_parallel(("commands.train", "_finetune_worker"), tasks, label="finetune")

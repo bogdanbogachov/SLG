@@ -6,3 +6,5 @@ CLAUDE.md
 # Large / regenerable data (rebuild via --download_qa / --build_qa)
 question_answer/qa.json
 data/
+
+question_answer/qa_train.json

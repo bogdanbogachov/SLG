@@ -50,6 +50,24 @@ from inference.slg.retriever import ExpertRetriever
 from inference.slg.session import SessionState
 from inference.slg.verifier import DomainVerifier
 
+def list_valid_experts(experiment: str, experts_location: str = None) -> set:
+    """Routable experts (LoRA adapter on disk ∩ has a description), from the
+    filesystem only — no model loading. Mirrors
+    ``SmallLanguageRouter._resolve_valid_experts`` so planners (e.g. the
+    scalability sweep) can compute the expert pool on CPU / in the parent
+    process without touching a GPU."""
+    experiments_dir = CONFIG["paths"]["experiments"]
+    slg_path = get_slg_path(experts_location or experiment, experiments_dir)
+    adapters = {
+        name
+        for name in os.listdir(slg_path)
+        if os.path.isdir(os.path.join(slg_path, name))
+    }
+    with open(get_slg_descriptions_path(experiment), "r", encoding="utf-8") as f:
+        descriptions = set(json.load(f))
+    return adapters & descriptions
+
+
 # Per-question terminal states
 PENDING = "pending"
 RESOLVED = "resolved"
