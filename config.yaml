@@ -90,9 +90,17 @@ training:
   label_smoothing_factor: 0.01
   weight_decay: 0.001
   warmup_ratio: 0.05
-  per_device_train_batch_size: 2
-  per_device_eval_batch_size: 2
-  gradient_accumulation_steps: 2
+  # Per-device batch sizes are model-size-aware (see finetune.py): the 1B
+  # experts fit a large batch on an 80GB GPU, the 8B baseline fills memory much
+  # faster so it takes a smaller one. gradient_accumulation_steps=1 means the
+  # effective batch == per_device batch. NOTE: this enlarges the effective
+  # batch vs. the old 2x2=4, so it changes optimisation slightly over the fixed
+  # 30 epochs — consider linear-scaling the LR if you want to match old runs.
+  per_device_train_batch_size: 8       # 1B experts
+  per_device_eval_batch_size: 8        # 1B experts
+  per_device_train_batch_size_8b: 4    # 8B baseline (fills 80GB sooner)
+  per_device_eval_batch_size_8b: 4     # 8B baseline
+  gradient_accumulation_steps: 1
   max_grad_norm: 1
   logging_steps: 50
   save_total_limit: 4
@@ -160,6 +168,15 @@ routing:
 generation:
   max_new_tokens: 750
   temperature: 0.1
+  # Batched inference — how many prompts are decoded together per GPU. Greedy
+  # decoding, so answers match the one-at-a-time path in practice (only padding
+  # + float order differ). Sized to load an 80GB GPU toward ~75% without OOM;
+  # raise/lower after watching `nvidia-smi` on the first run.
+  reasoner_batch_size: 12   # 8B router/critic — ~16GB weights + long critic
+                            #   prompts (question + up to 750-token answer), so
+                            #   kept small; the 8B fills memory fast.
+  expert_batch_size: 48     # 1B experts — ~2.5GB weights + short prompts, so a
+                            #   much larger batch fits and is needed to saturate.
 
 # Evaluation: save resume checkpoints every N test questions (row-wise); see experiments/<exp>/evaluation_checkpoints/
 evaluation:

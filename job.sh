@@ -3,19 +3,27 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=12:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=128G
-#SBATCH --gpus=4
+#SBATCH --cpus-per-task=24
+#SBATCH --mem=200G
+#SBATCH --gpus-per-node=h100:5
 # ^ Multi-GPU: the pipeline auto-scales to however many GPUs this job is given.
 #   Independent jobs (each LoRA expert, each ablation, each scalability size) are
-#   dispatched one-per-GPU, so raising --gpus speeds the run up with NO code
-#   change. Keep --ntasks=1 (parallelism is in-process, not srun tasks); scale
-#   --cpus-per-task (~4/GPU) and --mem (~32G/GPU) with the GPU count.
-#   NOTE: request *full* GPUs (--gpus=N or --gpus=h100:N), not a MIG slice like
+#   dispatched one-per-GPU, and each job also batches its own generation to fill
+#   that GPU (~75% of 80GB). Keep --ntasks=1 and --nodes=1 (parallelism is
+#   in-process, not srun tasks; all 5 GPUs must be on one node). If you change
+#   the GPU count, scale with it: ~4-5 CPUs/GPU and ~40G/GPU.
+#   NOTE: request *full* GPUs (--gpus-per-node=h100:N), not a MIG slice like
 #   h100_3g.40gb — a single MIG slice is one device and cannot be parallelised.
+#
+#   TIME: 5 days is sized for the full DS with the fine-tuned *baseline*
+#   inference (ask_finetuned) still running one-question-at-a-time — the 8B
+#   baseline over 12k test Qs is ~2 days on its own and is the current pole.
+#   Estimated total ~3.8 days; 5 days leaves margin for the batching-speedup
+#   uncertainty and any restart. If ask_finetuned is batched too, this drops to
+#   ~2.3 days and --time=3-00:00:00 is enough.
 
 module load python/3.11.5
 module load rust

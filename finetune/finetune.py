@@ -102,6 +102,21 @@ def finetune(
     learning_rate = training_config['learning_rate']
     label_smoothing_factor = training_config['label_smoothing_factor']
 
+    # Model-size-aware batch sizes: the 8B baseline fills an 80GB GPU far sooner
+    # than the 1B experts, so it uses a smaller per-device batch (…_8b keys).
+    is_8b = "8b" in os.path.basename(os.path.normpath(model_to_tune)).lower()
+    per_device_train_batch_size = training_config[
+        'per_device_train_batch_size_8b' if is_8b else 'per_device_train_batch_size'
+    ]
+    per_device_eval_batch_size = training_config[
+        'per_device_eval_batch_size_8b' if is_8b else 'per_device_eval_batch_size'
+    ]
+    logger.info(
+        "Fine-tune batch sizes for %s: train=%d eval=%d (grad_accum=%d)",
+        adapter_name, per_device_train_batch_size, per_device_eval_batch_size,
+        training_config['gradient_accumulation_steps'],
+    )
+
     # Create checkpoint directory
     paths_config = CONFIG['paths']
     checkpoints_dir = paths_config['checkpoints']
@@ -125,8 +140,8 @@ def finetune(
         report_to="tensorboard",
         log_level="info",
         logging_dir=logging_dir,
-        per_device_train_batch_size=training_config['per_device_train_batch_size'],
-        per_device_eval_batch_size=training_config['per_device_eval_batch_size'],
+        per_device_train_batch_size=per_device_train_batch_size,
+        per_device_eval_batch_size=per_device_eval_batch_size,
         learning_rate=learning_rate,
         weight_decay=training_config['weight_decay'],
         adam_beta1=0.9,

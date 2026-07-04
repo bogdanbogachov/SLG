@@ -13,7 +13,7 @@ from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_model_with_adapter
 from utils.prompt_utils import create_system_message, create_user_message
 
-from inference.slg.generation import generate
+from inference.slg.generation import generate_batch
 
 
 class ExpertRunner:
@@ -52,15 +52,11 @@ class ExpertRunner:
             resize_token_embeddings=True,
         )
         try:
-            return [
-                generate(
-                    self._messages(q, carried_context),
-                    model,
-                    tokenizer,
-                    self._max_new_tokens,
-                )
-                for q in questions
-            ]
+            batch_size = int(CONFIG["generation"].get("expert_batch_size", 1))
+            messages_list = [self._messages(q, carried_context) for q in questions]
+            return generate_batch(
+                messages_list, model, tokenizer, self._max_new_tokens, batch_size
+            )
         finally:
             cleanup_model_memory(model, tokenizer)
 

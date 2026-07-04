@@ -16,7 +16,7 @@ from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_base_model_and_tokenizer
 from utils.prompt_utils import create_system_message, create_user_message
 
-from inference.slg.generation import generate
+from inference.slg.generation import generate, generate_batch
 
 
 # --------------------------------------------------------------------- prompts
@@ -129,6 +129,22 @@ class Reasoner:
         messages = [create_system_message(system), create_user_message(user)]
         return generate(messages, self.model, self.tokenizer, max_new_tokens)
 
+    def _generate_many(self, prompts: List[Tuple[str, str]], max_new_tokens: int) -> List[str]:
+        """Batched counterpart of :meth:`_generate` — decode every (system, user)
+        prompt, filling the 8B GPU ``reasoner_batch_size`` prompts at a time."""
+        if not prompts:
+            return []
+        if self.model is None:
+            self.load()
+        messages_list = [
+            [create_system_message(system), create_user_message(user)]
+            for system, user in prompts
+        ]
+        batch_size = int(CONFIG["generation"].get("reasoner_batch_size", 1))
+        return generate_batch(
+            messages_list, self.model, self.tokenizer, max_new_tokens, batch_size
+        )
+
     # --------------------------------------------------------------- route
     def route(
         self,
@@ -150,6 +166,28 @@ class Reasoner:
         if not shortlist:
             return "", []
 
+        system, user = self._build_route_prompt(
+            question, shortlist, descriptions, max_experts, adjustments, carried_context
+        )
+        raw = self._generate(system, user, max_new_tokens=512)
+        chosen = self._parse_route(raw, shortlist, max_experts)
+        logger.info(
+            "Routing reasoning:\n%s\n-> experts: %s",
+            raw,
+            chosen or self._out_of_scope,
+        )
+        return raw, chosen
+
+    def _build_route_prompt(
+        self,
+        question: str,
+        shortlist: List[str],
+        descriptions: Dict[str, str],
+        max_experts: int,
+        adjustments: Optional[Dict[str, float]] = None,
+        carried_context: str = "",
+    ) -> Tuple[str, str]:
+        """Render the (system, user) router prompt for one question."""
         expert_list = "\n".join(
             f"- {eid}: {descriptions.get(eid, '(no description)')}" for eid in shortlist
         )
@@ -179,14 +217,49 @@ class Reasoner:
             competence_block=competence_block,
             max_experts=max_experts,
         )
-        raw = self._generate(system, user, max_new_tokens=512)
-        chosen = self._parse_route(raw, shortlist, max_experts)
-        logger.info(
-            "Routing reasoning:\n%s\n-> experts: %s",
-            raw,
-            chosen or self._out_of_scope,
-        )
-        return raw, chosen
+        return system, user
+
+    def route_batch(
+        self,
+        questions: List[str],
+        shortlists: List[List[str]],
+        descriptions: Dict[str, str],
+        max_experts: int,
+        adjustments_list: Optional[List[Dict[str, float]]] = None,
+    ) -> List[Tuple[str, List[str]]]:
+        """Route several questions in one batched 8B pass.
+
+        Each question's shortlist and competence ``adjustments`` are computed by
+        the caller from the *round-start* session state (read-only during the
+        route phase), so batching does not change what any question sees — it
+        only decodes the router traces together. Returns ``(trace, chosen)`` per
+        question, in input order.
+        """
+        n = len(questions)
+        adjustments_list = adjustments_list or [None] * n
+        results: List[Tuple[str, List[str]]] = [("", []) for _ in range(n)]
+
+        prompts: List[Tuple[str, str]] = []
+        idx_map: List[int] = []
+        for i in range(n):
+            if not shortlists[i]:
+                continue
+            prompts.append(
+                self._build_route_prompt(
+                    questions[i], shortlists[i], descriptions, max_experts,
+                    adjustments_list[i],
+                )
+            )
+            idx_map.append(i)
+
+        raws = self._generate_many(prompts, max_new_tokens=512)
+        for i, raw in zip(idx_map, raws):
+            chosen = self._parse_route(raw, shortlists[i], max_experts)
+            results[i] = (raw, chosen)
+            logger.info(
+                "Routing reasoning:\n%s\n-> experts: %s", raw, chosen or self._out_of_scope
+            )
+        return results
 
     def _parse_route(self, raw: str, shortlist: List[str], max_experts: int) -> List[str]:
         if "assistant" in raw:
@@ -228,12 +301,7 @@ class Reasoner:
         the answer is correct and safe to return. It is the LLM half of the
         domain verifier and feeds the abstention calibrator.
         """
-        user = _CRITIC_USER.format(
-            question=question,
-            expert_id=expert_id,
-            description=description or "(no description)",
-            answer=answer,
-        )
+        user = self._build_critic_user(question, expert_id, description, answer)
         raw = self._generate(_CRITIC_SYSTEM, user, max_new_tokens=512)
         passed = self._parse_verdict(raw)
         confidence = self._parse_confidence(raw, passed)
@@ -242,6 +310,38 @@ class Reasoner:
             expert_id, "PASS" if passed else "FAIL", confidence,
         )
         return passed, confidence, raw
+
+    @staticmethod
+    def _build_critic_user(question: str, expert_id: str, description: str, answer: str) -> str:
+        return _CRITIC_USER.format(
+            question=question,
+            expert_id=expert_id,
+            description=description or "(no description)",
+            answer=answer,
+        )
+
+    def criticize_batch(
+        self, items: List[Tuple[str, str, str, str]]
+    ) -> List[Tuple[bool, float, str]]:
+        """Batched critic. ``items`` are ``(question, expert_id, description,
+        answer)`` tuples; returns ``(passed, confidence, critique)`` per item in
+        order. The critic judges each answer independently, so batching only
+        decodes the verdicts together — it does not couple them."""
+        prompts = [
+            (_CRITIC_SYSTEM, self._build_critic_user(q, eid, desc, ans))
+            for q, eid, desc, ans in items
+        ]
+        raws = self._generate_many(prompts, max_new_tokens=512)
+        out: List[Tuple[bool, float, str]] = []
+        for (q, eid, desc, ans), raw in zip(items, raws):
+            passed = self._parse_verdict(raw)
+            confidence = self._parse_confidence(raw, passed)
+            logger.info(
+                "Critic verdict for '%s': %s (confidence=%.2f)",
+                eid, "PASS" if passed else "FAIL", confidence,
+            )
+            out.append((passed, confidence, raw))
+        return out
 
     @staticmethod
     def _parse_verdict(raw: str) -> bool:

@@ -220,15 +220,26 @@ class SmallLanguageRouter:
                         attempt + 1, self._max_reroutes, len(pending))
 
             # --- Route phase (8B resident, online-competence adjusted) ---
+            # Shortlists + competence adjustments are read from the round-start
+            # session state (untouched until the verify phase), so every pending
+            # question sees exactly what it would in a one-at-a-time run; the 8B
+            # router traces are merely decoded together, a batch at a time.
             self._reasoner.load()
-            assignment: Dict[int, str] = {}
+            shortlists = []
+            adj_list = []
             for i in pending:
                 adjustments = session.routing_adjustments(q_emb[i])
-                shortlist = [eid for eid, _ in self._retriever.shortlist(q_emb[i], self._top_k, adjustments)]
-                trace, chosen = self._reasoner.route(
-                    questions[i], shortlist, self._descriptions, max_experts=1,
-                    adjustments=adjustments,
+                shortlists.append(
+                    [eid for eid, _ in self._retriever.shortlist(q_emb[i], self._top_k, adjustments)]
                 )
+                adj_list.append(adjustments)
+            route_results = self._reasoner.route_batch(
+                [questions[i] for i in pending], shortlists, self._descriptions,
+                max_experts=1, adjustments_list=adj_list,
+            )
+            assignment: Dict[int, str] = {}
+            for pos, i in enumerate(pending):
+                trace, chosen = route_results[pos]
                 state["route_traces"][i].append(trace)
                 if not chosen:
                     # No expert: terminal rejection only if we never chose one
@@ -253,12 +264,20 @@ class SmallLanguageRouter:
                     round_answers[i] = out
 
             # --- Verify phase (8B resident: domain verifier B + competence A + calibration C) ---
+            # The critic verdicts are decoded in one batched pass, then applied
+            # to the online state in the *same order* the unbatched loop used
+            # (round_answers insertion order, i.e. grouped by expert). Because A
+            # (competence) and C (calibration) update sequentially, preserving
+            # that order keeps the learned state — and the results — consistent
+            # with a single-GPU run; only the generation is batched.
             self._reasoner.load()
-            for i, out in round_answers.items():
+            verify_items = list(round_answers.items())  # (i, answer), insertion order
+            verdicts = self._verifier.verify_batch([
+                (questions[i], assignment[i], self._descriptions.get(assignment[i], ""), out)
+                for i, out in verify_items
+            ])
+            for (i, out), verdict in zip(verify_items, verdicts):
                 expert = assignment[i]
-                verdict = self._verifier.verify(
-                    questions[i], expert, self._descriptions.get(expert, ""), out
-                )
                 session.observe_verdict(expert, q_emb[i], verdict)
                 entry = {"expert": expert, **verdict.to_dict()}
                 state["critic_log"][i].append(entry)

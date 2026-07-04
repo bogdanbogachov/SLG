@@ -153,6 +153,39 @@ class DomainVerifier:
             llm_confidence=llm_conf,
         )
 
+    # ------------------------------------------------------- verify (batched)
+    def verify_batch(self, items: List[Tuple[str, str, str, str]]) -> List[Verdict]:
+        """Verify a batch of answers, decoding all critic verdicts together.
+
+        ``items`` are ``(question, expert_id, description, answer)`` tuples.
+        The deterministic layer is pure CPU and stays per-item; only the 8B
+        critic is batched. Each answer is judged independently, so the produced
+        verdicts match the per-item :meth:`verify` (bar the batched-decode float
+        noise). The caller is responsible for applying the verdicts to the
+        online competence/calibration state in question order."""
+        if self._deterministic_enabled:
+            det = [self._deterministic(q, a) for (q, _e, _d, a) in items]
+        else:
+            det = [(1.0, False, {}) for _ in items]
+
+        crit = self._reasoner.criticize_batch(items)
+
+        verdicts: List[Verdict] = []
+        for (det_score, veto, checks), (llm_passed, llm_conf, critique) in zip(det, crit):
+            passed = bool(llm_passed and not veto)
+            confidence = 0.0 if veto else float(
+                (max(llm_conf, 1e-6) * max(det_score, 1e-6)) ** 0.5
+            )
+            verdicts.append(Verdict(
+                passed=passed,
+                confidence=confidence,
+                critique=critique,
+                checks=checks,
+                det_score=det_score,
+                llm_confidence=llm_conf,
+            ))
+        return verdicts
+
 
 def np_isfinite(x: float) -> bool:
     """Local finite check that avoids importing numpy for one predicate."""
