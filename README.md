@@ -314,6 +314,13 @@ verdict as a self-supervised label, which sets the threshold τ).
 - Processed in **rounds** to minimise model load/unload churn on tight VRAM:
   route every pending question, answer them grouped by expert, verify them all,
   then reroute only the failures into the next round (up to `max_reroutes`).
+- Each round phase **batches its generation** to fill the GPU: all router traces
+  are decoded together, expert answers are decoded per-expert-group, and all
+  critic verdicts are decoded together (batch sizes: `generation.reasoner_batch_size`
+  for the 8B, `generation.expert_batch_size` for the 1B). The online A/C updates
+  are then replayed in the same per-question order the unbatched loop used, so the
+  learned state is consistent with a single-stream run. See
+  [Multi-GPU execution & batching](#multi-gpu-execution--batching).
 - Per-question outcome (`status` in `slg.json`):
   - `resolved` — verified and confident enough to return.
   - `rejected` — the router found no suitable expert.
@@ -454,6 +461,52 @@ separately at the end. Only the leave-one-out and scalability runs need the 8B
 (GPU); metrics and `--paper_assets` are pure CPU and run anywhere, including the
 login node.
 
+## Multi-GPU execution & batching
+
+The whole pipeline runs from **one** `job.sh` and scales across multiple GPUs
+with no orchestration. Two independent layers of parallelism combine:
+
+1. **Cross-run (across GPUs).** Independent jobs are dispatched one-per-GPU by
+   `utils/parallel.py` (`run_parallel`): each LoRA fine-tune, each of the five
+   ablation runs, each scalability pool size, and each fine-tuned baseline. One
+   worker process per visible GPU (pinned with `CUDA_VISIBLE_DEVICES`, `spawn`
+   start method); results are collected in task order. It **auto-scales to the
+   GPU count** — raise the GPUs in `job.sh` and more jobs run at once, no code
+   change. With ≤1 GPU (or `SLG_DISABLE_PARALLEL=1`) it falls back to in-process
+   sequential, identical to before.
+2. **Within-run (fills each GPU).** Inside a single run, generation is **batched**
+   (`inference/slg/generation.py:generate_batch`, left-padded greedy decoding):
+   all router traces per round, expert answers per expert group, and all critic
+   verdicts per round are decoded together. Batch sizes are `generation.reasoner_batch_size`
+   (8B router/critic) and `generation.expert_batch_size` (1B experts), sized to
+   load an 80GB GPU to ~75% without OOM.
+
+**Consistency.** Cross-run jobs are atomic and independent, so results are
+identical to a single-GPU run — only *which* GPU runs *which* job changes.
+Batching keeps the online mechanisms consistent by replaying the (A) competence
+and (C) calibration updates in the same per-question order the unbatched loop
+used; greedy decoding means answers match in practice (padding + float order can
+rarely flip a token, so it is consistent, not bit-identical). A round with a
+single question falls back to unbatched decoding and stays bit-identical.
+
+**Single node, on purpose.** Parallelism is in-process (worker subprocesses +
+in-memory queues), which cannot span nodes, so **all GPUs must be on one node**
+(`--nodes=1 --gpus-per-node=h100:N`). Keep `--ntasks=1`. Enabling caches for
+concurrent workers: the retriever embeds/caches the **full** expert set once and
+applies the routing allow-list at query time, so parallel subset runs share one
+read-only cache with no write race (`_warm_expert_cache` builds it before dispatch).
+
+**Training batch sizes** are model-size-aware (`finetune/finetune.py`): the 1B
+experts use `training.per_device_train_batch_size`, the 8B baseline the smaller
+`training.per_device_train_batch_size_8b` (it fills 80GB sooner), with
+`gradient_accumulation_steps=1`. Note this enlarges the effective batch versus a
+2×2 setup, so it changes optimisation slightly over the fixed epoch budget —
+linear-scale the learning rate if you need to match older runs.
+
+> **Note:** the fine-tuned *baseline* inference (`ask_finetuned`) is still
+> one-question-at-a-time; over a large test set the 8B baseline is the run's pole.
+> Batching it is the next easy win — see `job.sh` time notes.
+
 ## Project Structure
 
 ```
@@ -466,15 +519,17 @@ SLG/
 │   └── slg/                    # Small Language Router
 │       ├── pipeline.py         # Orchestrator: ask() batch + chat() interactive
 │       ├── retriever.py        # Jina cosine pre-filter over experts
-│       ├── reasoner.py         # Resident 8B: route / criticize / aggregate / compress
-│       ├── experts.py          # 1B + LoRA expert answering
+│       ├── reasoner.py         # Resident 8B: route / criticize / aggregate / compress (batched)
+│       ├── generation.py       # Greedy decode helpers (single + left-padded batch)
+│       ├── experts.py          # 1B + LoRA expert answering (batched)
 │       ├── competence.py       # (A) online expert-competence model
 │       ├── verifier.py         # (B) domain-grounded verifier
 │       ├── abstention.py       # (C) calibrated abstention
 │       └── session.py          # Per-run state binding A + C + carried context
-├── finetune/                   # LoRA fine-tuning
+├── finetune/                   # LoRA fine-tuning (model-size-aware batch sizes)
 ├── evaluate/                   # Evaluation metrics
 ├── utils/                      # Model loading, paths, prompts
+│   └── parallel.py             # One-worker-per-GPU pool (cross-run parallelism)
 └── download_llama/             # Model download utilities
 ```
 
@@ -487,6 +542,10 @@ SLG/
 - **Domain-grounded verification** and **calibrated abstention** for reliable
   engineering answers.
 - **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert.
+- **Multi-GPU from one job**: independent runs dispatched one-per-GPU and each
+  run's generation batched to fill the GPU; auto-scales with the requested GPU
+  count, results consistent with a single-GPU run
+  ([details](#multi-gpu-execution--batching)).
 
 ## Output Structure
 
