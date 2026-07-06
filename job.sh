@@ -3,7 +3,7 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=0-00:00:00
+#SBATCH --time=0-00:30:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=6
@@ -54,4 +54,4 @@ export OMP_NUM_THREADS=4
 # omitted: --evaluate needs a real OPENAI_API_KEY (the export below is a dummy).
 # On the login node with a real key, run `python main.py --evaluate` then
 # `python main.py --paper_assets` to produce the LaTeX tables + figures.
-python main.py --infer_finetuned=True --infer_slg=True
+python main.py --infer_finetuned=True --infer_slg=True --limit=60

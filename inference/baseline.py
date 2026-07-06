@@ -84,15 +84,19 @@ def ask_baseline(file: str, model: str, experiment: str, client) -> None:
     return None
 
 
-def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> None:
+def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str,
+                  output_label: str = None) -> None:
     """
     Generate responses using a fine-tuned model.
-    
+
     Args:
         file: Path to JSON file with questions
         base_model: Path to base model directory
         adapter: Path to adapter directory
-        experiment: Experiment name for output directory
+        experiment: Experiment name (umbrella answers root + adapter location)
+        output_label: Output subfolder under the answers root; defaults to
+            ``experiment``. A --limit quick check passes ``<experiment>__limitN``
+            so it never overwrites the full baseline outputs.
     """
     from utils.path_utils import validate_file_exists
     from utils.prompt_utils import apply_chat_template, create_user_message
@@ -112,7 +116,7 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
     )
     
     paths_config = CONFIG['paths']
-    output_dir = os.path.join(get_answers_root(experiment), experiment)
+    output_dir = os.path.join(get_answers_root(experiment), output_label or experiment)
     ensure_dir(output_dir)
     output_file = os.path.join(output_dir, f"{os.path.basename(adapter)}.json")
 

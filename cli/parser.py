@@ -30,6 +30,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--infer_slg", type=bool, default=False)
     parser.add_argument("--chat_slg", type=bool, default=False)
 
+    # Quick-check subset: run inference on N seeded, expert-stratified test
+    # questions (0 = full set). Outputs go to a sibling answers/<exp>/<exp>__limitN/
+    # folder so a quick run never clobbers the full run's results.
+    parser.add_argument("--limit", type=int, default=0,
+                        help="Run inference on only N test questions (seeded, stratified by expert).")
+
     # SLG ablation / experiment tooling
     parser.add_argument("--slg_ablation", type=str, default="")
     parser.add_argument("--slg_ablations", type=bool, default=False)

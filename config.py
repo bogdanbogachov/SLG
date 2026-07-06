@@ -56,6 +56,13 @@ class Config(BaseModel):
                 if value:
                     parameters[config_key] = value
 
+            # --limit quick-check: point qa_test at the subset file. Set as an
+            # env var by main.py so spawned GPU workers (which re-import config)
+            # read the same subset.
+            qa_test_override = os.getenv('SLG_QA_TEST_OVERRIDE')
+            if qa_test_override:
+                parameters.setdefault('files', {})['qa_test'] = qa_test_override
+
             parameters.setdefault('seed', 42)
             seed_env = os.getenv('SEED')
             if seed_env is not None:

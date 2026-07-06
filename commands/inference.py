@@ -34,7 +34,7 @@ def _finetuned_infer_worker(task: dict) -> None:
     ask_finetuned(**task)
 
 
-def run_finetuned(experiment: str):
+def run_finetuned(experiment: str, output_suffix: str = ""):
     paths_config = CONFIG['paths']
     models_paths = paths_config['models']
     adapters_config = CONFIG['adapters']
@@ -47,6 +47,10 @@ def run_finetuned(experiment: str):
     base_model_3_2_1b = os.path.join(downloaded_models_dir, models_paths['3_2_1b'])
     base_model_3_1_8b = os.path.join(downloaded_models_dir, models_paths['3_1_8b'])
 
+    # A quick-check (--limit) run writes to the sibling answers/<exp>/<exp>__limitN/
+    # folder so it never overwrites the full baseline outputs.
+    output_label = experiment + output_suffix
+
     training_components = CONFIG['training_components']
     tasks = []
     if training_components.get('train_3_2_1b', False):
@@ -55,6 +59,7 @@ def run_finetuned(experiment: str):
             "base_model": base_model_3_2_1b,
             "adapter": os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_2_1b']),
             "experiment": experiment,
+            "output_label": output_label,
         })
     if training_components.get('train_3_1_8b', False):
         tasks.append({
@@ -62,6 +67,7 @@ def run_finetuned(experiment: str):
             "base_model": base_model_3_1_8b,
             "adapter": os.path.join(experiments_dir, experiment, adapters_config['finetuned_3_1_8b']),
             "experiment": experiment,
+            "output_label": output_label,
         })
 
     if not tasks:
@@ -70,16 +76,17 @@ def run_finetuned(experiment: str):
     run_parallel(("commands.inference", "_finetuned_infer_worker"), tasks, label="infer_finetuned")
 
 
-def run_slg(experiment: str, ablation: str = "full"):
+def run_slg(experiment: str, ablation: str = "full", output_suffix: str = ""):
     """Batch SLG inference. ``ablation`` selects a leave-one-out preset (#2);
-    non-full runs write to answers/<experiment>/<experiment>__<ablation>/."""
+    non-full runs write to answers/<experiment>/<experiment>__<ablation>/.
+    ``output_suffix`` (e.g. "__limit50") isolates a quick-check run's outputs."""
     from inference.slg import SmallLanguageRouter
     from inference.slg.ablation import get_ablation
     ensure_dir(os.path.join(get_answers_root(experiment), experiment))
     files_config = CONFIG['files']
     router = SmallLanguageRouter(
         experts_location=experiment, experiment=experiment,
-        ablation=get_ablation(ablation),
+        ablation=get_ablation(ablation), output_suffix=output_suffix,
     )
     router.ask(file=files_config['qa_test'])
 

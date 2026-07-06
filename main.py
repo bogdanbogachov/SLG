@@ -17,11 +17,28 @@ from config import CONFIG
 
 
 if __name__ == '__main__':
+    import os
     parser = build_parser()
     args = parser.parse_args()
 
     # Experiments (config > fallback)
     experiment = CONFIG['experiment']
+
+    # Quick-check subset (--limit N): repoint qa_test at a seeded, expert-
+    # stratified N-question subset and isolate outputs under a "__limitN" sibling
+    # folder so a fast smoke test never clobbers the full run. Adapters and
+    # descriptions are still read from the real experiment.
+    output_suffix = ""
+    if args.limit and args.limit > 0:
+        from utils.subset import build_test_subset
+        subset_path = build_test_subset(
+            CONFIG['files']['qa_test'], args.limit, int(CONFIG['seed']))
+        if subset_path != CONFIG['files']['qa_test']:
+            CONFIG['files']['qa_test'] = subset_path          # this process
+            os.environ['SLG_QA_TEST_OVERRIDE'] = subset_path  # spawned GPU workers
+            output_suffix = f"__limit{args.limit}"
+            print(f"[--limit] {args.limit}-question subset -> {subset_path}; "
+                  f"outputs -> answers/{experiment}/{experiment}{output_suffix}/")
 
     # Download models
     download_models() if args.download_models else None
@@ -48,8 +65,9 @@ if __name__ == '__main__':
     # Inference
     run_baseline(experiment) if args.infer_baseline else None
     run_rag(experiment) if args.infer_rag else None
-    run_finetuned(experiment) if args.infer_finetuned else None
-    run_slg(experiment, ablation=args.slg_ablation or "full") if args.infer_slg else None
+    run_finetuned(experiment, output_suffix=output_suffix) if args.infer_finetuned else None
+    run_slg(experiment, ablation=args.slg_ablation or "full",
+            output_suffix=output_suffix) if args.infer_slg else None
     run_slg_chat(experiment) if args.chat_slg else None
 
     # SLG ablation experiments / metrics tooling

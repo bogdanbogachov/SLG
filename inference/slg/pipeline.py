@@ -150,13 +150,16 @@ class SmallLanguageRouter:
         experiment: str,
         ablation: AblationConfig = None,
         expert_subset=None,
+        output_suffix: str = "",
     ):
         self.experiment = experiment
         # Ablation condition for this run (full system by default). Non-full runs
         # write under answers/<experiment><suffix>/ so they never clobber the
-        # full run's outputs.
+        # full run's outputs. ``output_suffix`` (e.g. "__limit50" for a --limit
+        # quick check) isolates outputs further without changing where adapters
+        # and descriptions are read from (still keyed by ``experiment``).
         self.ablation = ablation or AblationConfig()
-        self._output_label = experiment + self.ablation.suffix
+        self._output_label = experiment + self.ablation.suffix + output_suffix
         self._routing = CONFIG["routing"]
         self._top_k = int(self._routing["top_k_cosine"])
         self._max_reroutes = int(self._routing["max_reroutes"])
