@@ -54,4 +54,4 @@ export OMP_NUM_THREADS=4
 # omitted: --evaluate needs a real OPENAI_API_KEY (the export below is a dummy).
 # On the login node with a real key, run `python main.py --evaluate` then
 # `python main.py --paper_assets` to produce the LaTeX tables + figures.
-python main.py --finetune=True --infer_finetuned=True train_limit=1200 limit=100
+python main.py --finetune=True --infer_finetuned=True --train_limit=1200 --limit=100
