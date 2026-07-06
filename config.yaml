@@ -84,10 +84,21 @@ models:
   task_categorizer: "meta-llama/Llama-3.1-8B-Instruct"
 
 # Training hyperparameters
+# Tuned to standard LoRA instruction-SFT practice to avoid the over-fitting that
+# drove greedy-decode repetition collapse. Three values changed from the old
+# aggressive setup; everything else (batch sizes, LoRA rank/alpha/dropout,
+# weight decay, warmup, grad clip) is unchanged:
+#   num_epochs 30 -> 10           (30 memorises the data and degenerates; 10 is a
+#                                  safe cap, and early_stopping_patience=3 +
+#                                  load_best_model_at_end stop it sooner if the
+#                                  eval loss plateaus)
+#   learning_rate 1e-3 -> 2e-4    (the canonical LoRA LR, e.g. QLoRA)
+#   label_smoothing 0.01 -> 0     (standard SFT uses none; smoothing flattens the
+#                                  output distribution and worsens greedy repetition)
 training:
-  num_epochs: 30
-  learning_rate: 0.001
-  label_smoothing_factor: 0.01
+  num_epochs: 10
+  learning_rate: 0.0002
+  label_smoothing_factor: 0.0
   weight_decay: 0.001
   warmup_ratio: 0.05
   # Per-device batch sizes are model-size-aware (see finetune.py): the 1B
@@ -196,6 +207,6 @@ adapters:
 # Training components configuration
 # Controls which models/components to train
 training_components:
-  train_slg_system: false            # Train SLG experts (routing: prompt-based SLM + descriptions.json)
+  train_slg_system: true            # Train SLG experts (routing: prompt-based SLM + descriptions.json)
   train_3_2_1b: true               # Train baseline 3_2_1b model
-  train_3_1_8b: false                 # Train baseline 3_1_8b model
+  train_3_1_8b: true                 # Train baseline 3_1_8b model
