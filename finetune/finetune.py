@@ -20,16 +20,19 @@ def finetune(
     data: str,
     experiment_number: str,
     slg: bool = False,
+    train_limit: int = 0,
 ) -> None:
     """
     Fine-tune a language model with LoRA.
-    
+
     Args:
         model_to_tune: Path to the base model directory
         adapter_name: Name for the adapter
         data: Path to JSON data file
         experiment_number: Experiment identifier
         slg: Whether this is for SLG (Small Language Router)
+        train_limit: If >0, fine-tune on only this many examples (seeded random
+            subset) for a quick smoke test. 0 = use the full training set.
     """
     if not torch.cuda.is_available():
         raise RuntimeError("No GPU found! Please ensure you have a CUDA-compatible GPU.")
@@ -39,6 +42,13 @@ def finetune(
 
     # Load dataset
     dataset = load_dataset("json", data_files=data, split="train")
+    if train_limit and train_limit > 0 and train_limit < len(dataset):
+        # Quick-check subset: seeded so it is reproducible; shuffled first so a
+        # pooled multi-expert file (qa_train) stays roughly balanced.
+        full_n = len(dataset)
+        dataset = dataset.shuffle(seed=int(CONFIG['seed'])).select(range(train_limit))
+        logger.info("train_limit: fine-tuning '%s' on %d/%d examples.",
+                    adapter_name, train_limit, full_n)
     logger.debug(f"Dataset after loading: {dataset}")
     logger.debug(f"Dataset shape: {dataset.shape}")
 

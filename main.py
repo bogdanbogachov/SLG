@@ -60,7 +60,7 @@ if __name__ == '__main__':
     run_slg_descriptions(experiment) if args.slg_descriptions else None
 
     # Training
-    run_training(experiment) if args.finetune else None
+    run_training(experiment, train_limit=args.train_limit) if args.finetune else None
 
     # Inference
     run_baseline(experiment) if args.infer_baseline else None

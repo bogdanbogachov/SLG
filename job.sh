@@ -7,8 +7,8 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=6
-#SBATCH --mem=200G
-#SBATCH --gpus-per-node=h100:2
+#SBATCH --mem=64G
+#SBATCH --gpus-per-node=h100:1
 # ^ Multi-GPU: the pipeline auto-scales to however many GPUs this job is given.
 #   Independent jobs (each LoRA expert, each ablation, each scalability size) are
 #   dispatched one-per-GPU, and each job also batches its own generation to fill
@@ -54,4 +54,4 @@ export OMP_NUM_THREADS=4
 # omitted: --evaluate needs a real OPENAI_API_KEY (the export below is a dummy).
 # On the login node with a real key, run `python main.py --evaluate` then
 # `python main.py --paper_assets` to produce the LaTeX tables + figures.
-python main.py --infer_finetuned=True --infer_slg=True --limit=60
+python main.py --finetune=True --infer_finetuned=True train_limit=1200 limit=100

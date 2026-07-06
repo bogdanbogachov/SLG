@@ -14,7 +14,7 @@ def _finetune_worker(task: dict) -> None:
     finetune(**task)
 
 
-def run_training(experiment: str) -> None:
+def run_training(experiment: str, train_limit: int = 0) -> None:
     """Fine-tune every requested model.
 
     Each expert adapter and each baseline is an independent job, so the whole
@@ -59,6 +59,7 @@ def run_training(experiment: str) -> None:
                 "data": os.path.join(split_by_title_dir, file),
                 "experiment_number": experiment,
                 "slg": True,
+                "train_limit": train_limit,
             })
     else:
         logger.info("Skipping SLG system training")
@@ -71,6 +72,7 @@ def run_training(experiment: str) -> None:
             "data": files_config['qa_train'],
             "experiment_number": experiment,
             "slg": False,
+            "train_limit": train_limit,
         })
     else:
         logger.info("Skipping baseline 3_2_1b training")
@@ -83,6 +85,7 @@ def run_training(experiment: str) -> None:
             "data": files_config['qa_train'],
             "experiment_number": experiment,
             "slg": False,
+            "train_limit": train_limit,
         })
     else:
         logger.info("Skipping baseline 3_1_8b training")

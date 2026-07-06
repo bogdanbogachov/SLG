@@ -35,6 +35,10 @@ def build_parser() -> argparse.ArgumentParser:
     # folder so a quick run never clobbers the full run's results.
     parser.add_argument("--limit", type=int, default=0,
                         help="Run inference on only N test questions (seeded, stratified by expert).")
+    # Quick-check training subset: fine-tune each adapter on only N examples
+    # (seeded) instead of the full training set. 0 = full set.
+    parser.add_argument("--train_limit", type=int, default=0,
+                        help="Fine-tune each adapter on only N training examples (seeded).")
 
     # SLG ablation / experiment tooling
     parser.add_argument("--slg_ablation", type=str, default="")
