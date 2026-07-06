@@ -2,7 +2,7 @@
 
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
-#SBATCH --account=rrg-adml2021
+#SBATCH --account=def-adml2021
 #SBATCH --time=0-00:30:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
