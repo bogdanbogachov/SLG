@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=64G
-#SBATCH --gpus-per-node=h100:1
+#SBATCH --gpus=h100_3g.40gb:1
 # ^ Multi-GPU: the pipeline auto-scales to however many GPUs this job is given.
 #   Independent jobs (each LoRA expert, each ablation, each scalability size) are
 #   dispatched one-per-GPU, and each job also batches its own generation to fill
