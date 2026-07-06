@@ -168,6 +168,12 @@ routing:
 generation:
   max_new_tokens: 750
   temperature: 0.1
+  # Anti-repetition guards for greedy decoding (do_sample=False). Small fine-tuned
+  # LLaMA experts otherwise collapse into looping text that the critic rejects.
+  # repetition_penalty >1 discourages reusing recent tokens; no_repeat_ngram_size
+  # hard-bans repeating any n-gram of this length. 1.0 / 0 disable them.
+  repetition_penalty: 1.3
+  no_repeat_ngram_size: 3
   # Batched inference — how many prompts are decoded together per GPU. Greedy
   # decoding, so answers match the one-at-a-time path in practice (only padding
   # + float order differ). Sized to load an 80GB GPU toward ~75% without OOM;

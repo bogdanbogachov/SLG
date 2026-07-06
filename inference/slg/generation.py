@@ -33,6 +33,8 @@ def generate(
             max_new_tokens=max_new_tokens,
             temperature=CONFIG["generation"]["temperature"],
             eos_token_id=eos_id,
+            repetition_penalty=CONFIG["generation"]["repetition_penalty"],
+            no_repeat_ngram_size=CONFIG["generation"]["no_repeat_ngram_size"],
             do_sample=False,
         )
 
@@ -135,6 +137,8 @@ def _generate_chunk(
                 temperature=CONFIG["generation"]["temperature"],
                 eos_token_id=eos_id,
                 pad_token_id=tokenizer.pad_token_id,
+                repetition_penalty=CONFIG["generation"]["repetition_penalty"],
+                no_repeat_ngram_size=CONFIG["generation"]["no_repeat_ngram_size"],
                 do_sample=False,
             )
         # Left padding makes every prompt the same length, so the freshly

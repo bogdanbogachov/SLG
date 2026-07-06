@@ -3,12 +3,12 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=3-00:00:00
+#SBATCH --time=0-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=6
 #SBATCH --mem=200G
-#SBATCH --gpus-per-node=h100:4
+#SBATCH --gpus-per-node=h100:2
 # ^ Multi-GPU: the pipeline auto-scales to however many GPUs this job is given.
 #   Independent jobs (each LoRA expert, each ablation, each scalability size) are
 #   dispatched one-per-GPU, and each job also batches its own generation to fill
@@ -54,4 +54,4 @@ export OMP_NUM_THREADS=4
 # omitted: --evaluate needs a real OPENAI_API_KEY (the export below is a dummy).
 # On the login node with a real key, run `python main.py --evaluate` then
 # `python main.py --paper_assets` to produce the LaTeX tables + figures.
-python main.py --slg_descriptions=True --finetune=True --infer_finetuned=True --slg_all=True
+python main.py --infer_finetuned=True --infer_slg=True
