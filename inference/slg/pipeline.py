@@ -401,7 +401,7 @@ class SmallLanguageRouter:
             for (i, out), verdict in zip(verify_items, verdicts):
                 expert = assignment[i]
                 session.observe_verdict(expert, q_emb[i], verdict)
-                entry = {"expert": expert, **verdict.to_dict()}
+                entry = {"expert": expert, "answer": out, **verdict.to_dict()}
                 state["critic_log"][i].append(entry)
 
                 if verdict.passed and session.accept(verdict.confidence):
