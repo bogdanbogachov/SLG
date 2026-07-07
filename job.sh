@@ -6,9 +6,9 @@
 #SBATCH --time=0-24:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=4
 #SBATCH --mem=128G
-#SBATCH --gpus-per-node=h100:4
+#SBATCH --gpus-per-node=h100:1
 
 module load python/3.11.5
 module load rust
@@ -28,4 +28,4 @@ export OMP_NUM_THREADS=4
 # To force the old single-GPU sequential behaviour (debugging), set:
 #   export SLG_DISABLE_PARALLEL=1
 
-python main.py --slg_descriptions=True --finetune=True --infer_finetuned=True --infer_slg=True
+python main.py --infer_slg=True

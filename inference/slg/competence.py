@@ -140,3 +140,35 @@ class CompetenceModel:
                 delta = self.weight * (region.mean - _PRIOR_MEAN)
                 deltas[region.expert_id] = deltas.get(region.expert_id, 0.0) + delta
         return deltas
+
+    # ----------------------------------------------------- (de)serialization
+    def state_dict(self) -> dict:
+        """JSON-serializable snapshot for mid-run checkpoint/resume."""
+        return {
+            "threshold": self.threshold,
+            "weight": self.weight,
+            "regions": [
+                {
+                    "expert_id": r.expert_id,
+                    "centroid": r.centroid.tolist(),
+                    "passes": r.passes,
+                    "fails": r.fails,
+                }
+                for r in self._regions
+            ],
+            "log": self.log,
+        }
+
+    def load_state_dict(self, d: dict) -> None:
+        self.threshold = float(d["threshold"])
+        self.weight = float(d["weight"])
+        self._regions = [
+            _Region(
+                expert_id=r["expert_id"],
+                centroid=np.asarray(r["centroid"], dtype="float32"),
+                passes=int(r["passes"]),
+                fails=int(r["fails"]),
+            )
+            for r in d["regions"]
+        ]
+        self.log = list(d["log"])

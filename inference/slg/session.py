@@ -80,3 +80,22 @@ class SessionState:
     # ---------------------------------------------------------------- context
     def set_context(self, text: str) -> None:
         self.carried_context = text or ""
+
+    # ----------------------------------------------------- (de)serialization
+    def state_dict(self) -> dict:
+        """JSON-serializable snapshot of the online A/C state for checkpoint/resume.
+
+        The ablation config is *not* persisted — it is re-supplied by the caller
+        (from the run's ablation preset) when a fresh ``SessionState`` is built
+        before restore, so a checkpoint can only be resumed under the same preset.
+        """
+        return {
+            "competence": self.competence.state_dict(),
+            "calibrator": self.calibrator.state_dict(),
+            "carried_context": self.carried_context,
+        }
+
+    def load_state_dict(self, d: dict) -> None:
+        self.competence.load_state_dict(d["competence"])
+        self.calibrator.load_state_dict(d["calibrator"])
+        self.carried_context = d.get("carried_context", "")

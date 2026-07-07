@@ -28,7 +28,7 @@ Two entry points share the same building blocks:
 import json
 import os
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -237,22 +237,34 @@ class SmallLanguageRouter:
         output_dir = os.path.join(get_answers_root(self.experiment), self._output_label)
         ensure_dir(output_dir)
         output_path = os.path.join(output_dir, "slg.json")
+        checkpoint_path = os.path.join(output_dir, "slg_checkpoint.json")
         if os.path.exists(output_path):
             with open(output_path, "r", encoding="utf-8") as f:
                 existing = json.load(f)
             if len(existing) == len(data):
                 logger.info("All %d questions already answered in %s; nothing to do.", len(data), output_path)
+                self._clear_checkpoint(checkpoint_path)
                 return
             logger.info("Existing slg.json is incomplete (%d/%d); recomputing run.", len(existing), len(data))
 
         questions = [item["question"] for item in data]
 
         # Embed every question once (Jina), then release it before loading the 8B.
+        # Embeddings are deterministic, so a resumed run recomputes them rather
+        # than persisting them in the checkpoint.
         logger.info("Embedding %d questions for cosine routing...", len(questions))
         q_emb = [self._retriever.embed_query(q) for q in questions]
 
+        # Round-granular resume: if a checkpoint from an interrupted run survives,
+        # restore the answer state + online A/C session and continue from the next
+        # unfinished round. Rounds are the online-update boundary, so this yields
+        # the same final result as an uninterrupted run.
         session = SessionState(ablation=self.ablation)
-        state = self._run_rounds(questions, q_emb, session)
+        state, start_attempt = self._load_checkpoint(checkpoint_path, session, len(data))
+        state = self._run_rounds(
+            questions, q_emb, session,
+            state=state, start_attempt=start_attempt, checkpoint_path=checkpoint_path,
+        )
 
         # Assemble answers in original order for evaluation alignment.
         answers_list = []
@@ -270,6 +282,8 @@ class SmallLanguageRouter:
 
         self._write_diagnostics(state, session)
         self._log_summary(state)
+        # Run finished and persisted — the checkpoint is no longer needed.
+        self._clear_checkpoint(checkpoint_path)
 
     # ---------------------------------------------------- sharded (base only)
     def answer_shard(self, file: str, shard_index: int, num_shards: int) -> Dict:
@@ -321,18 +335,27 @@ class SmallLanguageRouter:
             },
         }
 
-    def _run_rounds(self, questions: List[str], q_emb: List[np.ndarray], session: SessionState) -> Dict:
+    def _run_rounds(
+        self,
+        questions: List[str],
+        q_emb: List[np.ndarray],
+        session: SessionState,
+        state: Optional[Dict] = None,
+        start_attempt: int = 0,
+        checkpoint_path: Optional[str] = None,
+    ) -> Dict:
         n = len(questions)
-        state = {
-            "status": [PENDING] * n,
-            "answer": [None] * n,
-            "history": [[] for _ in range(n)],     # experts tried, in order
-            "route_traces": [[] for _ in range(n)],
-            "critic_log": [[] for _ in range(n)],
-            "best_lowconf": [None] * n,            # (answer, confidence) passed-but-withheld
-        }
+        if state is None:
+            state = {
+                "status": [PENDING] * n,
+                "answer": [None] * n,
+                "history": [[] for _ in range(n)],     # experts tried, in order
+                "route_traces": [[] for _ in range(n)],
+                "critic_log": [[] for _ in range(n)],
+                "best_lowconf": [None] * n,            # (answer, confidence) passed-but-withheld
+            }
 
-        for attempt in range(self._max_reroutes):
+        for attempt in range(start_attempt, self._max_reroutes):
             pending = [i for i in range(n) if state["status"][i] == PENDING]
             if not pending:
                 break
@@ -423,6 +446,12 @@ class SmallLanguageRouter:
                                 i + 1, expert, verdict.confidence)
             self._reasoner.unload()
 
+            # Round boundary: the answer state and the online A/C session are now
+            # consistent (all this round's verdicts observed). Checkpoint so an
+            # interrupted run resumes here instead of restarting from scratch.
+            if checkpoint_path is not None:
+                self._save_checkpoint(checkpoint_path, state, session, attempt + 1, n)
+
         # Classify anything still pending after the reroute budget is spent.
         for i in range(n):
             if state["status"][i] != PENDING:
@@ -437,6 +466,77 @@ class SmallLanguageRouter:
                 state["status"][i] = REJECTED
                 state["answer"][i] = self._rejection_message
         return state
+
+    # -------------------------------------------------------- checkpointing
+    _CHECKPOINT_VERSION = 1
+
+    def _save_checkpoint(
+        self, path: str, state: Dict, session: SessionState, completed_attempts: int, n: int
+    ) -> None:
+        """Atomically persist a round-boundary snapshot for mid-run resume.
+
+        Written after every completed round; captures the per-question answer
+        state, the number of rounds finished (so the reroute budget is not reset
+        on resume), and the online A/C session state.
+        """
+        payload = {
+            "version": self._CHECKPOINT_VERSION,
+            "label": self._output_label,      # guard: only resume the same run
+            "n": n,                           # guard: only resume the same question set
+            "completed_attempts": completed_attempts,
+            "state": state,
+            "session": session.state_dict(),
+        }
+        tmp = f"{path}.tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(payload, f)
+        os.replace(tmp, path)  # atomic: a crash mid-write can't corrupt the checkpoint
+
+    def _load_checkpoint(
+        self, path: str, session: SessionState, n: int
+    ) -> Tuple[Optional[Dict], int]:
+        """Restore a checkpoint into ``session``; return (answer_state, start_attempt).
+
+        Returns ``(None, 0)`` — a fresh start — when no valid, matching checkpoint
+        exists. A checkpoint is only honoured if it targets the same run label and
+        the same number of questions; otherwise it is ignored (the stale file is
+        left in place and overwritten by the first round of the new run).
+        """
+        if not os.path.exists(path):
+            return None, 0
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                payload = json.load(f)
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning("Ignoring unreadable checkpoint %s (%s); restarting run.", path, e)
+            return None, 0
+
+        if (
+            payload.get("version") != self._CHECKPOINT_VERSION
+            or payload.get("label") != self._output_label
+            or payload.get("n") != n
+        ):
+            logger.warning(
+                "Checkpoint %s does not match this run (label/size/version); restarting run.",
+                path,
+            )
+            return None, 0
+
+        session.load_state_dict(payload["session"])
+        start_attempt = int(payload["completed_attempts"])
+        state = payload["state"]
+        remaining = sum(1 for s in state["status"] if s == PENDING)
+        logger.info(
+            "Resuming SLG run from checkpoint: %d/%d round(s) done, %d question(s) still pending.",
+            start_attempt, self._max_reroutes, remaining,
+        )
+        return state, start_attempt
+
+    def _clear_checkpoint(self, path: str) -> None:
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
 
     # -------------------------------------------------------- diagnostics
     def _write_diagnostics(self, state: Dict, session: SessionState) -> None:

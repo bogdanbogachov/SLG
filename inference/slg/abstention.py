@@ -76,3 +76,25 @@ class AbstentionCalibrator:
             return 0.0
         tau = self.threshold()
         return sum(1 for c, _ in self._obs if c >= tau) / len(self._obs)
+
+    # ----------------------------------------------------- (de)serialization
+    def state_dict(self) -> dict:
+        """JSON-serializable snapshot for mid-run checkpoint/resume.
+
+        Persists the full ``(confidence, passed)`` calibration set — not just the
+        derived threshold — so a resumed run re-derives an identical ``tau``.
+        """
+        return {
+            "target_error": self.target_error,
+            "confidence_floor": self.confidence_floor,
+            "min_calibration": self.min_calibration,
+            "obs": [[float(c), bool(p)] for c, p in self._obs],
+            "threshold_history": [[int(n), float(t)] for n, t in self.threshold_history],
+        }
+
+    def load_state_dict(self, d: dict) -> None:
+        self.target_error = float(d["target_error"])
+        self.confidence_floor = float(d["confidence_floor"])
+        self.min_calibration = int(d["min_calibration"])
+        self._obs = [(float(c), bool(p)) for c, p in d["obs"]]
+        self.threshold_history = [(int(n), float(t)) for n, t in d["threshold_history"]]
