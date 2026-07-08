@@ -49,7 +49,7 @@ from inference.slg.experts import ExpertRunner
 from inference.slg.reasoner import Reasoner
 from inference.slg.retriever import ExpertRetriever
 from inference.slg.session import SessionState
-from inference.slg.verifier import DomainVerifier
+from inference.slg.verifier import DomainVerifier, Verdict
 
 def list_valid_experts(experiment: str, experts_location: str = None) -> set:
     """Routable experts (LoRA adapter on disk ∩ has a description), from the
@@ -378,7 +378,10 @@ class SmallLanguageRouter:
                 assignment[i] = pick
                 state["history"][i].append(pick)
                 state["route_traces"][i].append(f"[router] tiebreak among {tb_shortlist[i]} -> {pick}\n{trace}")
-        return assignment
+        # ``assignment`` insertion order is confident picks (in ``pending`` order)
+        # then tiebreak picks — this is the order _run_rounds groups by, and the
+        # sharded path must reconstruct it globally, so return the tiebreak set.
+        return assignment, tiebreak
 
     # =============================================================== batch
     def ask(self, file: str) -> None:
@@ -419,7 +422,14 @@ class SmallLanguageRouter:
             round_progress=round_progress,
         )
 
-        # Assemble answers in original order for evaluation alignment.
+        self._write_outputs(data, state, session)
+        # Run finished and persisted — the checkpoint is no longer needed.
+        self._clear_checkpoint(checkpoint_path)
+
+    def _write_outputs(self, data: List[dict], state: Dict, session: SessionState) -> None:
+        """Assemble slg.json (original order) + diagnostics + summary."""
+        output_dir = os.path.join(get_answers_root(self.experiment), self._output_label)
+        ensure_dir(output_dir)
         answers_list = []
         for i, item in enumerate(data):
             answers_list.append({
@@ -430,13 +440,10 @@ class SmallLanguageRouter:
                 "answer": state["answer"][i],
                 "status": state["status"][i],
             })
-        with open(output_path, "w", encoding="utf-8") as f:
+        with open(os.path.join(output_dir, "slg.json"), "w", encoding="utf-8") as f:
             json.dump(answers_list, f, indent=4)
-
         self._write_diagnostics(state, session)
         self._log_summary(state)
-        # Run finished and persisted — the checkpoint is no longer needed.
-        self._clear_checkpoint(checkpoint_path)
 
     # ---------------------------------------------------- sharded (base only)
     def answer_shard(self, file: str, shard_index: int, num_shards: int) -> Dict:
@@ -488,6 +495,221 @@ class SmallLanguageRouter:
             },
         }
 
+    @staticmethod
+    def _new_state(n: int) -> Dict:
+        return {
+            "status": [PENDING] * n,
+            "answer": [None] * n,
+            "history": [[] for _ in range(n)],     # experts tried, in order
+            "route_traces": [[] for _ in range(n)],
+            "critic_log": [[] for _ in range(n)],
+            "best_lowconf": [None] * n,            # (answer, confidence) passed-but-withheld
+        }
+
+    # ---------------------------------------- sharded round 1 (full runs)
+    def answer_shard_round1(self, file: str, shard_index: int, num_shards: int) -> Dict:
+        """Run **round 1 only** (route → answer → verify) over one contiguous shard,
+        returning raw per-question results by **global** index *without* applying
+        the online A/C state.
+
+        Valid for a ``full`` run because round-1 routing is **A-independent**: on
+        the first pass the competence model is empty, so every question routes
+        from pure classifier scores (competence deltas are all 0), and each
+        answer + critic verdict depends only on its own question — never on the
+        session state. The parent (:meth:`finish_from_round1`) merges the shards,
+        replays A and C in the single-stream **canonical order** to reproduce the
+        exact statuses + learning curves, then runs the (small) reroute rounds
+        sequentially. This parallelises the expensive first pass across GPUs
+        without fragmenting the A/C novelty the way independent full shards would.
+        """
+        validate_file_exists(file)
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        shard = _contiguous_shard(len(data), shard_index, num_shards)
+        if not shard:
+            # Empty shard (num_shards > #questions / tiny smoke runs): return early
+            # so we never load the classifier/critic just to do nothing.
+            logger.info("Full round-1 shard %d/%d: empty; skipping model loads.",
+                        shard_index + 1, num_shards)
+            return {"results": {}}
+        questions = [data[i]["question"] for i in shard]
+        logger.info("Full round-1 shard %d/%d: %d question(s).",
+                    shard_index + 1, num_shards, len(questions))
+        q_emb = [self._retriever.embed_query(q) for q in questions]
+
+        # EMPTY session: round-1 routing must see no competence signal (matches the
+        # single-stream first pass). We never call observe_verdict/accept here.
+        session = SessionState(ablation=self.ablation)
+        n = len(shard)
+        state = self._new_state(n)
+
+        # Route (A-independent) — may mark REJECTED for below-floor questions.
+        assignment, tiebreak = self._route_pending(list(range(n)), questions, q_emb, session, state)
+        tiebreak_set = set(tiebreak)
+
+        # Answer, grouped by expert (same batching as _run_rounds).
+        groups: Dict[str, List[int]] = defaultdict(list)
+        for i, expert in assignment.items():
+            groups[expert].append(i)
+        answered: Dict[int, str] = {}
+        for expert, idxs in groups.items():
+            for c in range(0, len(idxs), self._expert_batch):
+                chunk = idxs[c:c + self._expert_batch]
+                outs = self._runner.answer_batch(expert, [questions[i] for i in chunk])
+                for i, out in zip(chunk, outs):
+                    answered[i] = out
+
+        # Verify (critic) — collect verdicts, do NOT apply A/C.
+        order = [i for _, idxs in groups.items() for i in idxs]
+        self._critic.load()
+        verdicts: Dict[int, Verdict] = {}
+        for c in range(0, len(order), self._reasoner_batch):
+            chunk = order[c:c + self._reasoner_batch]
+            vs = self._verifier.verify_batch([
+                (questions[i], assignment[i], self._descriptions.get(assignment[i], ""), answered[i])
+                for i in chunk
+            ])
+            for i, v in zip(chunk, vs):
+                verdicts[i] = v
+        self._critic.unload()
+
+        results: Dict[int, dict] = {}
+        for local in range(n):
+            gi = shard[local]
+            if local in assignment:
+                v = verdicts[local]
+                results[gi] = {
+                    "expert": assignment[local],
+                    # ``tiebreak`` lets the parent reconstruct the single-stream
+                    # A/C order (confident picks first, then tiebreaks).
+                    "tiebreak": local in tiebreak_set,
+                    "answer": answered[local],
+                    "route_traces": state["route_traces"][local],
+                    # RAW (unrounded) verdict fields — the parent replays A/C from
+                    # these for exact-match state; to_dict() rounding is diagnostics-only.
+                    "verdict": {
+                        "passed": bool(v.passed),
+                        "confidence": float(v.confidence),
+                        "det_score": float(v.det_score),
+                        "llm_confidence": float(v.llm_confidence),
+                        "checks": v.checks,
+                        "critique": v.critique,
+                    },
+                }
+            else:
+                # Rejected in round 1 (classifier below floor) — A-independent.
+                results[gi] = {
+                    "expert": None,
+                    "answer": state["answer"][local],
+                    "route_traces": state["route_traces"][local],
+                    "status": state["status"][local],
+                }
+        return {"results": results}
+
+    def _checkpoint_path(self) -> str:
+        return os.path.join(
+            get_answers_root(self.experiment), self._output_label, "slg_checkpoint.json"
+        )
+
+    def finish_from_round1(self, file: str, round1: Dict[int, dict]) -> None:
+        """Replay merged round-1 shard results into a single-stream state, then run
+        the reroute rounds sequentially and write outputs. ``round1`` maps every
+        global index to the raw result from :meth:`answer_shard_round1`.
+
+        A and C are applied here in the **canonical order** the single-stream
+        route/verify phase uses — confident picks (ascending index) then tiebreak
+        picks (ascending index), grouped by expert — so the resulting
+        competence/calibration state, statuses, and diagnostics match a one-GPU
+        ``full`` run (bar batched-decode float noise, the same caveat as batching).
+
+        If a reroute-tail checkpoint from an interrupted finish already exists it is
+        resumed directly (round 1 is not re-sharded), so a crash in the sequential
+        tail does not redo the expensive first pass.
+        """
+        checkpoint_path = self._checkpoint_path()
+
+        # Resume an interrupted reroute tail without re-running round 1.
+        probe = SessionState(ablation=self.ablation)
+        with open(file, "r", encoding="utf-8") as f:
+            n = len(json.load(f))
+        state, start_attempt, round_progress = self._load_checkpoint(checkpoint_path, probe, n)
+        if state is not None:
+            logger.info("Resuming reroute tail from checkpoint (skipping round-1 shards).")
+            self._finish_tail(file, state, probe, start_attempt, round_progress, checkpoint_path)
+            return
+
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        session = SessionState(ablation=self.ablation)
+        state = self._new_state(n)
+
+        # Seed routing outcomes; rejected questions are already terminal.
+        for i in range(n):
+            r = round1[i]
+            state["route_traces"][i] = list(r.get("route_traces", []))
+            if r["expert"] is None:
+                state["status"][i] = r.get("status", REJECTED)
+                state["answer"][i] = r["answer"]
+            else:
+                state["history"][i] = [r["expert"]]
+
+        # Reconstruct the single-stream ``assignment.items()`` order: confident
+        # picks first (ascending index), then tiebreak picks (ascending index) —
+        # _route_pending appends tiebreaks after all confident picks — then group
+        # by expert (first-appearance order). This is exactly the order _run_rounds
+        # replays A/C in, so the online state matches regardless of how shards split.
+        assigned = [i for i in range(n) if round1[i]["expert"] is not None]
+        confident = [i for i in assigned if not round1[i].get("tiebreak")]
+        tiebreaked = [i for i in assigned if round1[i].get("tiebreak")]
+        groups: Dict[str, List[int]] = defaultdict(list)
+        for i in confident + tiebreaked:
+            groups[round1[i]["expert"]].append(i)
+        order = [i for _, idxs in groups.items() for i in idxs]
+
+        questions = [item["question"] for item in data]
+        q_emb = [self._retriever.embed_query(q) for q in questions]
+        for i in order:
+            r = round1[i]
+            vd = r["verdict"]
+            verdict = Verdict(
+                passed=bool(vd["passed"]),
+                confidence=float(vd["confidence"]),       # raw, unrounded
+                critique=vd.get("critique", ""),
+                checks=vd.get("checks", {}),
+                det_score=float(vd.get("det_score", 1.0)),
+                llm_confidence=float(vd.get("llm_confidence", 0.5)),
+            )
+            expert = r["expert"]
+            session.observe_verdict(expert, q_emb[i], verdict)
+            # critic_log stores the rounded to_dict() — matches the single-stream log.
+            state["critic_log"][i].append({"expert": expert, "answer": r["answer"], **verdict.to_dict()})
+            if verdict.passed and session.accept(verdict.confidence):
+                state["status"][i] = RESOLVED
+                state["answer"][i] = r["answer"]
+            elif verdict.passed:
+                state["best_lowconf"][i] = (r["answer"], verdict.confidence)
+            # else: stays PENDING → handled by the reroute rounds below.
+
+        self._finish_tail(file, state, session, start_attempt=1,
+                          round_progress=None, checkpoint_path=checkpoint_path)
+
+    def _finish_tail(self, file, state, session, start_attempt, round_progress, checkpoint_path):
+        """Run the reroute rounds (attempt >= 1) sequentially, then write outputs.
+
+        Shared by a fresh finish (after the round-1 replay, ``start_attempt=1``)
+        and by a checkpoint resume. Reroute rounds *do* depend on A (competence is
+        now populated), exactly like a single stream."""
+        with open(file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        questions = [item["question"] for item in data]
+        q_emb = [self._retriever.embed_query(q) for q in questions]
+        state = self._run_rounds(
+            questions, q_emb, session, state=state, start_attempt=start_attempt,
+            checkpoint_path=checkpoint_path, round_progress=round_progress,
+        )
+        self._write_outputs(data, state, session)
+        self._clear_checkpoint(checkpoint_path)
+
     def _run_rounds(
         self,
         questions: List[str],
@@ -500,14 +722,7 @@ class SmallLanguageRouter:
     ) -> Dict:
         n = len(questions)
         if state is None:
-            state = {
-                "status": [PENDING] * n,
-                "answer": [None] * n,
-                "history": [[] for _ in range(n)],     # experts tried, in order
-                "route_traces": [[] for _ in range(n)],
-                "critic_log": [[] for _ in range(n)],
-                "best_lowconf": [None] * n,            # (answer, confidence) passed-but-withheld
-            }
+            state = self._new_state(n)
 
         for attempt in range(start_attempt, self._max_reroutes):
             pending = [i for i in range(n) if state["status"][i] == PENDING]
@@ -531,7 +746,7 @@ class SmallLanguageRouter:
                 # question sees exactly what it would in a one-at-a-time run. The
                 # classifier scores the whole round in one batched forward pass and
                 # the Qwen-3B reasoner is loaded only for the ambiguous subset.
-                assignment = self._route_pending(pending, questions, q_emb, session, state)
+                assignment, _ = self._route_pending(pending, questions, q_emb, session, state)
                 answered, verified = {}, set()
                 # Checkpoint immediately after routing so a crash in the (long)
                 # answer phase resumes here instead of re-routing the round.

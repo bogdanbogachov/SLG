@@ -347,8 +347,9 @@ verdict as a self-supervised label, which sets the threshold τ).
   answers are decoded per-expert-group, and all critic verdicts are decoded
   together (batch sizes: `generation.reasoner_batch_size` for the 8B critic / 3B
   reasoner, `generation.expert_batch_size` for the 3B experts). The online A/C updates
-  are then replayed in the same per-question order the unbatched loop used, so the
-  learned state is consistent with a single-stream run. See
+  are then applied in a fixed canonical order — grouped by expert (confident picks
+  in question order, then tiebreaks) — the same order the unbatched loop walks, so
+  the learned state is consistent with a single-stream run. See
   [Multi-GPU execution & batching](#multi-gpu-execution--batching).
 - Per-question outcome (`status` in `slg.json`):
   - `resolved` — verified and confident enough to return.
@@ -525,9 +526,20 @@ the four **coupled** presets (`full`, `no_competence`, `no_verifier`,
 `no_abstention` — each carries online A/C state that evolves across the question
 stream and must run as one ordered process) go one-per-GPU, and **`base`** (A and
 C off → questions independent) is **sharded data-parallel across all GPUs** and
-merged in original order. Sharding is applied *only* to `base`; the answers are
-bit-identical to a single-stream `base` run, and it fills the GPUs that would
-otherwise idle in wave 2 (`base` ~5 h sharded vs ~20 h solo).
+merged in original order, bit-identical to a single-stream `base` run, filling
+the GPUs that would otherwise idle in wave 2.
+
+**Round-1 parallelism for a full `--infer_slg` run.** A standalone `full` run
+can't be naively sharded (A/C are stateful), but its **round 1** — route+answer+
+verify over the entire test set, i.e. the dominant cost — *is* sharded across all
+GPUs, because round-1 routing is **A-independent** (competence is empty on the
+first pass, so every question routes from pure classifier scores). Each shard
+returns raw answers+verdicts; the parent then **replays A and C in canonical
+order** and runs the small reroute rounds sequentially on one GPU
+(`answer_shard_round1` + `finish_from_round1`). The result matches the
+single-stream run (statuses + A/C learning curves), so the speed-up costs nothing
+scientifically. Falls back to a single stream for ablations, `--limit`
+quick-checks, one GPU, or `SLG_DISABLE_PARALLEL`.
 
 **Consistency.** Cross-run jobs are atomic and independent, so results are
 identical to a single-GPU run — only *which* GPU runs *which* job changes.
@@ -536,9 +548,10 @@ in *rounds* (route all pending → answer → verify all → reroute), so the (A
 competence and (C) calibration state updates **once per round** from that round's
 verdicts — it is round-granular online, not per-question online (this predates
 batching; the round structure exists to bound model load/unload churn). Within a
-round, batching replays the A/C updates in the same order the unbatched loop
-used, and greedy decoding means answers match in practice (padding + float order
-can rarely flip a token → consistent, not bit-identical). A round with a single
+round, A/C updates are applied in a fixed canonical order — grouped by expert
+(confident picks in question order, then tiebreaks) — the order the answer/verify
+phases walk, and greedy decoding means answers match in practice (padding + float
+order can rarely flip a token → consistent, not bit-identical). A round with a single
 question falls back to unbatched decoding and stays bit-identical.
 
 **Single node, on purpose.** Parallelism is in-process (worker subprocesses +

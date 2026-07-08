@@ -79,16 +79,108 @@ def run_finetuned(experiment: str, output_suffix: str = ""):
 def run_slg(experiment: str, ablation: str = "full", output_suffix: str = ""):
     """Batch SLG inference. ``ablation`` selects a leave-one-out preset (#2);
     non-full runs write to answers/<experiment>/<experiment>__<ablation>/.
-    ``output_suffix`` (e.g. "__limit50") isolates a quick-check run's outputs."""
+    ``output_suffix`` (e.g. "__limit50") isolates a quick-check run's outputs.
+
+    Speed path: a ``full`` run's **round 1** (route+answer+verify over the whole
+    test set — the dominant cost) is sharded data-parallel across every visible
+    GPU, then A/C are replayed in canonical order and the small reroute rounds run
+    sequentially (:meth:`SmallLanguageRouter.finish_from_round1`). This is
+    equivalent to the single-stream run because round-1 routing is A-independent
+    (empty competence on the first pass); see ``answer_shard_round1``. Falls back
+    to the single-GPU stream for ablations, quick-checks, 1 GPU, or
+    ``SLG_DISABLE_PARALLEL``."""
+    import os as _os
     from inference.slg import SmallLanguageRouter
     from inference.slg.ablation import get_ablation
+    from utils.parallel import visible_gpu_ids
     ensure_dir(os.path.join(get_answers_root(experiment), experiment))
     files_config = CONFIG['files']
+    qa_file = files_config['qa_test']
+
+    use_sharded_round1 = (
+        ablation == "full" and not output_suffix
+        and len(visible_gpu_ids()) > 1
+        and not _os.environ.get("SLG_DISABLE_PARALLEL")
+    )
+    if use_sharded_round1:
+        _run_full_round1_sharded(experiment, qa_file, output_suffix)
+        return
+
     router = SmallLanguageRouter(
         experts_location=experiment, experiment=experiment,
         ablation=get_ablation(ablation), output_suffix=output_suffix,
     )
-    router.ask(file=files_config['qa_test'])
+    router.ask(file=qa_file)
+
+
+def _slg_full_round1_worker(task: dict) -> dict:
+    """Run round 1 of a ``full`` run over one contiguous shard (picklable for the
+    GPU pool); returns raw per-global-index results with no A/C applied."""
+    from inference.slg import SmallLanguageRouter
+    from inference.slg.ablation import get_ablation
+    router = SmallLanguageRouter(
+        experts_location=task["experiment"], experiment=task["experiment"],
+        ablation=get_ablation("full"),
+    )
+    return router.answer_shard_round1(task["file"], task["shard_index"], task["num_shards"])
+
+
+def _run_full_round1_sharded(experiment: str, qa_file: str, output_suffix: str = ""):
+    """Shard round 1 of a full run across GPUs, then replay A/C + reroutes on one GPU."""
+    import json
+    from inference.slg import SmallLanguageRouter
+    from inference.slg.ablation import get_ablation
+    from utils.parallel import visible_gpu_ids
+
+    from inference.slg.session import SessionState
+
+    label = experiment + output_suffix
+    out_path = os.path.join(get_answers_root(experiment), label, "slg.json")
+    with open(qa_file, "r", encoding="utf-8") as f:
+        n = len(json.load(f))
+    if os.path.exists(out_path):
+        with open(out_path, "r", encoding="utf-8") as f:
+            if len(json.load(f)) == n:
+                logger.info("SLG full run already complete (%d/%d); skipping.", n, n)
+                return
+
+    finish_router = SmallLanguageRouter(
+        experts_location=experiment, experiment=experiment,
+        ablation=get_ablation("full"), output_suffix=output_suffix,
+    )
+
+    # Resume an interrupted reroute tail WITHOUT re-sharding round 1: round 1 is
+    # not checkpointed, but once the (sequential) tail has started, its checkpoint
+    # carries the replayed round-1 A/C state + statuses, so we continue from there.
+    ckpt = finish_router._checkpoint_path()
+    probe = SessionState(ablation=get_ablation("full"))
+    state, start_attempt, round_progress = finish_router._load_checkpoint(ckpt, probe, n)
+    if state is not None:
+        logger.info("SLG full: resuming reroute tail from checkpoint; skipping round-1 sharding.")
+        finish_router._finish_tail(qa_file, state, probe, start_attempt, round_progress, ckpt)
+        return
+
+    num_shards = max(1, len(visible_gpu_ids()))
+    _warm_expert_cache(experiment)
+    tasks = [
+        {"experiment": experiment, "file": qa_file, "shard_index": k, "num_shards": num_shards}
+        for k in range(num_shards)
+    ]
+    logger.info("SLG full: sharding round 1 of %d question(s) across %d GPU(s).", n, num_shards)
+    results = run_parallel(("commands.inference", "_slg_full_round1_worker"),
+                           tasks, label="slg_full_round1")
+
+    round1 = {}
+    for r in results:
+        if r:
+            round1.update(r["results"])
+
+    if len(round1) != n:
+        logger.warning("Round-1 shards returned %d/%d results; falling back to single-stream.",
+                       len(round1), n)
+        finish_router.ask(file=qa_file)
+        return
+    finish_router.finish_from_round1(qa_file, round1)
 
 
 def _warm_expert_cache(experiment: str) -> None:

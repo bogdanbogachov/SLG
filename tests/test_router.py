@@ -74,7 +74,7 @@ def test_confident():
     rea = FakeReasoner([])
     r = make_router(clf, rea)
     st = fresh_state(1)
-    a = r._route_pending([0], ["q"], [None], FakeSession(), st)
+    a, _ = r._route_pending([0], ["q"], [None], FakeSession(), st)
     assert a == {0: "a"}, a
     assert rea.loads == 0, "reasoner must not load for a confident pick"
     assert st["history"][0] == ["a"]
@@ -86,7 +86,7 @@ def test_tie():
     rea = FakeReasoner([["b"]])            # reasoner resolves tie -> b
     r = make_router(clf, rea)
     st = fresh_state(1)
-    a = r._route_pending([0], ["q"], [None], FakeSession(), st)
+    a, _ = r._route_pending([0], ["q"], [None], FakeSession(), st)
     assert a == {0: "b"}, a
     assert rea.loads == 1, "reasoner should load for the tie"
     print("2 tie -> reasoner tiebreak: OK")
@@ -97,7 +97,7 @@ def test_tie_reasoner_declines():
     rea = FakeReasoner([[]])               # reasoner NONE -> keep classifier top-1
     r = make_router(clf, rea)
     st = fresh_state(1)
-    a = r._route_pending([0], ["q"], [None], FakeSession(), st)
+    a, _ = r._route_pending([0], ["q"], [None], FakeSession(), st)
     assert a == {0: "a"}, a
     print("3 tie + reasoner declines -> classifier top-1: OK")
 
@@ -109,7 +109,7 @@ def test_reject_cosine_floor():
     ret = FakeRetriever([{"a": 0.06, "b": 0.05, "c": 0.04}])
     r = make_router(clf, rea, retriever=ret, cosine_floor=0.10)
     st = fresh_state(1)
-    a = r._route_pending([0], ["q"], [np.zeros(4, dtype="float32")], FakeSession(), st)
+    a, _ = r._route_pending([0], ["q"], [np.zeros(4, dtype="float32")], FakeSession(), st)
     assert a == {} and st["status"][0] == REJECTED, (a, st["status"][0])
     print("4 cosine below floor -> REJECTED: OK")
 
@@ -122,7 +122,7 @@ def test_reroute_excludes_tried():
     rea = FakeReasoner([])
     r = make_router(clf, rea)
     st = fresh_state(1, history=[["a"]])
-    a = r._route_pending([0], ["q"], [None], FakeSession(), st)
+    a, _ = r._route_pending([0], ["q"], [None], FakeSession(), st)
     assert a == {0: "b"}, a
     assert st["history"][0] == ["a", "b"]
     print("5 reroute excludes tried; renormalized pick survives floor: OK")
@@ -135,7 +135,7 @@ def test_competence_adjustment():
     r = make_router(clf, rea)
     st = fresh_state(1)
     sess = FakeSession(adj={"b": 0.3, "a": -0.2})
-    a = r._route_pending([0], ["q"], [None], sess, st)
+    a, _ = r._route_pending([0], ["q"], [None], sess, st)
     assert a == {0: "b"}, a
     assert rea.loads == 0
     print("6 competence adjustment flips + widens margin: OK")
@@ -147,7 +147,7 @@ def test_fallback_cosine():
     ret = FakeRetriever([{"a": 0.8, "b": 0.1, "c": 0.05}])
     r = make_router(clf, rea, retriever=ret)   # default cosine_floor 0.0
     st = fresh_state(1)
-    a = r._route_pending([0], ["q"], [np.zeros(4, dtype="float32")], FakeSession(), st)
+    a, _ = r._route_pending([0], ["q"], [np.zeros(4, dtype="float32")], FakeSession(), st)
     assert a == {0: "a"}, a
     print("7 classifier-unavailable -> cosine fallback: OK")
 
