@@ -163,6 +163,14 @@ class SmallLanguageRouter:
         self._routing = CONFIG["routing"]
         self._top_k = int(self._routing["top_k_cosine"])
         self._max_reroutes = int(self._routing["max_reroutes"])
+        # Chunk sizes for intra-round checkpointing: a round's answer/verify
+        # phases are checkpointed after each chunk, so an interrupted round-1
+        # pass over the full test set resumes near where it stopped rather than
+        # restarting. Match the generation batch sizes so a checkpoint lands
+        # once per decoded batch (no extra generation granularity introduced).
+        _gen = CONFIG.get("generation", {})
+        self._expert_batch = max(1, int(_gen.get("expert_batch_size", 48)))
+        self._reasoner_batch = max(1, int(_gen.get("reasoner_batch_size", 12)))
         self._rejection_message = self._routing["rejection_message"]
         self._exhausted_message = self._routing["exhausted_message"]
         self._low_confidence_message = self._routing.get(
@@ -260,10 +268,11 @@ class SmallLanguageRouter:
         # unfinished round. Rounds are the online-update boundary, so this yields
         # the same final result as an uninterrupted run.
         session = SessionState(ablation=self.ablation)
-        state, start_attempt = self._load_checkpoint(checkpoint_path, session, len(data))
+        state, start_attempt, round_progress = self._load_checkpoint(checkpoint_path, session, len(data))
         state = self._run_rounds(
             questions, q_emb, session,
             state=state, start_attempt=start_attempt, checkpoint_path=checkpoint_path,
+            round_progress=round_progress,
         )
 
         # Assemble answers in original order for evaluation alignment.
@@ -343,6 +352,7 @@ class SmallLanguageRouter:
         state: Optional[Dict] = None,
         start_attempt: int = 0,
         checkpoint_path: Optional[str] = None,
+        round_progress: Optional[Dict] = None,
     ) -> Dict:
         n = len(questions)
         if state is None:
@@ -362,95 +372,126 @@ class SmallLanguageRouter:
             logger.info("=== Routing round %d/%d — %d pending question(s) ===",
                         attempt + 1, self._max_reroutes, len(pending))
 
-            # --- Route phase (8B resident, online-competence adjusted) ---
-            # Shortlists + competence adjustments are read from the round-start
-            # session state (untouched until the verify phase), so every pending
-            # question sees exactly what it would in a one-at-a-time run; the 8B
-            # router traces are merely decoded together, a batch at a time.
-            self._reasoner.load()
-            shortlists = []
-            adj_list = []
-            for i in pending:
-                adjustments = session.routing_adjustments(q_emb[i])
-                # Exclude experts already tried for this question so a reroute
-                # cannot re-select a failed expert and waste the attempt budget.
-                tried = set(state["history"][i])
-                shortlists.append([
-                    eid for eid, _ in self._retriever.shortlist(
-                        q_emb[i], self._top_k, adjustments, exclude=tried
-                    )
-                ])
-                adj_list.append(adjustments)
-            route_results = self._reasoner.route_batch(
-                [questions[i] for i in pending], shortlists, self._descriptions,
-                max_experts=1, adjustments_list=adj_list,
-            )
-            assignment: Dict[int, str] = {}
-            for pos, i in enumerate(pending):
-                trace, chosen = route_results[pos]
-                state["route_traces"][i].append(trace)
-                if not chosen:
-                    # No expert: terminal rejection only if we never chose one
-                    # before; otherwise the question has run out of alternatives
-                    # and is classified after the loop.
-                    if not state["history"][i]:
-                        state["status"][i] = REJECTED
-                        state["answer"][i] = self._rejection_message
-                else:
-                    assignment[i] = chosen[0]
-                    state["history"][i].append(chosen[0])
-            self._reasoner.unload()
+            # Resume the *in-progress* round from an intra-round checkpoint: its
+            # route phase already ran (state reflects it), so restore the expert
+            # assignment plus any partial answer/verify progress and skip ahead.
+            resuming = round_progress is not None and round_progress.get("attempt") == attempt
+            if resuming:
+                assignment = {int(i): e for i, e in round_progress["assignment"]}
+                answered = {int(i): a for i, a in round_progress["answers"]}
+                verified = {int(i) for i in round_progress["verified"]}
+            else:
+                # --- Route phase (8B resident, online-competence adjusted) ---
+                # Shortlists + competence adjustments are read from the round-start
+                # session state (untouched until the verify phase), so every pending
+                # question sees exactly what it would in a one-at-a-time run; the 8B
+                # router traces are merely decoded together, a batch at a time.
+                self._reasoner.load()
+                shortlists = []
+                adj_list = []
+                for i in pending:
+                    adjustments = session.routing_adjustments(q_emb[i])
+                    # Exclude experts already tried for this question so a reroute
+                    # cannot re-select a failed expert and waste the attempt budget.
+                    tried = set(state["history"][i])
+                    shortlists.append([
+                        eid for eid, _ in self._retriever.shortlist(
+                            q_emb[i], self._top_k, adjustments, exclude=tried
+                        )
+                    ])
+                    adj_list.append(adjustments)
+                route_results = self._reasoner.route_batch(
+                    [questions[i] for i in pending], shortlists, self._descriptions,
+                    max_experts=1, adjustments_list=adj_list,
+                )
+                assignment = {}
+                for pos, i in enumerate(pending):
+                    trace, chosen = route_results[pos]
+                    state["route_traces"][i].append(trace)
+                    if not chosen:
+                        # No expert: terminal rejection only if we never chose one
+                        # before; otherwise the question has run out of alternatives
+                        # and is classified after the loop.
+                        if not state["history"][i]:
+                            state["status"][i] = REJECTED
+                            state["answer"][i] = self._rejection_message
+                    else:
+                        assignment[i] = chosen[0]
+                        state["history"][i].append(chosen[0])
+                self._reasoner.unload()
+                answered, verified = {}, set()
+                # Checkpoint immediately after routing so a crash in the (long)
+                # answer phase resumes here instead of re-routing the round.
+                round_progress = {"attempt": attempt,
+                                  "assignment": [[i, e] for i, e in assignment.items()],
+                                  "answers": [], "verified": []}
+                self._ckpt(checkpoint_path, state, session, attempt, n, round_progress)
 
-            # --- Answer phase (1B adapters, grouped by expert) ---
+            # Canonical answer/verify order: grouped by expert, in assignment
+            # order. Both phases walk this order and checkpoint per chunk, so an
+            # interrupted round-1 pass over the full test set resumes near where
+            # it stopped. The order is what fixes the A/C update sequence, so it
+            # is recomputed identically on resume from the restored assignment.
             groups: Dict[str, List[int]] = defaultdict(list)
             for i, expert in assignment.items():
                 groups[expert].append(i)
-            round_answers: Dict[int, str] = {}
+            order = [i for _, idxs in groups.items() for i in idxs]
+
+            # --- Answer phase (1B adapters, grouped by expert, chunked) ---
             for expert, idxs in groups.items():
-                outs = self._runner.answer_batch(expert, [questions[i] for i in idxs])
-                for i, out in zip(idxs, outs):
-                    round_answers[i] = out
+                todo = [i for i in idxs if i not in answered]
+                for c in range(0, len(todo), self._expert_batch):
+                    chunk = todo[c:c + self._expert_batch]
+                    outs = self._runner.answer_batch(expert, [questions[i] for i in chunk])
+                    for i, out in zip(chunk, outs):
+                        answered[i] = out
+                    round_progress["answers"] = [[i, answered[i]] for i in order if i in answered]
+                    self._ckpt(checkpoint_path, state, session, attempt, n, round_progress)
 
             # --- Verify phase (8B resident: domain verifier B + competence A + calibration C) ---
-            # The critic verdicts are decoded in one batched pass, then applied
-            # to the online state in the *same order* the unbatched loop used
-            # (round_answers insertion order, i.e. grouped by expert). Because A
-            # (competence) and C (calibration) update sequentially, preserving
-            # that order keeps the learned state — and the results — consistent
-            # with a single-GPU run; only the generation is batched.
+            # Verdicts are decoded a batch at a time and applied to the online
+            # state in the *canonical order* above. Because A (competence) and C
+            # (calibration) update sequentially, preserving that order — across a
+            # resume too, since verified questions are a prefix of it — keeps the
+            # learned state and the results consistent with a single-GPU run.
             self._reasoner.load()
-            verify_items = list(round_answers.items())  # (i, answer), insertion order
-            verdicts = self._verifier.verify_batch([
-                (questions[i], assignment[i], self._descriptions.get(assignment[i], ""), out)
-                for i, out in verify_items
-            ])
-            for (i, out), verdict in zip(verify_items, verdicts):
-                expert = assignment[i]
-                session.observe_verdict(expert, q_emb[i], verdict)
-                entry = {"expert": expert, "answer": out, **verdict.to_dict()}
-                state["critic_log"][i].append(entry)
+            to_verify = [i for i in order if i not in verified]
+            for c in range(0, len(to_verify), self._reasoner_batch):
+                chunk = to_verify[c:c + self._reasoner_batch]
+                verdicts = self._verifier.verify_batch([
+                    (questions[i], assignment[i], self._descriptions.get(assignment[i], ""), answered[i])
+                    for i in chunk
+                ])
+                for i, verdict in zip(chunk, verdicts):
+                    expert = assignment[i]
+                    session.observe_verdict(expert, q_emb[i], verdict)
+                    entry = {"expert": expert, "answer": answered[i], **verdict.to_dict()}
+                    state["critic_log"][i].append(entry)
 
-                if verdict.passed and session.accept(verdict.confidence):
-                    state["status"][i] = RESOLVED
-                    state["answer"][i] = out
-                elif verdict.passed:
-                    # Passed the critic but below the calibrated confidence bar:
-                    # keep the best such answer in case every attempt is withheld.
-                    best = state["best_lowconf"][i]
-                    if best is None or verdict.confidence > best[1]:
-                        state["best_lowconf"][i] = (out, verdict.confidence)
-                    logger.info("Q%d expert '%s' passed but below confidence bar (%.2f).",
-                                i + 1, expert, verdict.confidence)
-                else:
-                    logger.info("Verifier FAIL on Q%d expert '%s' (confidence=%.2f).",
-                                i + 1, expert, verdict.confidence)
+                    if verdict.passed and session.accept(verdict.confidence):
+                        state["status"][i] = RESOLVED
+                        state["answer"][i] = answered[i]
+                    elif verdict.passed:
+                        # Passed the critic but below the calibrated confidence bar:
+                        # keep the best such answer in case every attempt is withheld.
+                        best = state["best_lowconf"][i]
+                        if best is None or verdict.confidence > best[1]:
+                            state["best_lowconf"][i] = (answered[i], verdict.confidence)
+                        logger.info("Q%d expert '%s' passed but below confidence bar (%.2f).",
+                                    i + 1, expert, verdict.confidence)
+                    else:
+                        logger.info("Verifier FAIL on Q%d expert '%s' (confidence=%.2f).",
+                                    i + 1, expert, verdict.confidence)
+                    verified.add(i)
+                round_progress["verified"] = [i for i in order if i in verified]
+                self._ckpt(checkpoint_path, state, session, attempt, n, round_progress)
             self._reasoner.unload()
 
-            # Round boundary: the answer state and the online A/C session are now
-            # consistent (all this round's verdicts observed). Checkpoint so an
-            # interrupted run resumes here instead of restarting from scratch.
-            if checkpoint_path is not None:
-                self._save_checkpoint(checkpoint_path, state, session, attempt + 1, n)
+            # Round boundary: this round's answers and A/C updates are all
+            # committed. Clear the intra-round progress and checkpoint the
+            # boundary (completed_attempts advances, so the reroute budget holds).
+            round_progress = None
+            self._ckpt(checkpoint_path, state, session, attempt + 1, n, None)
 
         # Classify anything still pending after the reroute budget is spent.
         for i in range(n):
@@ -468,16 +509,29 @@ class SmallLanguageRouter:
         return state
 
     # -------------------------------------------------------- checkpointing
-    _CHECKPOINT_VERSION = 1
+    _CHECKPOINT_VERSION = 2
+
+    def _ckpt(
+        self, path: Optional[str], state: Dict, session: SessionState,
+        completed_attempts: int, n: int, round_progress: Optional[Dict],
+    ) -> None:
+        """No-op when checkpointing is disabled (``path`` is None), else save."""
+        if path is not None:
+            self._save_checkpoint(path, state, session, completed_attempts, n, round_progress)
 
     def _save_checkpoint(
-        self, path: str, state: Dict, session: SessionState, completed_attempts: int, n: int
+        self, path: str, state: Dict, session: SessionState, completed_attempts: int, n: int,
+        round_progress: Optional[Dict] = None,
     ) -> None:
-        """Atomically persist a round-boundary snapshot for mid-run resume.
+        """Atomically persist a resume snapshot.
 
-        Written after every completed round; captures the per-question answer
-        state, the number of rounds finished (so the reroute budget is not reset
-        on resume), and the online A/C session state.
+        Written both at each round boundary and *within* a round after every
+        answer/verify chunk. Captures the per-question answer state, the number
+        of rounds fully finished (so the reroute budget is not reset on resume),
+        the online A/C session state, and — for an interrupted round —
+        ``round_progress``: the expert assignment plus which questions have been
+        answered/verified so far this round, so a long round-1 pass over the full
+        test set resumes near where it stopped instead of restarting.
         """
         payload = {
             "version": self._CHECKPOINT_VERSION,
@@ -486,6 +540,7 @@ class SmallLanguageRouter:
             "completed_attempts": completed_attempts,
             "state": state,
             "session": session.state_dict(),
+            "round_progress": round_progress,
         }
         tmp = f"{path}.tmp"
         with open(tmp, "w", encoding="utf-8") as f:
@@ -494,22 +549,24 @@ class SmallLanguageRouter:
 
     def _load_checkpoint(
         self, path: str, session: SessionState, n: int
-    ) -> Tuple[Optional[Dict], int]:
-        """Restore a checkpoint into ``session``; return (answer_state, start_attempt).
+    ) -> Tuple[Optional[Dict], int, Optional[Dict]]:
+        """Restore a checkpoint into ``session``; return (state, start_attempt, round_progress).
 
-        Returns ``(None, 0)`` — a fresh start — when no valid, matching checkpoint
-        exists. A checkpoint is only honoured if it targets the same run label and
-        the same number of questions; otherwise it is ignored (the stale file is
-        left in place and overwritten by the first round of the new run).
+        Returns ``(None, 0, None)`` — a fresh start — when no valid, matching
+        checkpoint exists. A checkpoint is only honoured if it targets the same
+        run label, question count, and schema version; otherwise it is ignored
+        (the stale file is left in place and overwritten by the first round of
+        the new run). ``round_progress`` is non-None only when the run was
+        interrupted *mid-round*, and drives the in-round resume.
         """
         if not os.path.exists(path):
-            return None, 0
+            return None, 0, None
         try:
             with open(path, "r", encoding="utf-8") as f:
                 payload = json.load(f)
         except (json.JSONDecodeError, OSError) as e:
             logger.warning("Ignoring unreadable checkpoint %s (%s); restarting run.", path, e)
-            return None, 0
+            return None, 0, None
 
         if (
             payload.get("version") != self._CHECKPOINT_VERSION
@@ -520,17 +577,23 @@ class SmallLanguageRouter:
                 "Checkpoint %s does not match this run (label/size/version); restarting run.",
                 path,
             )
-            return None, 0
+            return None, 0, None
 
         session.load_state_dict(payload["session"])
         start_attempt = int(payload["completed_attempts"])
         state = payload["state"]
+        round_progress = payload.get("round_progress")
         remaining = sum(1 for s in state["status"] if s == PENDING)
+        in_round = ""
+        if round_progress is not None:
+            done = len(round_progress.get("verified", []))
+            total = len(round_progress.get("assignment", []))
+            in_round = f", mid-round {start_attempt + 1} ({done}/{total} verified)"
         logger.info(
-            "Resuming SLG run from checkpoint: %d/%d round(s) done, %d question(s) still pending.",
-            start_attempt, self._max_reroutes, remaining,
+            "Resuming SLG run from checkpoint: %d/%d round(s) done, %d question(s) still pending%s.",
+            start_attempt, self._max_reroutes, remaining, in_round,
         )
-        return state, start_attempt
+        return state, start_attempt, round_progress
 
     def _clear_checkpoint(self, path: str) -> None:
         try:
