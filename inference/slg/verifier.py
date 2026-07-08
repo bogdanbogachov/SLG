@@ -95,10 +95,12 @@ class DomainVerifier:
         checks: Dict[str, bool] = {}
         veto = False
 
-        # 1. Non-empty, non-degenerate answer.
+        # 1. Non-empty, non-degenerate answer. A degenerate answer (empty, or an
+        #    explicit non-answer like "I don't know" / "as an AI") is a hard veto:
+        #    it forces a FAIL regardless of the critic, per the verifier spec.
         non_degenerate = bool(text) and not _NON_ANSWER.search(text)
         checks["non_degenerate"] = non_degenerate
-        if not text:
+        if not non_degenerate:
             veto = True
 
         # 2. Numeric sanity: every parsed number is finite and not absurd.

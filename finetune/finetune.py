@@ -76,8 +76,13 @@ def finetune(
     logger.debug(f"Dataset after splitting: {new_dataset}")
 
     if tokenizer.pad_token is None:
-        # Set an existing special token as a padding token, this way we can avoid model resizing
-        tokenizer.pad_token = "<|reserved_special_token_15|>"
+        # Use an existing special token as the pad token to avoid resizing the
+        # embeddings. Llama exposes reserved tokens; other families (e.g. Qwen)
+        # do not, so fall back to eos there.
+        if "<|reserved_special_token_15|>" in tokenizer.get_vocab():
+            tokenizer.pad_token = "<|reserved_special_token_15|>"
+        else:
+            tokenizer.pad_token = tokenizer.eos_token
 
     # Tokenize the data
     def tokenize_function(example):
@@ -112,15 +117,18 @@ def finetune(
     learning_rate = training_config['learning_rate']
     label_smoothing_factor = training_config['label_smoothing_factor']
 
-    # Model-size-aware batch sizes: the 8B baseline fills an 80GB GPU far sooner
-    # than the 1B experts, so it uses a smaller per-device batch (…_8b keys).
-    is_8b = "8b" in os.path.basename(os.path.normpath(model_to_tune)).lower()
-    per_device_train_batch_size = training_config[
-        'per_device_train_batch_size_8b' if is_8b else 'per_device_train_batch_size'
-    ]
-    per_device_eval_batch_size = training_config[
-        'per_device_eval_batch_size_8b' if is_8b else 'per_device_eval_batch_size'
-    ]
+    # Model-size-aware batch sizes: a bigger model fills an 80GB GPU sooner, so it
+    # takes a smaller per-device batch. Keys are chosen from the model dir name:
+    # …_8b (Llama-8B), …_3b (Qwen-3B experts), else the default (1B).
+    name = os.path.basename(os.path.normpath(model_to_tune)).lower()
+    if "8b" in name:
+        suffix = "_8b"
+    elif "3b" in name or "qwen" in name:
+        suffix = "_3b"
+    else:
+        suffix = ""
+    per_device_train_batch_size = training_config[f'per_device_train_batch_size{suffix}']
+    per_device_eval_batch_size = training_config[f'per_device_eval_batch_size{suffix}']
     logger.info(
         "Fine-tune batch sizes for %s: train=%d eval=%d (grad_accum=%d)",
         adapter_name, per_device_train_batch_size, per_device_eval_batch_size,

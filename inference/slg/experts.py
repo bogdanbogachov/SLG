@@ -1,5 +1,6 @@
-"""Expert answer generation (LLaMA 3.2-1B + per-expert LoRA adapter).
+"""Expert answer generation (per-expert LoRA adapter on a shared base model).
 
+The base model is ``slg.expert_model`` (Qwen-3B by default; formerly LLaMA-1B).
 One adapter is loaded at a time and can answer several questions before being
 released, so the batch pipeline groups a round's questions by expert to keep
 adapter load/unload churn to a minimum.
@@ -21,8 +22,9 @@ class ExpertRunner:
 
     def __init__(self, slg_path: str):
         paths_cfg = CONFIG["paths"]
+        expert_key = CONFIG.get("slg", {}).get("expert_model", "3_2_1b")
         self._base_model_path = os.path.join(
-            paths_cfg["downloaded_models"], paths_cfg["models"]["3_2_1b"]
+            paths_cfg["downloaded_models"], paths_cfg["models"][expert_key]
         )
         self._slg_path = slg_path
         self._max_new_tokens = int(CONFIG["generation"]["max_new_tokens"])

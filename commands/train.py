@@ -14,6 +14,19 @@ def _finetune_worker(task: dict) -> None:
     finetune(**task)
 
 
+def run_finetune_router(experiment: str) -> None:
+    """Train the router classifier (Llama-1B sequence-classification head).
+
+    A single model over the full expert set; one GPU is enough, so this runs
+    in-process rather than through the multi-GPU pool. Overwrites any existing
+    router at experiments/<exp>/slg_router/."""
+    from inference.slg.classifier import train_router
+
+    logger.info("Training router classifier for experiment '%s'...", experiment)
+    out_dir = train_router(experiment)
+    logger.info("Router classifier saved to %s", out_dir)
+
+
 def run_training(experiment: str, train_limit: int = 0) -> None:
     """Fine-tune every requested model.
 
@@ -47,6 +60,7 @@ def run_training(experiment: str, train_limit: int = 0) -> None:
     # One LoRA expert per title split (routing uses the prompt-based router +
     # descriptions.json).
     if train_slg_system:
+        expert_key = CONFIG.get("slg", {}).get("expert_model", "3_2_1b")
         split_files = sorted(
             f for f in os.listdir(split_by_title_dir) if f.endswith(".json")
         )
@@ -54,7 +68,7 @@ def run_training(experiment: str, train_limit: int = 0) -> None:
             logger.warning("No JSON files in split_by_title; no SLG experts were trained.")
         for file in split_files:
             tasks.append({
-                "model_to_tune": os.path.join(downloaded_models_dir, models_paths["3_2_1b"]),
+                "model_to_tune": os.path.join(downloaded_models_dir, models_paths[expert_key]),
                 "adapter_name": os.path.splitext(file)[0],
                 "data": os.path.join(split_by_title_dir, file),
                 "experiment_number": experiment,

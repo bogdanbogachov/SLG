@@ -44,6 +44,7 @@ from utils.path_utils import (
 )
 
 from inference.slg.ablation import AblationConfig
+from inference.slg.classifier import ExpertClassifier
 from inference.slg.experts import ExpertRunner
 from inference.slg.reasoner import Reasoner
 from inference.slg.retriever import ExpertRetriever
@@ -163,6 +164,12 @@ class SmallLanguageRouter:
         self._routing = CONFIG["routing"]
         self._top_k = int(self._routing["top_k_cosine"])
         self._max_reroutes = int(self._routing["max_reroutes"])
+        # Router (classifier decider + reasoner tiebreaker) knobs.
+        _router = self._routing.get("router", {})
+        self._router_tie_margin = float(_router.get("tie_margin", 0.15))
+        self._router_prob_floor = float(_router.get("prob_floor", 0.10))
+        self._router_cosine_floor = float(_router.get("cosine_floor", 0.0))
+        self._router_multi_threshold = float(_router.get("multi_threshold", 0.30))
         # Chunk sizes for intra-round checkpointing: a round's answer/verify
         # phases are checkpointed after each chunk, so an interrupted round-1
         # pass over the full test set resumes near where it stopped rather than
@@ -209,10 +216,24 @@ class SmallLanguageRouter:
             )
 
         self._retriever = ExpertRetriever(experiment, allowed_experts=self._valid_experts)
+        self._classifier = ExpertClassifier(experiment, allowed_experts=self._valid_experts)
+        if self._classifier.available:
+            logger.info("Router: trained classifier (%d experts).", len(self._classifier.labels))
+        else:
+            logger.warning(
+                "Router: no trained classifier at experiments/%s/slg_router — "
+                "falling back to cosine top-1 (run --finetune_router for the learned router).",
+                experiment,
+            )
         self._runner = ExpertRunner(self._slg_path)
-        self._reasoner = Reasoner()
+        # Two distinct reasoning models: the reasoner (Qwen-3B) for the router
+        # tiebreaker + aggregate + compress, and the critic (Llama-8B, different
+        # family) for the domain verifier (B). Each loads its own weights on demand.
+        _slg = CONFIG.get("slg", {})
+        self._reasoner = Reasoner(model_key=_slg.get("reasoner_model", "qwen_3b"))
+        self._critic = Reasoner(model_key=_slg.get("critic_model", "3_1_8b"))
         self._verifier = DomainVerifier(
-            self._reasoner,
+            self._critic,
             require_units=bool(self._routing.get("verifier_require_units", True)),
             deterministic=self.ablation.deterministic,
         )
@@ -236,6 +257,129 @@ class SmallLanguageRouter:
         ensure_dir(d)
         return d
 
+    # ------------------------------------------------------------- routing
+    def _score_experts(
+        self, questions: List[str], q_embs: List[np.ndarray]
+    ) -> Tuple[List[Dict[str, float]], str]:
+        """Return ``(per-question score dict over the allowed pool, backend)``.
+
+        Backend ``"logits"`` (classifier available) → raw class logits, softmaxed
+        over the candidate set in :meth:`_rank`. Backend ``"cosine"`` (fallback)
+        → raw cosine similarities, ranked as-is. The two are *not* comparable, so
+        each has its own reject floor (see :meth:`_route_pending`).
+        """
+        if self._classifier.available:
+            self._classifier.load()
+            scores = self._classifier.logits_batch(questions)
+            self._classifier.unload()
+            return scores, "logits"
+        return [self._retriever.scores(emb) for emb in q_embs], "cosine"
+
+    def _rank(
+        self,
+        scores: Dict[str, float],
+        backend: str,
+        adjustments: Optional[Dict[str, float]],
+        exclude: set,
+    ) -> List[Tuple[str, float]]:
+        """Rank the *candidate* experts (allowed minus ``exclude``).
+
+        For the classifier backend the candidate logits are **softmaxed over the
+        candidate set** first, so the returned scores are a proper probability
+        distribution over exactly the experts still in play — masking a pool
+        subset or excluding a failed expert on reroute can no longer strand the
+        probability mass on an unavailable expert. The competence delta (A) is
+        then added to the score, exactly as it was added to the cosine score
+        before (the online mechanism is unchanged).
+        """
+        cand = {e: s for e, s in scores.items() if e not in exclude}
+        if not cand:
+            return []
+        if backend == "logits":
+            keys = list(cand)
+            arr = np.asarray([cand[k] for k in keys], dtype="float64")
+            arr = arr - arr.max()  # stabilise
+            w = np.exp(arr)
+            w /= w.sum()
+            cand = {k: float(w[i]) for i, k in enumerate(keys)}
+        for e, delta in (adjustments or {}).items():
+            if e in cand:
+                cand[e] += delta
+        return sorted(cand.items(), key=lambda kv: kv[1], reverse=True)
+
+    def _route_pending(
+        self,
+        pending: List[int],
+        questions: List[str],
+        q_emb: List[np.ndarray],
+        session: SessionState,
+        state: Dict,
+    ) -> Dict[int, str]:
+        """Route the pending questions: classifier decides, reasoner breaks ties.
+
+        Returns ``{question_index: chosen_expert}`` and, as a side effect, appends
+        to each question's ``history``/``route_traces`` and marks terminal
+        ``REJECTED`` for questions with no viable expert on their *first* attempt.
+        The Qwen-3B reasoner is loaded only when at least one question is ambiguous
+        (top1-top2 score gap < ``tie_margin``), so confident questions never pay
+        for it.
+        """
+        scores_list, backend = self._score_experts(
+            [questions[i] for i in pending], [q_emb[i] for i in pending]
+        )
+        floor = self._router_prob_floor if backend == "logits" else self._router_cosine_floor
+
+        assignment: Dict[int, str] = {}
+        tiebreak: List[int] = []
+        tb_shortlist: Dict[int, List[str]] = {}
+        tb_adj: Dict[int, Dict[str, float]] = {}
+        for pos, i in enumerate(pending):
+            adjustments = session.routing_adjustments(q_emb[i])
+            tried = set(state["history"][i])
+            ranked = self._rank(scores_list[pos], backend, adjustments, exclude=tried)
+            if not ranked or ranked[0][1] < floor:
+                # No viable expert. Terminal rejection only if none was ever chosen;
+                # otherwise the reroute budget is simply exhausted (classified later).
+                top = f"{ranked[0][0]}={ranked[0][1]:.3f}" if ranked else "none"
+                state["route_traces"][i].append(f"[router] no expert above floor (best {top}); rejected.")
+                if not state["history"][i]:
+                    state["status"][i] = REJECTED
+                    state["answer"][i] = self._rejection_message
+                continue
+
+            top_e, top_s = ranked[0]
+            second = ranked[1][1] if len(ranked) > 1 else 0.0
+            if len(ranked) > 1 and (top_s - second) < self._router_tie_margin:
+                tiebreak.append(i)
+                tb_shortlist[i] = [e for e, _ in ranked[: self._top_k]]
+                tb_adj[i] = adjustments
+            else:
+                assignment[i] = top_e
+                state["history"][i].append(top_e)
+                state["route_traces"][i].append(
+                    f"[router] classifier chose {top_e} (score={top_s:.3f}, margin={top_s - second:.3f})."
+                )
+
+        if tiebreak:
+            # Ambiguous questions: let the Qwen-3B reasoner pick among the classifier's
+            # top candidates. If it declines (NONE) or picks off-list, keep the
+            # classifier's top-1 rather than wasting the attempt.
+            self._reasoner.load()
+            results = self._reasoner.route_batch(
+                [questions[i] for i in tiebreak],
+                [tb_shortlist[i] for i in tiebreak],
+                self._descriptions, max_experts=1,
+                adjustments_list=[tb_adj[i] for i in tiebreak],
+            )
+            self._reasoner.unload()
+            for pos, i in enumerate(tiebreak):
+                trace, chosen = results[pos]
+                pick = chosen[0] if chosen else tb_shortlist[i][0]
+                assignment[i] = pick
+                state["history"][i].append(pick)
+                state["route_traces"][i].append(f"[router] tiebreak among {tb_shortlist[i]} -> {pick}\n{trace}")
+        return assignment
+
     # =============================================================== batch
     def ask(self, file: str) -> None:
         validate_file_exists(file)
@@ -257,7 +401,7 @@ class SmallLanguageRouter:
 
         questions = [item["question"] for item in data]
 
-        # Embed every question once (Jina), then release it before loading the 8B.
+        # Embed every question once (Jina), then release it before loading the LLMs.
         # Embeddings are deterministic, so a resumed run recomputes them rather
         # than persisting them in the checkpoint.
         logger.info("Embedding %d questions for cosine routing...", len(questions))
@@ -381,44 +525,13 @@ class SmallLanguageRouter:
                 answered = {int(i): a for i, a in round_progress["answers"]}
                 verified = {int(i) for i in round_progress["verified"]}
             else:
-                # --- Route phase (8B resident, online-competence adjusted) ---
-                # Shortlists + competence adjustments are read from the round-start
-                # session state (untouched until the verify phase), so every pending
-                # question sees exactly what it would in a one-at-a-time run; the 8B
-                # router traces are merely decoded together, a batch at a time.
-                self._reasoner.load()
-                shortlists = []
-                adj_list = []
-                for i in pending:
-                    adjustments = session.routing_adjustments(q_emb[i])
-                    # Exclude experts already tried for this question so a reroute
-                    # cannot re-select a failed expert and waste the attempt budget.
-                    tried = set(state["history"][i])
-                    shortlists.append([
-                        eid for eid, _ in self._retriever.shortlist(
-                            q_emb[i], self._top_k, adjustments, exclude=tried
-                        )
-                    ])
-                    adj_list.append(adjustments)
-                route_results = self._reasoner.route_batch(
-                    [questions[i] for i in pending], shortlists, self._descriptions,
-                    max_experts=1, adjustments_list=adj_list,
-                )
-                assignment = {}
-                for pos, i in enumerate(pending):
-                    trace, chosen = route_results[pos]
-                    state["route_traces"][i].append(trace)
-                    if not chosen:
-                        # No expert: terminal rejection only if we never chose one
-                        # before; otherwise the question has run out of alternatives
-                        # and is classified after the loop.
-                        if not state["history"][i]:
-                            state["status"][i] = REJECTED
-                            state["answer"][i] = self._rejection_message
-                    else:
-                        assignment[i] = chosen[0]
-                        state["history"][i].append(chosen[0])
-                self._reasoner.unload()
+                # --- Route phase (classifier decides; reasoner breaks ties) ---
+                # Competence adjustments are read from the round-start session
+                # state (untouched until the verify phase), so every pending
+                # question sees exactly what it would in a one-at-a-time run. The
+                # classifier scores the whole round in one batched forward pass and
+                # the Qwen-3B reasoner is loaded only for the ambiguous subset.
+                assignment = self._route_pending(pending, questions, q_emb, session, state)
                 answered, verified = {}, set()
                 # Checkpoint immediately after routing so a crash in the (long)
                 # answer phase resumes here instead of re-routing the round.
@@ -448,13 +561,13 @@ class SmallLanguageRouter:
                     round_progress["answers"] = [[i, answered[i]] for i in order if i in answered]
                     self._ckpt(checkpoint_path, state, session, attempt, n, round_progress)
 
-            # --- Verify phase (8B resident: domain verifier B + competence A + calibration C) ---
+            # --- Verify phase (8B critic: domain verifier B + competence A + calibration C) ---
             # Verdicts are decoded a batch at a time and applied to the online
             # state in the *canonical order* above. Because A (competence) and C
             # (calibration) update sequentially, preserving that order — across a
             # resume too, since verified questions are a prefix of it — keeps the
             # learned state and the results consistent with a single-GPU run.
-            self._reasoner.load()
+            self._critic.load()
             to_verify = [i for i in order if i not in verified]
             for c in range(0, len(to_verify), self._reasoner_batch):
                 chunk = to_verify[c:c + self._reasoner_batch]
@@ -485,7 +598,7 @@ class SmallLanguageRouter:
                     verified.add(i)
                 round_progress["verified"] = [i for i in order if i in verified]
                 self._ckpt(checkpoint_path, state, session, attempt, n, round_progress)
-            self._reasoner.unload()
+            self._critic.unload()
 
             # Round boundary: this round's answers and A/C updates are all
             # committed. Clear the intra-round progress and checkpoint the
@@ -673,27 +786,37 @@ class SmallLanguageRouter:
 
         for attempt in range(self._max_reroutes):
             adjustments = session.routing_adjustments(q_emb)
-            # Exclude experts already tried this turn (accepted or failed) so a
-            # reroute proposes genuine alternatives, never a repeat.
-            shortlist = [
-                e for e, _ in self._retriever.shortlist(
-                    q_emb, self._top_k, adjustments, exclude=tried
+            # Classifier scores the question; exclude experts already tried this
+            # turn so a reroute proposes genuine alternatives, never a repeat.
+            scores_list, backend = self._score_experts([question], [q_emb])
+            floor = self._router_prob_floor if backend == "logits" else self._router_cosine_floor
+            ranked = self._rank(scores_list[0], backend, adjustments, exclude=tried)
+            if not ranked or ranked[0][1] < floor:
+                output_fn("\n[router] no suitable expert for this question.")
+                break
+
+            top_e, top_s = ranked[0]
+            second = ranked[1][1] if len(ranked) > 1 else 0.0
+            ambiguous = len(ranked) > 1 and (top_s - second) < self._router_tie_margin
+            if multi:
+                # Interactive multi-expert: the top expert plus any others the
+                # classifier scores highly (question likely spans domains).
+                chosen = [top_e] + [e for e, s in ranked[1:] if s >= self._router_multi_threshold]
+            elif ambiguous:
+                # Close call: let the Qwen-3B reasoner decide among the top candidates.
+                shortlist = [e for e, _ in ranked[: self._top_k]]
+                self._reasoner.load()
+                trace, picked = self._reasoner.route(
+                    question, shortlist, self._descriptions, 1,
+                    adjustments=adjustments, carried_context=session.carried_context,
                 )
-            ]
-            if not shortlist:
-                break
-            max_experts = len(shortlist) if multi else 1
+                self._reasoner.unload()
+                output_fn(f"\n[router reasoning]\n{trace}")
+                chosen = picked or [top_e]
+            else:
+                chosen = [top_e]
+            output_fn(f"\n[router chose] {', '.join(chosen)} (top score {top_s:.3f})")
 
-            self._reasoner.load()
-            trace, chosen = self._reasoner.route(
-                question, shortlist, self._descriptions, max_experts,
-                adjustments=adjustments, carried_context=session.carried_context,
-            )
-            self._reasoner.unload()
-            output_fn(f"\n[router reasoning]\n{trace}\n[router chose] {chosen or 'NONE'}")
-
-            if not chosen:
-                break
             ever_chose = True
             tried.update(chosen)
 
@@ -703,7 +826,7 @@ class SmallLanguageRouter:
             }
 
             # Verify each answer; surface verdict; update competence + calibration.
-            self._reasoner.load()
+            self._critic.load()
             for expert in chosen:
                 verdict = self._verifier.verify(
                     question, expert, self._descriptions.get(expert, ""), answers[expert]
@@ -721,7 +844,7 @@ class SmallLanguageRouter:
                         best_lowconf = (expert, answers[expert], verdict.confidence)
                 else:
                     output_fn(f"[competence] '{expert}' demoted for similar questions; will reroute.")
-            self._reasoner.unload()
+            self._critic.unload()
 
             if accepted:
                 # Got at least one confident answer this round; stop rerouting.

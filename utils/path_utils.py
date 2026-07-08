@@ -128,3 +128,11 @@ def get_slg_index_dir(experiment: str, experiments_dir: str = None) -> str:
         experiments_dir = CONFIG["paths"]["experiments"]
     return os.path.join(experiments_dir, experiment, "slg_index")
 
+
+def get_slg_router_dir(experiment: str, experiments_dir: str = None) -> str:
+    """Return the per-experiment directory holding the trained router classifier
+    (Llama-1B sequence-classification head + label map)."""
+    if experiments_dir is None:
+        experiments_dir = CONFIG["paths"]["experiments"]
+    return os.path.join(experiments_dir, experiment, "slg_router")
+

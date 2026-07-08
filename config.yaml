@@ -51,6 +51,7 @@ paths:
   models:
     3_2_1b: 'downloaded_3_2_1b'
     3_1_8b: 'downloaded_3_1_8b'
+    qwen_3b: 'downloaded_qwen2_5_3b'
     jina_embeddings: 'jina-v2-base-en'
   split_by_title: 'question_answer/split_by_title'
   charts: 'experiments/charts'
@@ -81,6 +82,7 @@ models:
   3_2_1b: "meta-llama/Llama-3.2-1B-Instruct"
   3_1_8b: "meta-llama/Llama-3.1-8B-Instruct"
   3_3_70b: "meta-llama/Llama-3.3-70B-Instruct"
+  qwen_3b: "Qwen/Qwen2.5-3B-Instruct"
   task_categorizer: "meta-llama/Llama-3.1-8B-Instruct"
 
 # Training hyperparameters
@@ -109,6 +111,8 @@ training:
   # 30 epochs — consider linear-scaling the LR if you want to match old runs.
   per_device_train_batch_size: 8       # 1B experts
   per_device_eval_batch_size: 8        # 1B experts
+  per_device_train_batch_size_3b: 8    # 3B experts (Qwen-3B) — mid-size
+  per_device_eval_batch_size_3b: 8     # 3B experts
   per_device_train_batch_size_8b: 4    # 8B baseline (fills 80GB sooner)
   per_device_eval_batch_size_8b: 4     # 8B baseline
   gradient_accumulation_steps: 1
@@ -144,13 +148,41 @@ slg:
   descriptions_dir: "slg_descriptions"  # where descriptions.json is stored (experiment-agnostic)
   max_description_words: 10
   out_of_scope_token: "NONE"
+  # Which downloaded model plays each role (keys of paths.models). Experts +
+  # reasoner (router tiebreak / aggregate / compress) are Qwen-3B; the critic is
+  # a *different family* (Llama-3.1-8B, >= experts) to avoid the "model grading
+  # its own family" self-preference objection. The router classifier is always
+  # Llama-1B (inference/slg/classifier.py) and is not configured here.
+  expert_model: 'qwen_3b'           # base model for the per-topic LoRA experts
+  reasoner_model: 'qwen_3b'         # router tiebreaker + aggregator + compressor
+  critic_model: '3_1_8b'            # (B) domain verifier critic
 
 # Routing pipeline: cosine pre-filter -> reasoning router -> domain verifier -> reroute -> aggregate -> compress
 # Three online mechanisms learn across one run/session: (A) competence router,
 # (B) domain verifier, (C) calibrated abstention.
 routing:
-  top_k_cosine: 5                       # Jina cosine shortlist size handed to the reasoning router
+  top_k_cosine: 5                       # Jina cosine shortlist size (retriever fallback + reasoner-tiebreak candidate list)
   max_reroutes: 3                       # verifier-reject reroute attempts before giving up on a question
+
+  # Router: a Llama-3.2-1B sequence-classification head is the routing *decider*.
+  # Diagnostics showed the 8B reasoning router degraded routing from ~85% (cosine
+  # top-1) to ~45% by second-guessing a good shortlist; the discriminative
+  # classifier restores accuracy and the Qwen-3B reasoner is kept ONLY as a tiebreaker
+  # for genuinely ambiguous questions. Trained by --finetune_router (one classifier
+  # over the full expert set), cached at experiments/<exp>/slg_router/; the allowed
+  # pool is applied as an output mask at query time, so the scalability sweep reuses
+  # one router across pool sizes with no retraining (same pattern as the retriever).
+  # If no trained router exists the pipeline falls back to cosine top-1 (retriever).
+  router:
+    train_per_class: 400                # training questions sampled per expert (seeded subset of qa_train)
+    max_length: 256                     # question truncation length for the classifier
+    num_epochs: 3
+    learning_rate: 0.0002
+    batch_size: 16                      # per-device batch for classifier fine-tuning + inference forward passes
+    tie_margin: 0.15                    # run the Qwen-3B reasoner tiebreaker when the top1-top2 score gap < this
+    prob_floor: 0.10                    # classifier only: reject ("no suitable expert") when the top *probability* (softmax over the candidate set) is below this
+    cosine_floor: 0.0                   # cosine-fallback only: reject when the top raw cosine is below this (0.0 => effectively cosine top-1, no rejection). Not comparable to prob_floor.
+    multi_threshold: 0.30               # interactive only: also select experts scoring >= this (multi-expert turns)
   scalability_sizes: [4, 6, 8, 10, 12]  # total pool sizes for the scalability sweep (#5): 4 = core only, up to 12 = core + all 8 real distractors. (Add larger sizes only with a synthetic distractor set.)
   interactive_multi_expert: true        # interactive chat may pick >1 expert; batch inference always forces 1
   embedding_dimension: 768              # jina-v2-base-en
@@ -189,11 +221,13 @@ generation:
   # decoding, so answers match the one-at-a-time path in practice (only padding
   # + float order differ). Sized to load an 80GB GPU toward ~75% without OOM;
   # raise/lower after watching `nvidia-smi` on the first run.
-  reasoner_batch_size: 12   # 8B router/critic — ~16GB weights + long critic
-                            #   prompts (question + up to 750-token answer), so
-                            #   kept small; the 8B fills memory fast.
-  expert_batch_size: 48     # 1B experts — ~2.5GB weights + short prompts, so a
-                            #   much larger batch fits and is needed to saturate.
+  reasoner_batch_size: 12   # 8B critic — ~16GB weights + long critic prompts
+                            #   (question + up to 750-token answer), so kept
+                            #   small; the 8B fills memory fast. Also bounds the
+                            #   Qwen-3B reasoner-tiebreak batch (fits easily).
+  expert_batch_size: 24     # 3B experts (Qwen-3B) — ~6GB weights; smaller batch
+                            #   than the old 1B experts. Lower if you OOM, raise
+                            #   after watching nvidia-smi on the first run.
 
 # Evaluation: save resume checkpoints every N test questions (row-wise); see experiments/<exp>/evaluation_checkpoints/
 evaluation:

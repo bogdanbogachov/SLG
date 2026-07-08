@@ -26,8 +26,8 @@ cloud LLM under tight resources:
 ## Requirements
 
 - Python 3.10+
-- CUDA-compatible GPU (the 8B router/verifier needs a GPU large enough to hold
-  it; the 1B experts and Jina embedder are light)
+- CUDA-compatible GPU (the 8B critic needs a GPU large enough to hold it; the
+  Qwen-3B experts/reasoner, 1B router classifier, and Jina embedder are lighter)
 - Environment variables: `OPENAI_API_KEY`, `HF_API_KEY`, `TOGETHER_AI_API_KEY`
 
 ## Installation
@@ -53,33 +53,37 @@ pip install --upgrade --upgrade-strategy eager -r requirements.txt
    export TOGETHER_AI_API_KEY='your-key'
    ```
 3. Set the experiment name in `config.yaml`: `experiment: 'your_experiment_name'`.
-4. Tune the router in the `routing:` block (shortlist size, reroute budget,
-   competence weight, verifier units check, abstention target error).
+4. Tune the router in the `routing:` block (`router:` sub-block — tie margin,
+   reject floor, classifier training; plus reroute budget, competence weight,
+   verifier units check, abstention target error).
 
 ## Usage
 
 ### Workflow
 
 ```bash
-# 1. Download models (LLaMA 3.2-1B, LLaMA 3.1-8B, jina-v2-base-en)
-python main.py --download_models
+# NOTE: the boolean flags take an explicit value — pass `=True` (e.g.
+# `--infer_slg=True`), matching job.sh. A bare `--infer_slg` will not parse.
+
+# 1. Download models (LLaMA 3.2-1B, LLaMA 3.1-8B, Qwen2.5-3B, jina-v2-base-en)
+python main.py --download_models=True
 
 # 2a. Real-world QA (Stack Exchange dumps -> question_answer/qa.json)
-python main.py --download_qa                       # fetch+extract default communities
-python main.py --build_qa --qa_cap 5000            # build qa.json (<=5k per expert)
+python main.py --download_qa=True                      # fetch+extract default communities
+python main.py --build_qa=True --qa_cap 5000           # build qa.json (<=5k per expert)
 #   (needs a 7z extractor: `pip install py7zr` or a system 7z/7za/7zr)
 
 # 2b. …or generate synthetic QA pairs from source documents (scalability set only)
-python main.py --create_qa
-python main.py --combine_all_qa
-python main.py --inflate_overshadowing
+python main.py --create_qa=True
+python main.py --combine_all_qa=True
+python main.py --inflate_overshadowing=True
 
 # 2c. Split -> full qa_train.json + qa_test.json, then per-expert split_by_title/
-python main.py --split_qa
-python main.py --split_qa --qa_subset 100   # smoke test: 100 pairs (80 train/20 test), all experts kept
+python main.py --split_qa=True
+python main.py --split_qa=True --qa_subset 100   # smoke test: 100 pairs (80 train/20 test), all experts kept
 
 # 3. Generate expert descriptions (after split_qa, before inference)
-python main.py --slg_descriptions
+python main.py --slg_descriptions=True
 #   Base LLaMA 3.1-8B-Instruct reads a random 25-answer sample of each expert's
 #   deduplicated answers (an expert may have thousands, which would overflow the
 #   context; sample is seeded, experts with <=25 use all) and writes a distinct
@@ -88,14 +92,20 @@ python main.py --slg_descriptions
 #   Skipped if that file already exists (delete to rebuild).
 
 # 4. Fine-tune one LoRA expert per topic split
-python main.py --finetune
+python main.py --finetune=True
+
+# 4b. Train the router classifier (Llama-1B seq-classification head) on the
+#     training questions -> experiments/<exp>/slg_router/. Cheap single-GPU job;
+#     one classifier serves every ablation + scalability pool size. Without it,
+#     routing falls back to cosine similarity.
+python main.py --finetune_router=True
 
 # 5. Run inference
-python main.py --infer_baseline       # OpenAI GPT-4.1 (cloud reference only)
-python main.py --infer_rag            # RAG baseline
-python main.py --infer_finetuned      # Single fine-tuned LLaMA
-python main.py --infer_slg            # SLG — automated batch inference
-python main.py --chat_slg             # SLG — interactive multi-turn session
+python main.py --infer_baseline=True     # OpenAI GPT-4.1 (cloud reference only)
+python main.py --infer_rag=True          # RAG baseline
+python main.py --infer_finetuned=True    # Single fine-tuned LLaMA
+python main.py --infer_slg=True          # SLG — automated batch inference
+python main.py --chat_slg=True           # SLG — interactive multi-turn session
 
 # 6. Evaluate (scores the full run + baselines AND every ablation in the umbrella)
 python main.py --evaluate
@@ -182,66 +192,85 @@ the session is multi-turn.
 **The components involved:**
 
 - a local **Jina** embedder (`jina-v2-base-en`, 768-dim) — turns text into
-  vectors, entirely on-device;
-- one resident **LLaMA 3.1-8B** that plays four roles via different prompts —
-  **router**, **verifier/critic**, **aggregator**, **compressor**;
-- a pool of **LLaMA 3.2-1B + LoRA** experts, one adapter per topic split, loaded
+  vectors, entirely on-device (used for the online competence memory A and as the
+  cosine routing fallback);
+- a **router classifier** — **LLaMA 3.2-1B + a LoRA sequence-classification
+  head**, fine-tuned on the training questions; this is what **picks the expert**
+  (`--finetune_router`);
+- a **Qwen-3B reasoner** (`Qwen2.5-3B-Instruct`) that plays three roles —
+  **router tiebreaker** (only for ambiguous questions), **aggregator**,
+  **compressor**;
+- a **Llama-3.1-8B critic** — the LLM half of the verifier (B); a *different
+  family* from the Qwen experts (and ≥ their size) so it isn't grading its own
+  family;
+- a pool of **Qwen2.5-3B + LoRA** experts, one adapter per topic split, loaded
   on demand.
+
+> **Why a classifier router?** On a real run the 8B reasoning router routed only
+> ~45% of questions to the correct expert, even though the cosine shortlist
+> contained that expert 99.4% of the time — the reasoner was discarding the right
+> answer. A small discriminative classifier trained on the questions restores
+> routing to ~90%+; the 8B is kept only to break genuine ties.
 
 ### Two comparisons that are easy to confuse
 
-The system uses cosine similarity in **two different places** for **two
-different purposes**. Keeping them apart is the key to understanding the flow:
+Routing (picking the expert) and the competence memory are **two separate
+things**. Keeping them apart is the key to understanding the flow:
 
 | | what is compared | what it decides | selection rule |
 |---|---|---|---|
-| **Expert retrieval** | question ↔ **each expert** | which experts are worth considering | **top-k** (no threshold) |
-| **Competence memory (A)** | question ↔ **past questions** | how much an expert's past pass/fail counts here | cosine ≥ **0.85** (a real threshold) |
+| **Routing** | question → **classifier** | which expert answers | top-1 probability (Qwen-3B tiebreak if close) |
+| **Competence memory (A)** | question ↔ **past questions** (cosine) | how much an expert's past pass/fail counts here | cosine ≥ **0.85** (a real threshold) |
 
-So the only hard cosine threshold in the system (`0.85`) is **not** used to pick
-experts — experts are always chosen by top-k ranking. The threshold lives in the
-competence model, where it decides whether a previous question is close enough
-that its outcome should reward or punish the expert on the current question.
+The hard cosine threshold in the system (`0.85`) lives **only** in the competence
+model, where it decides whether a previous question is close enough that its
+outcome should reward or punish the expert on the current question. Routing
+itself is a classifier decision, not a cosine cut. (When no trained router
+exists, routing falls back to ranking experts by cosine similarity of the
+question to each expert's mean-*question* embedding.)
 
 ### Step by step (one question)
 
-1. **Embed the question.** Jina produces a normalized vector. (In batch, every
-   question is embedded once up front so the embedder can be released before the
-   8B loads.)
+1. **Embed the question.** Jina produces a normalized vector (used by the
+   competence memory A, and as the routing fallback). In batch, every question is
+   embedded once up front.
 
-2. **Score every expert by cosine.** Each expert is represented by the mean
-   embedding of its deduplicated training answers. We take the cosine of the
-   question against every expert — a relevance score per expert.
+2. **Score every expert with the classifier.** The question runs through the
+   fine-tuned Llama-1B classification head, giving a probability per expert
+   (masked to the allowed pool). Already-tried experts are excluded so a reroute
+   never re-picks a failure. *(Fallback with no trained router: cosine of the
+   question against each expert's mean-question embedding.)*
 
-3. **Apply the competence adjustment (A).** Before ranking, each expert's score
-   is nudged by `delta = competence_weight × (reliability − 0.5)`. *Reliability*
-   is the expert's online pass/fail estimate **in the neighbourhood of this
-   question** — built only from past questions whose cosine to the current one is
-   ≥ 0.85. An expert with no relevant history gets delta 0 (pure cosine). An
-   expert that has been passing similar questions is boosted; one that has been
-   failing them is demoted. This is the part that **learns online, with no
-   labels and no retraining** — and it resets each run/session.
+3. **Apply the competence adjustment (A).** Each expert's score is nudged by
+   `delta = competence_weight × (reliability − 0.5)`. *Reliability* is the
+   expert's online pass/fail estimate **in the neighbourhood of this question** —
+   built only from past questions whose cosine to the current one is ≥ 0.85. An
+   expert with no relevant history gets delta 0. An expert that has been passing
+   similar questions is boosted; one that has been failing them is demoted. This
+   is the part that **learns online, with no labels and no retraining** — and it
+   resets each run/session. (Formerly added to the cosine score; now added to the
+   classifier probability — the mechanism is identical.)
 
-4. **Shortlist the top-k.** Sort experts by `cosine + delta` and keep the top
-   `top_k_cosine` (default 5). This is a ranking cut, not a similarity cut: the
-   5th-best expert is shortlisted even if its cosine is low.
+4. **Pick the expert (+ Qwen-3B tiebreaker).** Rank experts by `score + delta`.
+   If the top score is below `router.prob_floor`, the question ends as **REJECTED**
+   ("a suitable expert was not found"). If the top-1/top-2 gap is below
+   `router.tie_margin`, the **Qwen-3B reasoner** is loaded to choose among the top
+   candidates (reading their descriptions + the question); if it declines
+   (`NONE`) the classifier's top-1 stands. Otherwise the top-1 is taken directly
+   and no reasoner is loaded for routing. In batch exactly **one** expert is
+   picked; in interactive several may be (experts scoring ≥ `router.multi_threshold`).
 
-5. **Route with the 8B (the reasoning router).** The router reads the shortlist
-   (each expert's name + description), the question, and soft "proven /
-   struggling" hints derived from A. It writes a brief reasoning trace and, on
-   the last line, names the expert(s) to use — or `NONE`. If it picks nobody the
-   question ends as **REJECTED** ("a suitable expert was not found"). In batch it
-   may pick **one** expert; in interactive it may pick several.
-
-6. **Answer with the expert(s) (1B + LoRA).** The chosen adapter(s) generate the
-   answer. In interactive mode any carried context from previous turns is
+6. **Answer with the expert(s) (Qwen-3B + LoRA).** The chosen adapter(s) generate
+   the answer. In interactive mode any carried context from previous turns is
    prepended.
 
 7. **Verify the answer (B, the domain verifier).** Two checks run together:
    - *Deterministic* (no model): numeric sanity (with a hard veto on
      empty answers or absurd/non-finite numbers), units-on-quantities when the
      question is quantitative, and format adherence for list-type questions.
-   - *LLM critic* (the 8B): judges 8 engineering criteria and emits
+   - *LLM critic* (Llama-3.1-8B, a different family from the Qwen experts):
+     relaxed prompt — PASS if the answer is on-topic, factually plausible, and
+     not degenerate; FAIL only genuinely wrong/useless answers. Emits
      `VERDICT: PASS/FAIL` plus `CONFIDENCE: 0–100`.
 
    The answer **passes** only if the critic says PASS *and* no deterministic veto
@@ -259,7 +288,7 @@ that its outcome should reward or punish the expert on the current question.
    - `passed` but `confidence < τ` → the answer is **withheld** (kept as a
      fallback in case nothing better turns up).
    - `failed` → the expert is demoted (A) and the question is **rerouted** to the
-     next-best shortlisted expert.
+     next-best expert (the failed one is excluded from the next routing pass).
 
    τ starts at a floor of 0.5 and, once `abstention_min_calibration` (default 20)
    verdicts have accrued, becomes the lowest confidence at which the *critic*
@@ -271,23 +300,22 @@ that its outcome should reward or punish the expert on the current question.
     or **ABSTAINED** (something passed but never cleared τ).
 
 11. **Aggregate and compress (interactive only).** When more than one expert is
-    accepted, the 8B aggregator merges them into one cohesive reply; that reply
+    accepted, the Qwen-3B aggregator merges them into one cohesive reply; that reply
     is then compressed and carried forward as context for the next turn.
 
 ### The per-question flow at a glance
 
 ```
                        ┌─────────────────────────────────────────────┐
-   question ──▶ Jina ──▶ cosine pre-filter over ALL experts           │
+   question ──────────▶ 1B classifier router  → prob per expert       │
                        │   + (A) online competence adjustments        │
                        └───────────────┬─────────────────────────────┘
-                                       │  top-k shortlist
+                                       │  top-1 (Qwen-3B tiebreak if close)
                                        ▼
-                            8B reasoning router  ──── chooses expert(s)
-                                       │                    │ none
-                                       ▼                    ▼
-                         1B + LoRA expert answer      "suitable expert
-                                       │               not found" (REJECTED)
+                            chosen expert   ──── below prob_floor ─────┐
+                                       │                               ▼
+                                       ▼                        "suitable expert
+                       Qwen-3B + LoRA expert answer              not found" (REJECTED)
                                        ▼
                     (B) domain verifier  =  deterministic checks
                                             (numbers, units, format)
@@ -314,10 +342,11 @@ verdict as a self-supervised label, which sets the threshold τ).
 - Processed in **rounds** to minimise model load/unload churn on tight VRAM:
   route every pending question, answer them grouped by expert, verify them all,
   then reroute only the failures into the next round (up to `max_reroutes`).
-- Each round phase **batches its generation** to fill the GPU: all router traces
-  are decoded together, expert answers are decoded per-expert-group, and all
-  critic verdicts are decoded together (batch sizes: `generation.reasoner_batch_size`
-  for the 8B, `generation.expert_batch_size` for the 1B). The online A/C updates
+- Each round phase **batches its generation** to fill the GPU: routing scores the
+  round in one classifier forward pass (only ties load the reasoner), expert
+  answers are decoded per-expert-group, and all critic verdicts are decoded
+  together (batch sizes: `generation.reasoner_batch_size` for the 8B critic / 3B
+  reasoner, `generation.expert_batch_size` for the 3B experts). The online A/C updates
   are then replayed in the same per-question order the unbatched loop used, so the
   learned state is consistent with a single-stream run. See
   [Multi-GPU execution & batching](#multi-gpu-execution--batching).
@@ -365,9 +394,11 @@ carries assumptions worth stating for each.
 
 ### (B) Domain-grounded verifier
 
-- **Critic is the same 8B.** The deterministic checks are independent, but the
-  LLM verdict comes from the resident 8B — it is self-critique, not an external
-  oracle. Its agreement with ground truth should be validated on a labelled set.
+- **Critic is a different family from the experts.** The deterministic checks are
+  independent; the LLM verdict comes from Llama-3.1-8B while the experts are
+  Qwen-3B, so it is not grading its own family (and the critic is ≥ the experts'
+  size). It is still on-prem self-verification, not an external oracle — its
+  agreement with ground truth should be validated on a labelled set.
 - **Deterministic checks are heuristics.** Numeric-sanity, units, and format
   rules are regex/range based; only the absurd-magnitude and degenerate-answer
   vetoes are hard. Units/format are soft (confidence-shaping), so a correct but
@@ -426,9 +457,10 @@ set. The *core* experts that actually answer the questions are always present;
 the pool is grown by adding **distractor** experts the questions never need
 (`routing.scalability_sizes` = total pool sizes). Because the task is held
 constant and every question stays answerable, this isolates the effect of a
-larger pool — latency should stay roughly flat (the 8B router only ever sees the
-top-k shortlist, not all N experts) and routing accuracy should hold as
-irrelevant competitors are added. Results per size go to
+larger pool — latency should stay roughly flat (the classifier does one forward
+pass regardless of pool size; one trained router serves every size via an
+allow-list mask) and routing accuracy should hold as irrelevant competitors are
+added. Results per size go to
 `slg_diagnostics/scalability.json`. **Runs on real data by default:**
 `files.qa_scalability` → `question_answer/qa_scalability.json`, a fixed
 100-question / 4-core-expert subset of `qa_test` (built by
@@ -478,12 +510,14 @@ with no orchestration. Two independent layers of parallelism combine:
    GPU count** — raise the GPUs in `job.sh` and more jobs run at once, no code
    change. With ≤1 GPU (or `SLG_DISABLE_PARALLEL=1`) it falls back to in-process
    sequential, identical to before.
-2. **Within-run (fills each GPU).** Inside a single run, generation is **batched**
-   (`inference/slg/generation.py:generate_batch`, left-padded greedy decoding):
-   all router traces per round, expert answers per expert group, and all critic
-   verdicts per round are decoded together. Batch sizes are `generation.reasoner_batch_size`
-   (8B router/critic) and `generation.expert_batch_size` (1B experts), sized to
-   load an 80GB GPU to ~75% without OOM.
+2. **Within-run (fills each GPU).** Inside a single run, work is **batched**:
+   routing scores a whole round in one classifier forward pass (only the
+   ambiguous tiebreak subset ever loads the Qwen-3B reasoner), then generation
+   (`inference/slg/generation.py:generate_batch`, left-padded greedy decoding)
+   decodes expert answers per expert group and all critic verdicts per round
+   together. Batch sizes are `generation.reasoner_batch_size` (8B critic / 3B reasoner,
+   also the classifier forward batch) and `generation.expert_batch_size` (1B
+   experts), sized to load an 80GB GPU to ~75% without OOM.
 
 **Ablation scheduling.** The suite has 5 runs but a node has 4 GPUs, so a naive
 one-per-GPU dispatch leaves one preset running solo in a second wave. Instead,
@@ -536,10 +570,11 @@ SLG/
 │   ├── baseline.py             # GPT-4.1 / RAG / fine-tuned baselines
 │   └── slg/                    # Small Language Router
 │       ├── pipeline.py         # Orchestrator: ask() batch + chat() interactive
-│       ├── retriever.py        # Jina cosine pre-filter over experts
-│       ├── reasoner.py         # Resident 8B: route / criticize / aggregate / compress (batched)
+│       ├── classifier.py       # Router: 1B seq-classification head (the decider) + training
+│       ├── retriever.py        # Jina embeddings: competence memory + cosine routing fallback
+│       ├── reasoner.py         # Reasoning roles (batched): Qwen-3B route-tiebreak/aggregate/compress + Llama-8B critic
 │       ├── generation.py       # Greedy decode helpers (single + left-padded batch)
-│       ├── experts.py          # 1B + LoRA expert answering (batched)
+│       ├── experts.py          # Qwen-3B + LoRA expert answering (batched)
 │       ├── competence.py       # (A) online expert-competence model
 │       ├── verifier.py         # (B) domain-grounded verifier
 │       ├── abstention.py       # (C) calibrated abstention
@@ -555,8 +590,9 @@ SLG/
 
 - **Fully on-prem**: no cloud LLM at inference time; data never leaves the host.
 - **LoRA experts**: one adapter per topic split, loaded on demand.
-- **Reasoning router** with an **online competence model** that learns who to
-  trust without labels or retraining.
+- **Classifier router** (1B seq-classification head) with an **online competence
+  model** layered on top that learns who to trust without labels or retraining;
+  the Qwen-3B reasoner breaks ties only.
 - **Domain-grounded verification** and **calibrated abstention** for reliable
   engineering answers.
 - **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert.

@@ -1,9 +1,15 @@
 """Cosine pre-filter over experts using local Jina embeddings.
 
-Each expert is represented by the mean of its (deduplicated) training answers,
-embedded with the local ``jina-v2-base-en`` SentenceTransformer. At query time
-the user question is embedded once and ranked against every expert by cosine
-similarity to produce the shortlist handed to the reasoning router.
+Each expert is represented by the mean of its (deduplicated) training
+**questions**, embedded with the local ``jina-v2-base-en`` SentenceTransformer.
+Matching an incoming question against a centroid of *questions* (query↔query)
+rather than of answers avoids a modality mismatch. At query time the user
+question is embedded once and ranked against every expert by cosine similarity.
+
+Since the classifier router (``inference.slg.classifier``) became the routing
+decider, this retriever serves two secondary roles: it embeds queries for the
+online competence model (A), and it is the **fallback ranker** used when no
+trained router exists (see ``scores``).
 
 Embeddings are computed once per experiment and cached under
 ``experiments/<exp>/slg_index/`` so repeated runs do not re-embed the corpus.
@@ -26,7 +32,7 @@ def _l2_normalize(matrix: np.ndarray) -> np.ndarray:
 
 
 class ExpertRetriever:
-    """Embed experts (mean of training answers) and rank them against a query."""
+    """Embed experts (mean of training questions) and rank them against a query."""
 
     def __init__(self, experiment: str, allowed_experts: Optional[Set[str]] = None):
         self.experiment = experiment
@@ -53,11 +59,11 @@ class ExpertRetriever:
         """(expert_id, data_path) for *every* split file.
 
         The cache is built for the full expert set regardless of ``allowed`` —
-        an expert's mean-answer vector does not depend on which other experts are
-        in the pool. The allow-list is applied at query time (see ``shortlist``)
-        instead, so subset runs (ablations, scalability sizes) all share one
-        cache and never rebuild or clobber it. This makes concurrent runs across
-        GPUs safe and avoids re-embedding per subset.
+        an expert's mean-question vector does not depend on which other experts
+        are in the pool. The allow-list is applied at query time (see
+        ``shortlist``) instead, so subset runs (ablations, scalability sizes) all
+        share one cache and never rebuild or clobber it. This makes concurrent
+        runs across GPUs safe and avoids re-embedding per subset.
         """
         files = sorted(f for f in os.listdir(self._split_dir) if f.endswith(".json"))
         return [(os.path.splitext(f)[0], os.path.join(self._split_dir, f)) for f in files]
@@ -70,13 +76,13 @@ class ExpertRetriever:
             self._model = SentenceTransformer(self._model_path, trust_remote_code=True)
         return self._model
 
-    def _embed_answers(self, data_path: str) -> np.ndarray:
+    def _embed_questions(self, data_path: str) -> np.ndarray:
         with open(data_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        raw = [str(e.get("answer", "")).strip() for e in data if e.get("answer")]
+        raw = [str(e.get("question", "")).strip() for e in data if e.get("question")]
         texts = list(dict.fromkeys(t for t in raw if t))  # dedup, keep order
         if not texts:
-            raise ValueError(f"No training answers found in {data_path}")
+            raise ValueError(f"No training questions found in {data_path}")
 
         model = self._load_model()
         vectors: List[np.ndarray] = []
@@ -106,7 +112,7 @@ class ExpertRetriever:
         for expert_id, data_path in pairs:
             logger.info("Embedding expert '%s' for cosine routing.", expert_id)
             ids.append(expert_id)
-            rows.append(self._embed_answers(data_path))
+            rows.append(self._embed_questions(data_path))
 
         self.expert_ids = ids
         self._matrix = _l2_normalize(np.stack(rows, axis=0).astype("float32"))
@@ -114,8 +120,10 @@ class ExpertRetriever:
 
     # ------------------------------------------------------------------ cache
     def _cache_paths(self) -> Tuple[str, str]:
+        # Filename encodes the representation (questions): a pre-existing
+        # answer-based cache from an older run is ignored, not silently reused.
         return (
-            os.path.join(self._index_dir, "expert_embeddings.npy"),
+            os.path.join(self._index_dir, "expert_question_embeddings.npy"),
             os.path.join(self._index_dir, "expert_ids.json"),
         )
 
@@ -149,6 +157,24 @@ class ExpertRetriever:
         vec = np.asarray(vec, dtype="float32")[0]
         norm = float(np.linalg.norm(vec))
         return vec / max(norm, 1e-12)
+
+    def scores(self, query_embedding: np.ndarray) -> Dict[str, float]:
+        """Raw cosine similarity ``{expert_id: score}`` over the allowed pool.
+
+        The router-classifier fallback: when no trained router exists the
+        pipeline ranks experts by these cosine scores (plus competence
+        adjustments) exactly as it would rank the classifier's probabilities.
+        No ``top_k`` cutoff and no adjustments applied here — the caller does
+        the ranking so both routing backends share one downstream path.
+        """
+        if self._matrix.shape[0] == 0:
+            return {}
+        sims = self._matrix @ query_embedding
+        return {
+            eid: float(sims[i])
+            for i, eid in enumerate(self.expert_ids)
+            if self._allowed is None or eid in self._allowed
+        }
 
     def shortlist(
         self,

@@ -13,6 +13,28 @@ from config import CONFIG
 from logging_config import logger
 from utils.prompt_utils import apply_chat_template
 
+# Chat-terminator tokens across the model families we load (Llama uses
+# <|eot_id|>, Qwen uses <|im_end|>). We stop on any that the tokenizer knows.
+_CHAT_STOP_TOKENS = ("<|eot_id|>", "<|im_end|>", "<|end|>")
+
+
+def _eos_ids(tokenizer):
+    """EOS token id(s) valid for *this* tokenizer, so generation stops correctly.
+
+    Hardcoding Llama's ``<|eot_id|>`` made Qwen models run to ``max_new_tokens``
+    (Qwen terminates on ``<|im_end|>``). We combine the tokenizer's own
+    ``eos_token_id`` with any chat-terminator tokens present in its vocab.
+    """
+    ids = []
+    if tokenizer.eos_token_id is not None:
+        ids.append(tokenizer.eos_token_id)
+    vocab = tokenizer.get_vocab()
+    for tok in _CHAT_STOP_TOKENS:
+        tid = vocab.get(tok)
+        if tid is not None and tid not in ids:
+            ids.append(tid)
+    return ids or None
+
 
 def generate(
     messages: List[Dict[str, str]],
@@ -25,7 +47,7 @@ def generate(
     inputs = tokenizer(
         formatted, return_tensors="pt", padding=False, truncation=True
     ).to("cuda")
-    eos_id = tokenizer.convert_tokens_to_ids("<|eot_id|>")
+    eos_id = _eos_ids(tokenizer)
 
     with torch.no_grad():
         outputs = model.generate(
@@ -118,7 +140,7 @@ def _generate_chunk(
     formatted = [
         apply_chat_template(m, tokenizer, add_generation_prompt=True) for m in chunk
     ]
-    eos_id = tokenizer.convert_tokens_to_ids("<|eot_id|>")
+    eos_id = _eos_ids(tokenizer)
 
     # Decoder-only batched generation requires left padding so every prompt ends
     # at the same position; a mask keeps the pad tokens out of attention.

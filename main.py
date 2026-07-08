@@ -3,7 +3,7 @@ from commands.data_processing import (
     create_qa, combine_all_qa, inflate_overshadowing, split_qa, data_overlap_check,
     download_qa, build_qa,
 )
-from commands.train import run_training
+from commands.train import run_training, run_finetune_router
 from commands.slg_descriptions import run_slg_descriptions
 from commands.inference import (
     run_baseline, run_rag, run_finetuned, run_slg, run_slg_chat,
@@ -61,6 +61,7 @@ if __name__ == '__main__':
 
     # Training
     run_training(experiment, train_limit=args.train_limit) if args.finetune else None
+    run_finetune_router(experiment) if args.finetune_router else None
 
     # Inference
     run_baseline(experiment) if args.infer_baseline else None

@@ -28,6 +28,23 @@ def download_llama_3_2_1b(model_name, save_directory):
     return None
 
 
+def download_hf_causal_lm(model_name, save_directory):
+    """Generic HF causal-LM downloader (weights + tokenizer) to a local dir.
+
+    Used for models pulled as a whole (e.g. Qwen-3B) rather than by explicit
+    shard filenames. Same approach as :func:`download_llama_3_2_1b`."""
+    logger.info(f"Downloading {model_name}...")
+    os.makedirs(save_directory, exist_ok=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=False)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, local_files_only=False, trust_remote_code=True
+    )
+    model.save_pretrained(save_directory)
+    tokenizer.save_pretrained(save_directory)
+    logger.info(f"{model_name} downloaded.")
+    return None
+
+
 def download_llama_3_1_8b(model_name, save_directory):
     model_files = [
         "config.json",

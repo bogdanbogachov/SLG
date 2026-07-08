@@ -1,11 +1,15 @@
-"""The reasoning LLM (LLaMA 3.1-8B) that plays four roles in the pipeline.
+"""A reasoning LLM that plays several prompt-selected roles in the pipeline.
 
-A single 8B model is loaded once and reused, with a different prompt per role:
+The same class backs two *different* model instances (see ``model_key``):
 
-* **route**      — reason over a cosine shortlist and pick the expert(s) to answer.
-* **criticize**  — judge an expert answer against seven quality criteria.
-* **aggregate**  — merge several expert answers into one cohesive answer.
-* **compress**   — shrink an answer into compact context carried across chat turns.
+* the **reasoner** (Qwen-3B by default): ``route`` (router **tiebreaker** only —
+  the classifier is the primary router), ``aggregate`` (merge expert answers),
+  ``compress`` (shrink an answer into carried chat context).
+* the **critic** (Llama-3.1-8B by default, a *different family* from the experts
+  to avoid self-preference bias): ``criticize`` — the LLM half of the domain
+  verifier (B).
+
+Each instance loads its model on demand and reuses it across calls.
 """
 
 import re
@@ -44,33 +48,31 @@ _ROUTER_USER = (
 )
 
 _CRITIC_SYSTEM = (
-    "You are a strict, domain-grounded quality critic for an engineering "
-    "question-answering system. You are given a user question, the specialist "
-    "expert that produced an answer (with its domain description), and the answer "
-    "itself. Engineering answers carry real risk: a wrong number, an inconsistent "
-    "unit, or a violated physical constraint is worse than a fluent but empty "
-    "reply. Check whether the answer:\n"
-    "1. directly answers the user's question\n"
-    "2. uses the selected expert's domain appropriately\n"
-    "3. avoids unsupported claims\n"
-    "4. mentions uncertainty when needed\n"
-    "5. follows the requested format\n"
-    "6. is complete but concise\n"
-    "7. does not contradict the expert's known limitations\n"
-    "8. is numerically and dimensionally sound — quantities carry consistent "
-    "units, magnitudes are physically plausible, and no calculation contradicts "
-    "itself\n"
-    "Briefly note any problems you find. Then output TWO final lines, each on its "
-    "own line and nothing after them:\n"
-    "CONFIDENCE: <integer 0-100, your confidence that the answer is correct and safe to return>\n"
-    "VERDICT: PASS   (if acceptable on all critical points) or VERDICT: FAIL (otherwise)"
+    "You are a fair quality checker for an engineering question-answering system. "
+    "You are given a user question, the specialist expert that produced an answer, "
+    "and the answer itself. Your job is to catch answers that are genuinely wrong "
+    "or useless — NOT to demand perfection. Real, helpful answers vary in style, "
+    "length, and completeness; pass them.\n"
+    "PASS the answer if ALL of these hold:\n"
+    "1. it is on-topic and addresses the question (even if partially),\n"
+    "2. it is factually plausible — no clearly false statements or made-up terms,\n"
+    "3. it is coherent and not degenerate (not empty, not looping/repeated text),\n"
+    "4. any numbers/units it gives are not absurd or self-contradictory.\n"
+    "FAIL only if the answer is off-topic, clearly incorrect, nonsensical, "
+    "degenerate, or empty. Do NOT fail an answer merely for being brief, informal, "
+    "missing a caveat, not citing the expert's domain, or omitting detail you would "
+    "have liked. When in doubt, PASS.\n"
+    "Briefly note any real problems you find. Then output TWO final lines, each on "
+    "its own line and nothing after them:\n"
+    "CONFIDENCE: <integer 0-100, your confidence that the answer is correct and useful>\n"
+    "VERDICT: PASS   (acceptable) or VERDICT: FAIL (genuinely wrong/useless)"
 )
 
 _CRITIC_USER = (
     "Question: {question}\n\n"
     "Expert: {expert_id} — {description}\n\n"
     "Answer:\n{answer}\n\n"
-    "Evaluate the answer against the eight criteria, then output the CONFIDENCE "
+    "Decide whether to PASS or FAIL this answer, then output the CONFIDENCE "
     "and VERDICT lines."
 )
 
@@ -97,14 +99,19 @@ _COMPRESSOR_USER = "Answer to compress:\n{answer}"
 
 
 class Reasoner:
-    """Holds the resident 8B reasoning model and exposes the four roles."""
+    """Holds one reasoning model (selected by ``model_key``) and its roles.
 
-    def __init__(self):
+    ``model_key`` is a key of ``paths.models`` (e.g. ``qwen_3b`` for the reasoner,
+    ``3_1_8b`` for the critic). Defaults to the 8B for backward compatibility.
+    """
+
+    def __init__(self, model_key: str = "3_1_8b"):
         import os
 
         paths_cfg = CONFIG["paths"]
+        self._model_key = model_key
         self._model_path = os.path.join(
-            paths_cfg["downloaded_models"], paths_cfg["models"]["3_1_8b"]
+            paths_cfg["downloaded_models"], paths_cfg["models"][model_key]
         )
         self._routing = CONFIG["routing"]
         self._out_of_scope = CONFIG["slg"].get("out_of_scope_token", "NONE")
