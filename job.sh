@@ -28,4 +28,4 @@ export OMP_NUM_THREADS=4
 # To force the old single-GPU sequential behaviour (debugging), set:
 #   export SLG_DISABLE_PARALLEL=1
 
-python main.py --slg_descriptions=True --finetune=True --finetune_router=True --infer_slg=True
+python main.py --slg_descriptions=True --finetune=True --finetune_router=True --infer_slg=True --limit=100
