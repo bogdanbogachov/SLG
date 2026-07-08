@@ -3,7 +3,7 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=0-24:00:00
+#SBATCH --time=0-00:60:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4
@@ -28,4 +28,4 @@ export OMP_NUM_THREADS=4
 # To force the old single-GPU sequential behaviour (debugging), set:
 #   export SLG_DISABLE_PARALLEL=1
 
-python main.py --infer_slg=True
+python main.py --infer_slg=True --limit=25
