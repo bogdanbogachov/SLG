@@ -18,6 +18,21 @@ from utils.prompt_utils import apply_chat_template
 _CHAT_STOP_TOKENS = ("<|eot_id|>", "<|im_end|>", "<|end|>")
 
 
+def batch_size_for(model_key: str, default_key: str) -> int:
+    """Decoding batch size for the model playing a role.
+
+    ``generation.expert_batch_size`` / ``reasoner_batch_size`` size a role's batch
+    for the model that role normally runs. Swapping a bigger model into the role
+    (a Qwen-14B expert in place of the 3B) invalidates that number, so
+    ``generation.batch_size_by_model`` overrides it per ``paths.models`` key.
+    """
+    gen = CONFIG.get("generation", {})
+    override = (gen.get("batch_size_by_model") or {}).get(model_key)
+    if override is not None:
+        return max(1, int(override))
+    return max(1, int(gen.get(default_key, 1)))
+
+
 def _guards(
     repetition_penalty: Optional[float],
     no_repeat_ngram_size: Optional[int],

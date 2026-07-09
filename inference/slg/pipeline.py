@@ -46,6 +46,7 @@ from utils.path_utils import (
 from inference.slg.ablation import AblationConfig
 from inference.slg.classifier import ExpertClassifier
 from inference.slg.experts import ExpertRunner
+from inference.slg.generation import batch_size_for
 from inference.slg.reasoner import Reasoner
 from inference.slg.retriever import ExpertRetriever
 from inference.slg.session import SessionState
@@ -175,9 +176,16 @@ class SmallLanguageRouter:
         # pass over the full test set resumes near where it stopped rather than
         # restarting. Match the generation batch sizes so a checkpoint lands
         # once per decoded batch (no extra generation granularity introduced).
-        _gen = CONFIG.get("generation", {})
-        self._expert_batch = max(1, int(_gen.get("expert_batch_size", 48)))
-        self._reasoner_batch = max(1, int(_gen.get("reasoner_batch_size", 12)))
+        # Resolved per model, so swapping a bigger model into a role (a 14B expert
+        # for the 3B) picks up that model's batch. `_reasoner_batch` chunks the
+        # *critic* verify calls below, so it keys off `critic_model`.
+        _slg_cfg = CONFIG.get("slg", {})
+        self._expert_batch = batch_size_for(
+            _slg_cfg.get("expert_model", "qwen_3b"), "expert_batch_size"
+        )
+        self._reasoner_batch = batch_size_for(
+            _slg_cfg.get("critic_model", "3_1_8b"), "reasoner_batch_size"
+        )
         self._rejection_message = self._routing["rejection_message"]
         self._exhausted_message = self._routing["exhausted_message"]
         self._low_confidence_message = self._routing.get(

@@ -119,9 +119,13 @@ def finetune(
 
     # Model-size-aware batch sizes: a bigger model fills an 80GB GPU sooner, so it
     # takes a smaller per-device batch. Keys are chosen from the model dir name:
-    # …_8b (Llama-8B), …_3b (Qwen-3B experts), else the default (1B).
+    # …_14b (Qwen-14B), …_8b (Llama-8B), …_3b (Qwen-3B), else the default (1B).
+    # Size is matched before family: the bare "qwen" fallback below would otherwise
+    # hand a 14B model the 3B batch and OOM.
     name = os.path.basename(os.path.normpath(model_to_tune)).lower()
-    if "8b" in name:
+    if "14b" in name:
+        suffix = "_14b"
+    elif "8b" in name:
         suffix = "_8b"
     elif "3b" in name or "qwen" in name:
         suffix = "_3b"

@@ -52,6 +52,7 @@ paths:
     3_2_1b: 'downloaded_3_2_1b'
     3_1_8b: 'downloaded_3_1_8b'
     qwen_3b: 'downloaded_qwen2_5_3b'
+    qwen_14b: 'downloaded_qwen2_5_14b'
     jina_embeddings: 'jina-v2-base-en'
   split_by_title: 'question_answer/split_by_title'
   charts: 'experiments/charts'
@@ -83,6 +84,7 @@ models:
   3_1_8b: "meta-llama/Llama-3.1-8B-Instruct"
   3_3_70b: "meta-llama/Llama-3.3-70B-Instruct"
   qwen_3b: "Qwen/Qwen2.5-3B-Instruct"
+  qwen_14b: "Qwen/Qwen2.5-14B-Instruct"
   task_categorizer: "meta-llama/Llama-3.1-8B-Instruct"
 
 # Training hyperparameters
@@ -115,6 +117,8 @@ training:
   per_device_eval_batch_size_3b: 8     # 3B experts
   per_device_train_batch_size_8b: 4    # 8B baseline (fills 80GB sooner)
   per_device_eval_batch_size_8b: 4     # 8B baseline
+  per_device_train_batch_size_14b: 2   # 14B experts (Qwen-14B) — ~28GB of fp16 weights
+  per_device_eval_batch_size_14b: 2    #   before activations; needs a full 80GB card
   gradient_accumulation_steps: 1
   max_grad_norm: 1
   logging_steps: 50
@@ -160,8 +164,12 @@ slg:
   # a *different family* (Llama-3.1-8B, >= experts) to avoid the "model grading
   # its own family" self-preference objection. The router classifier is always
   # Llama-1B (inference/slg/classifier.py) and is not configured here.
-  expert_model: 'qwen_3b'           # base model for the per-topic LoRA experts
-  reasoner_model: 'qwen_3b'         # router tiebreaker + aggregator + compressor
+  expert_model: 'qwen_14b'          # base model for the per-topic LoRA experts
+  reasoner_model: 'qwen_14b'        # router tiebreaker + aggregator + compressor
+  # NOTE: with 14B experts the critic (Llama-8B) is no longer >= the experts'
+  # capacity. The different-family property that guards against self-preference
+  # still holds, but the capacity argument in the README does not. Consider
+  # '3_3_70b' for the critic, or state the limitation.
   critic_model: '3_1_8b'            # (B) domain verifier critic
 
 # Routing pipeline: cosine pre-filter -> reasoning router -> domain verifier -> reroute -> aggregate -> compress
@@ -258,6 +266,12 @@ generation:
   expert_batch_size: 24     # 3B experts (Qwen-3B) — ~6GB weights; smaller batch
                             #   than the old 1B experts. Lower if you OOM, raise
                             #   after watching nvidia-smi on the first run.
+  # Per-model overrides of the two batch sizes above, keyed by a `paths.models`
+  # key. The flat values assume the model that normally plays each role; putting a
+  # bigger model in the role (a Qwen-14B expert) invalidates them. Resolved by
+  # `inference.slg.generation.batch_size_for`.
+  batch_size_by_model:
+    qwen_14b: 4             # ~28GB of fp16 weights before KV cache + activations
 
 # Evaluation: save resume checkpoints every N test questions (row-wise); see experiments/<exp>/evaluation_checkpoints/
 evaluation:

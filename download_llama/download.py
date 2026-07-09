@@ -1,5 +1,5 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from huggingface_hub import hf_hub_download
+from huggingface_hub import hf_hub_download, snapshot_download
 from logging_config import logger
 import os
 
@@ -41,6 +41,31 @@ def download_hf_causal_lm(model_name, save_directory):
     )
     model.save_pretrained(save_directory)
     tokenizer.save_pretrained(save_directory)
+    logger.info(f"{model_name} downloaded.")
+    return None
+
+
+def download_hf_snapshot(model_name, save_directory):
+    """Copy a model repo's files straight to disk, without instantiating it.
+
+    Preferred over :func:`download_hf_causal_lm` for anything large. That path
+    calls ``AutoModelForCausalLM.from_pretrained``, which materialises the weights
+    in RAM at the default dtype (fp32) and then re-serialises them, so a 14B model
+    costs ~56GB of host memory and lands on disk at twice its published size. A
+    snapshot copies the repo's native bf16 safetensors as-is: no GPU, no model
+    load, no dtype conversion.
+
+    Only the files the pipeline loads are fetched — the ``.bin`` mirrors, GGUF
+    quantisations, and any ``original/`` directory are skipped.
+    """
+    logger.info(f"Downloading {model_name} (snapshot)...")
+    os.makedirs(save_directory, exist_ok=True)
+    snapshot_download(
+        repo_id=model_name,
+        local_dir=save_directory,
+        allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model"],
+        ignore_patterns=["original/*", "consolidated*", "*.gguf"],
+    )
     logger.info(f"{model_name} downloaded.")
     return None
 

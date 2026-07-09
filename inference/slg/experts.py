@@ -14,7 +14,7 @@ from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_model_with_adapter
 from utils.prompt_utils import create_system_message, create_user_message
 
-from inference.slg.generation import generate_batch
+from inference.slg.generation import batch_size_for, generate_batch
 
 
 class ExpertRunner:
@@ -23,6 +23,7 @@ class ExpertRunner:
     def __init__(self, slg_path: str):
         paths_cfg = CONFIG["paths"]
         expert_key = CONFIG.get("slg", {}).get("expert_model", "3_2_1b")
+        self._expert_key = expert_key
         self._base_model_path = os.path.join(
             paths_cfg["downloaded_models"], paths_cfg["models"][expert_key]
         )
@@ -54,7 +55,7 @@ class ExpertRunner:
             resize_token_embeddings=True,
         )
         try:
-            batch_size = int(CONFIG["generation"].get("expert_batch_size", 1))
+            batch_size = batch_size_for(self._expert_key, "expert_batch_size")
             messages_list = [self._messages(q, carried_context) for q in questions]
             return generate_batch(
                 messages_list, model, tokenizer, self._max_new_tokens, batch_size

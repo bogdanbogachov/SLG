@@ -32,7 +32,7 @@ cloud LLM under tight resources:
 
 - Python 3.10+
 - CUDA-compatible GPU (the 8B critic needs a GPU large enough to hold it; the
-  Qwen-3B experts/reasoner, 1B router classifier, and Jina embedder are lighter)
+  Qwen experts/reasoner, 1B router classifier, and Jina embedder are lighter)
 - Environment variables: `OPENAI_API_KEY`, `HF_API_KEY`, `TOGETHER_AI_API_KEY`
 
 ## Installation
@@ -70,7 +70,7 @@ pip install --upgrade --upgrade-strategy eager -r requirements.txt
 # NOTE: the boolean flags take an explicit value — pass `=True` (e.g.
 # `--infer_slg=True`), matching job.sh. A bare `--infer_slg` will not parse.
 
-# 1. Download models (LLaMA 3.2-1B, LLaMA 3.1-8B, Qwen2.5-3B, jina-v2-base-en)
+# 1. Download models (LLaMA 3.2-1B, LLaMA 3.1-8B, Qwen2.5-3B, Qwen2.5-14B, jina-v2-base-en)
 python main.py --download_models=True
 
 # 2a. Real-world QA (Stack Exchange dumps -> question_answer/qa.json)
@@ -100,7 +100,7 @@ python main.py --slg_descriptions=True
 #        *is* the domain label, and the 8B mislabelled 8 of 12 experts.
 #   -> experiments/<exp>/slg_descriptions/descriptions.json.
 #   Skipped if that file already exists (delete to rebuild).
-#   Consumers: the routable-expert registry and the Qwen-3B router tiebreaker.
+#   Consumers: the routable-expert registry and the Qwen router tiebreaker.
 #   NOT the classifier router, and NOT the critic.
 
 # 4. Fine-tune one LoRA expert per topic split
@@ -209,13 +209,13 @@ the session is multi-turn.
 - a **router classifier** — **LLaMA 3.2-1B + a LoRA sequence-classification
   head**, fine-tuned on the training questions; this is what **picks the expert**
   (`--finetune_router`);
-- a **Qwen-3B reasoner** (`Qwen2.5-3B-Instruct`) that plays three roles —
+- a **Qwen-14B reasoner** (`Qwen2.5-14B-Instruct`, `slg.reasoner_model`) that plays three roles —
   **router tiebreaker** (only for ambiguous questions), **aggregator**,
   **compressor**;
 - a **Llama-3.1-8B critic** — the LLM half of the verifier (B); a *different
   family* from the Qwen experts (and ≥ their size) so it isn't grading its own
   family;
-- a pool of **Qwen2.5-3B + LoRA** experts, one adapter per topic split, loaded
+- a pool of **Qwen2.5-14B + LoRA** experts (`slg.expert_model`), one adapter per topic split, loaded
   on demand.
 
 > **Why a classifier router?** On a real run the 8B reasoning router routed only
@@ -231,7 +231,7 @@ things**. Keeping them apart is the key to understanding the flow:
 
 | | what is compared | what it decides | selection rule |
 |---|---|---|---|
-| **Routing** | question → **classifier** | which expert answers | top-1 probability (Qwen-3B tiebreak if close) |
+| **Routing** | question → **classifier** | which expert answers | top-1 probability (Qwen tiebreak if close) |
 | **Competence memory (A)** | question ↔ **past questions** (cosine) | how much an expert's past pass/fail counts here | cosine ≥ **0.85** (a real threshold) |
 
 The hard cosine threshold in the system (`0.85`) lives **only** in the competence
@@ -263,16 +263,16 @@ question to each expert's mean-*question* embedding.)
    resets each run/session. (Formerly added to the cosine score; now added to the
    classifier probability — the mechanism is identical.)
 
-4. **Pick the expert (+ Qwen-3B tiebreaker).** Rank experts by `score + delta`.
+4. **Pick the expert (+ Qwen tiebreaker).** Rank experts by `score + delta`.
    If the top score is below `router.prob_floor`, the question ends as **REJECTED**
    ("a suitable expert was not found"). If the top-1/top-2 gap is below
-   `router.tie_margin`, the **Qwen-3B reasoner** is loaded to choose among the top
+   `router.tie_margin`, the **Qwen reasoner** is loaded to choose among the top
    candidates (reading their descriptions + the question); if it declines
    (`NONE`) the classifier's top-1 stands. Otherwise the top-1 is taken directly
    and no reasoner is loaded for routing. In batch exactly **one** expert is
    picked; in interactive several may be (experts scoring ≥ `router.multi_threshold`).
 
-6. **Answer with the expert(s) (Qwen-3B + LoRA).** The chosen adapter(s) generate
+6. **Answer with the expert(s) (Qwen + LoRA).** The chosen adapter(s) generate
    the answer. In interactive mode any carried context from previous turns is
    prepended.
 
@@ -367,7 +367,7 @@ question to each expert's mean-*question* embedding.)
     or **ABSTAINED** (something passed but never cleared τ).
 
 11. **Aggregate and compress (interactive only).** When more than one expert is
-    accepted, the Qwen-3B aggregator merges them into one cohesive reply; that reply
+    accepted, the Qwen aggregator merges them into one cohesive reply; that reply
     is then compressed and carried forward as context for the next turn.
 
 ### The per-question flow at a glance
@@ -377,12 +377,12 @@ question to each expert's mean-*question* embedding.)
    question ──────────▶ 1B classifier router  → prob per expert       │
                        │   + (A) online competence adjustments        │
                        └───────────────┬─────────────────────────────┘
-                                       │  top-1 (Qwen-3B tiebreak if close)
+                                       │  top-1 (Qwen tiebreak if close)
                                        ▼
                             chosen expert   ──── below prob_floor ─────┐
                                        │                               ▼
                                        ▼                        "suitable expert
-                       Qwen-3B + LoRA expert answer              not found" (REJECTED)
+                       Qwen + LoRA expert answer                 not found" (REJECTED)
                                        ▼
                     (B) domain verifier  =  deterministic checks → det_ok (label)
                                             (degeneracy, lexical, numbers,
@@ -467,9 +467,13 @@ carries assumptions worth stating for each.
 
 - **Critic is a different family from the experts.** The deterministic checks are
   independent; the LLM verdict comes from Llama-3.1-8B while the experts are
-  Qwen-3B, so it is not grading its own family (and the critic is ≥ the experts'
-  size). It is still on-prem self-verification, not an external oracle — its
-  agreement with ground truth should be validated on a labelled set.
+  Qwen, so it is not grading its own family. It is still on-prem self-verification,
+  not an external oracle — its agreement with ground truth should be validated on
+  a labelled set.
+- **The critic is no longer larger than the experts.** With `slg.expert_model` at
+  Qwen-14B the 8B critic is below the experts' capacity, so a weaker model is
+  judging a stronger one. Family separation still rules out self-preference;
+  capacity does not. Promote the critic to `3_3_70b`, or state the limitation.
 - **Deterministic checks are heuristics.** They are regex, range, and
   lexical-statistic based. `non_degenerate`, `lexically_plausible`, and
   `numeric_sane` are hard vetoes; `no_punctuation_run`, `complete`,
@@ -602,7 +606,7 @@ with no orchestration. Two independent layers of parallelism combine:
    sequential, identical to before.
 2. **Within-run (fills each GPU).** Inside a single run, work is **batched**:
    routing scores a whole round in one classifier forward pass (only the
-   ambiguous tiebreak subset ever loads the Qwen-3B reasoner), then generation
+   ambiguous tiebreak subset ever loads the Qwen reasoner), then generation
    (`inference/slg/generation.py:generate_batch`, left-padded greedy decoding)
    decodes expert answers per expert group and all critic verdicts per round
    together. Batch sizes are `generation.reasoner_batch_size` (8B critic / 3B reasoner,
@@ -674,9 +678,9 @@ SLG/
 │       ├── pipeline.py         # Orchestrator: ask() batch + chat() interactive
 │       ├── classifier.py       # Router: 1B seq-classification head (the decider) + training
 │       ├── retriever.py        # Jina embeddings: competence memory + cosine routing fallback
-│       ├── reasoner.py         # Reasoning roles (batched): Qwen-3B route-tiebreak/aggregate/compress + Llama-8B critic
+│       ├── reasoner.py         # Reasoning roles (batched): Qwen route-tiebreak/aggregate/compress + Llama-8B critic
 │       ├── generation.py       # Greedy decode helpers (single + left-padded batch)
-│       ├── experts.py          # Qwen-3B + LoRA expert answering (batched)
+│       ├── experts.py          # Qwen + LoRA expert answering (batched)
 │       ├── competence.py       # (A) online expert-competence model
 │       ├── verifier.py         # (B) domain-grounded verifier
 │       ├── abstention.py       # (C) calibrated abstention
@@ -694,7 +698,7 @@ SLG/
 - **LoRA experts**: one adapter per topic split, loaded on demand.
 - **Classifier router** (1B seq-classification head) with an **online competence
   model** layered on top that learns who to trust without labels or retraining;
-  the Qwen-3B reasoner breaks ties only.
+  the Qwen reasoner breaks ties only.
 - **Domain-grounded verification** and **calibrated abstention** for reliable
   engineering answers.
 - **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert.

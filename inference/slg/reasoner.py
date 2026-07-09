@@ -19,7 +19,7 @@ from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_base_model_and_tokenizer
 from utils.prompt_utils import apply_chat_template, create_system_message, create_user_message
 
-from inference.slg.generation import choice_probs, generate, generate_batch
+from inference.slg.generation import batch_size_for, choice_probs, generate, generate_batch
 
 # The critic now writes a short assessment; the verdict is read from logits.
 _CRITIQUE_MAX_TOKENS = 192
@@ -173,7 +173,7 @@ class Reasoner:
             [create_system_message(system), create_user_message(user)]
             for system, user in prompts
         ]
-        batch_size = int(CONFIG["generation"].get("reasoner_batch_size", 1))
+        batch_size = batch_size_for(self._model_key, "reasoner_batch_size")
         rep_penalty, ngram_size = self._decode_guards()
         return generate_batch(
             messages_list, self.model, self.tokenizer, max_new_tokens, batch_size,
@@ -375,7 +375,7 @@ class Reasoner:
             + critique + _VERDICT_CUE
             for messages, critique in zip(messages_list, critiques)
         ]
-        batch_size = int(CONFIG["generation"].get("reasoner_batch_size", 1))
+        batch_size = batch_size_for(self._model_key, "reasoner_batch_size")
         probs = choice_probs(
             scoring_prompts, list(_VERDICT_CHOICES), self.model, self.tokenizer, batch_size
         )
