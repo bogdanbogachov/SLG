@@ -191,6 +191,7 @@ def train_router(experiment: str) -> str:
     from transformers import (
         AutoModelForSequenceClassification,
         AutoTokenizer,
+        EarlyStoppingCallback,
         Trainer,
         TrainingArguments,
     )
@@ -243,7 +244,12 @@ def train_router(experiment: str) -> str:
         num_labels=len(labels),
         id2label={i: e for e, i in label2id.items()},
         label2id=label2id,
-        torch_dtype=torch.float16,
+        # Load in fp32 for training (the ONE deviation from the expert/baseline
+        # recipe): a freshly-initialised classification head in fp16 with fp16
+        # master weights underflows and never learns (held-out accuracy stuck at
+        # chance). The experts have no random head, so they load fp16 fine. Mixed
+        # precision here is still fp16 autocast over fp32 master weights.
+        torch_dtype=torch.float32,
         trust_remote_code=True,
     )
     model.config.pad_token_id = tokenizer.pad_token_id
@@ -265,17 +271,33 @@ def train_router(experiment: str) -> str:
 
     out_dir = get_slg_router_dir(experiment)
     ensure_dir(out_dir)
+    # Same training recipe as the experts/baselines (finetune.py): CONFIG['training']
+    # drives epochs, LR, schedule, weight decay, warmup, early stopping + best-model
+    # selection, and the model-size-aware batch (the router base is the 1B, so it
+    # uses the default per_device batch). Only the fp32 weight load differs.
+    tc = CONFIG["training"]
     args = TrainingArguments(
         output_dir=os.path.join(CONFIG["paths"]["checkpoints"], experiment, "slg_router"),
-        num_train_epochs=int(cfg.get("num_epochs", 3)),
-        learning_rate=float(cfg.get("learning_rate", 2e-4)),
-        per_device_train_batch_size=int(cfg.get("batch_size", 16)),
-        per_device_eval_batch_size=int(cfg.get("batch_size", 16)),
+        # Router override: a higher epoch cap than the experts; early stopping +
+        # load_best_model_at_end still decide when to stop.
+        num_train_epochs=int(cfg.get("num_epochs", tc["num_epochs"])),
+        learning_rate=float(tc["learning_rate"]),
+        per_device_train_batch_size=int(tc["per_device_train_batch_size"]),
+        per_device_eval_batch_size=int(tc["per_device_eval_batch_size"]),
+        gradient_accumulation_steps=int(tc["gradient_accumulation_steps"]),
+        weight_decay=float(tc["weight_decay"]),
+        warmup_ratio=float(tc["warmup_ratio"]),
+        max_grad_norm=float(tc["max_grad_norm"]),
+        lr_scheduler_type="cosine",
+        optim="adamw_torch",
+        label_smoothing_factor=float(tc["label_smoothing_factor"]),
         eval_strategy="epoch",
-        save_strategy="no",
-        logging_steps=50,
+        save_strategy="epoch",
+        load_best_model_at_end=True,
+        save_total_limit=int(tc["save_total_limit"]),
+        logging_steps=int(tc["logging_steps"]),
         seed=seed,
-        fp16=True,
+        fp16=True,   # fp16 autocast over the fp32 master weights loaded above
         report_to="none",
     )
     trainer = Trainer(
@@ -286,6 +308,7 @@ def train_router(experiment: str) -> str:
         tokenizer=tokenizer,
         data_collator=DataCollatorWithPadding(tokenizer),
         compute_metrics=compute_metrics,
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=int(tc["early_stopping_patience"]))],
     )
     trainer.train()
     metrics = trainer.evaluate()

@@ -175,10 +175,14 @@ routing:
   # If no trained router exists the pipeline falls back to cosine top-1 (retriever).
   router:
     train_per_class: 400                # training questions sampled per expert (seeded subset of qa_train)
-    max_length: 256                     # question truncation length for the classifier
-    num_epochs: 3
-    learning_rate: 0.0002
-    batch_size: 16                      # per-device batch for classifier fine-tuning + inference forward passes
+    max_length: 256                     # question truncation length for the classifier (train + inference)
+    # Classifier fine-tuning uses the shared `training:` block (LR, cosine schedule,
+    # weight decay, warmup, early stopping + best-model, LoRA r/alpha/dropout,
+    # model-size-aware batch) — same recipe as the experts/baselines — EXCEPT the two
+    # overrides below. The other deviation is an fp32 weight load (a random
+    # classification head can't train in fp16).
+    num_epochs: 45                      # override: cap (early stopping + load_best_model_at_end cut it short)
+    batch_size: 16                      # per-device batch for the *inference* forward pass only
     tie_margin: 0.15                    # run the Qwen-3B reasoner tiebreaker when the top1-top2 score gap < this
     prob_floor: 0.10                    # classifier only: reject ("no suitable expert") when the top *probability* (softmax over the candidate set) is below this
     cosine_floor: 0.0                   # cosine-fallback only: reject when the top raw cosine is below this (0.0 => effectively cosine top-1, no rejection). Not comparable to prob_floor.
