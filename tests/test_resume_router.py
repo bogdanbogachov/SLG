@@ -51,9 +51,11 @@ class FakeRunner:
 class FakeVerdict:
     def __init__(self, passed, confidence):
         self.passed = passed; self.confidence = confidence
+        self.llm_confidence = confidence; self.det_ok = passed
     def to_dict(self):
         return {"passed": self.passed, "confidence": round(self.confidence, 4),
-                "det_score": 1.0, "llm_confidence": self.confidence, "checks": {}, "critique": "x"}
+                "det_score": 1.0, "llm_confidence": self.confidence,
+                "det_ok": self.det_ok, "checks": {}, "critique": "x"}
 
 
 class FakeVerifier:

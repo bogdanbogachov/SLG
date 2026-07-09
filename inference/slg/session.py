@@ -51,9 +51,16 @@ class SessionState:
 
     # ------------------------------------------------------- observe (B->A,C)
     def observe_verdict(self, expert_id: str, q_emb: np.ndarray, verdict: Verdict) -> None:
-        """Fold a verifier verdict into both the competence model and calibrator."""
+        """Fold a verifier verdict into both the competence model and calibrator.
+
+        The calibrator is fed the critic's *raw* ``llm_confidence`` as the score,
+        never ``verdict.confidence``: the latter is zeroed on a deterministic veto,
+        which would make the score a function of the label and reintroduce the
+        circularity that :mod:`inference.slg.abstention` exists to avoid. The two
+        agree on every answer that is not vetoed.
+        """
         self.competence.observe(expert_id, q_emb, verdict.passed)
-        self.calibrator.observe(verdict.confidence, verdict.passed)
+        self.calibrator.observe(verdict.llm_confidence, verdict.det_ok)
 
     # ----------------------------------------------------------- routing (A)
     def routing_adjustments(self, q_emb: np.ndarray):

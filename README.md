@@ -13,15 +13,20 @@ cloud LLM under tight resources:
 - **(A) Online competence-learning router** — the router learns *which expert to
   trust* from its own verifier signal, with no labels and no retraining. Every
   verdict updates a per-expert, per-query-region reliability estimate that
-  adjusts the cosine ranking. Routing improves over the lifetime of a run.
+  adjusts the router's ranking (the classifier's probabilities; historically the
+  cosine ranking). Routing improves over the lifetime of a run.
 - **(B) Domain-grounded verifier** — instead of generic self-critique, answers
-  are checked for engineering validity (numeric sanity, units on quantities,
-  format, contradiction) by deterministic checks **and** the 8B critic, which
-  also reports a confidence.
+  are checked for engineering validity (degeneracy, lexical plausibility, numeric
+  sanity, units on quantities, format, completeness) by deterministic checks
+  **and** the 8B critic, which also reports a confidence. The two halves do
+  different jobs: the critic scores, the rules gate — and the rules supply the
+  one signal in the system that is independent of the critic.
 - **(C) Calibrated abstention** — a self-supervised confidence threshold decides
   when to answer and when to withhold, controlling the error rate among answers
   the system actually returns. A wrong engineering answer is worse than an
-  honest "I can't answer this reliably."
+  honest "I can't answer this reliably." The threshold is calibrated by scoring
+  with the critic and labelling with the rules; scoring and labelling with the
+  same signal makes abstention unreachable.
 
 ## Requirements
 
@@ -272,11 +277,31 @@ question to each expert's mean-*question* embedding.)
    prepended.
 
 7. **Verify the answer (B, the domain verifier).** Two halves with *different*
-   jobs — the critic scores, the rules gate:
-   - *Deterministic* (no model): numeric sanity (with a hard veto on
-     empty answers or absurd/non-finite numbers), units-on-quantities when the
-     question is quantitative, and format adherence for list-type questions.
-     A veto forces FAIL and zeroes the confidence.
+   jobs — the critic scores, the rules gate, and the rules also *label* (step 9):
+   - *Deterministic* (no model). Every threshold below is set from the
+     training-corpus answer distribution, so each check's false-veto rate on real
+     text is measured rather than assumed:
+     - `non_degenerate` (**veto**) — empty, or a refusal phrase ("I don't know",
+       "as an AI") in an answer of fewer than 60 words. The length gate is
+       load-bearing: 2.3% of real corpus answers contain a refusal phrase and
+       then answer anyway; none under 60 words does.
+     - `lexically_plausible` (**veto**, answers ≥ 60 words) — MATTR-50, a
+       moving-window type-token ratio, must lie in `[0.30, 0.95]`. Unlike raw TTR
+       this is length-invariant. It catches *both* degeneracy tails: repetition
+       loops below the floor, and synonym cascades above the ceiling. The band
+       excludes 0.058% of the corpus's 42,579 reference answers.
+     - `numeric_sane` (**veto**) — every number *carrying a unit* is finite and
+       below 1e12. Scoped to unit-adjacent quantities on purpose: applied to
+       every number it vetoed 0.37% of real answers on binary and hex literals,
+       which say nothing about engineering plausibility.
+     - `no_punctuation_run` — no run of six or more identical punctuation marks.
+     - `complete` (long answers only) — ends on a sentence terminator; catches an
+       answer that ran into the decoder's token budget mid-sentence.
+     - `units_present`, `format_adherence` — applicable only to quantitative and
+       enumerated questions respectively.
+
+     A veto forces FAIL and zeroes the confidence. `det_ok` — did *every*
+     applicable check hold — is the label the calibrator consumes in step 9.
    - *LLM critic* (Llama-3.1-8B, a different family from the Qwen experts):
      relaxed prompt — acceptable if the answer is on-topic, factually plausible,
      and not degenerate; unacceptable only if genuinely wrong/useless. It writes
@@ -290,18 +315,24 @@ question to each expert's mean-*question* embedding.)
    fired. The **confidence** returned is `P(PASS)`, or 0 if vetoed.
 
    *Why not blend the two?* `det_score` is a rubric fraction, not a probability,
-   and it saturates at 1.0 for nearly every answer — the old
-   `sqrt(critic_confidence × det_score)` therefore collapsed to
-   `sqrt(P(PASS))`, reporting 0.63 for a critic that said 0.4 and squeezing all
-   scores into a narrow band. That, plus the `CONFIDENCE: <int>` line the critic
-   often omitted (falling back to the constants 0.4/0.6), left the abstention
-   calibrator (C) a point mass to threshold on: coverage 0.0. `det_score` is
-   still recorded per verdict for diagnostics.
+   so multiplying it into a probability yields a number that is neither. The old
+   `sqrt(critic_confidence × det_score)` reported 0.63 for a critic that said
+   0.4, and — since `det_score` sat at 1.0 for almost every answer under the
+   original weak checks — collapsed to `sqrt(P(PASS))`, squeezing all scores into
+   a narrow band. That, plus the `CONFIDENCE: <int>` line the critic often
+   omitted (falling back to the constants 0.4/0.6), left the abstention
+   calibrator (C) a point mass to threshold on: coverage 0.0. Keeping the halves
+   separate is what lets `det_score` serve as an *independent* signal now that it
+   actually varies; it is recorded per verdict, and its all-checks-held summary
+   `det_ok` is C's label.
 
 8. **Learn from the verdict (feeds A and C).** The verdict updates two things:
    the expert's competence neighbourhood (reward on pass, punish on fail, local
    to this question — step 3 next time), and the abstention calibrator's
-   observation set (step 9).
+   observation set (step 9). The calibrator is fed the pair
+   `(llm_confidence, det_ok)`: the critic's **raw** `P(PASS)` as the score, the
+   deterministic rules' verdict as the label. Not `confidence` — that one is
+   zeroed on a veto, which would make the score a function of the label.
 
 9. **Accept, abstain, or reroute (C, calibrated abstention).** The calibrator
    maintains a confidence threshold **τ**:
@@ -312,8 +343,23 @@ question to each expert's mean-*question* embedding.)
      next-best expert (the failed one is excluded from the next routing pass).
 
    τ starts at a floor of 0.5 and, once `abstention_min_calibration` (default 20)
-   verdicts have accrued, becomes the lowest confidence at which the *critic*
-   FAIL-rate among accepted answers stays ≤ `abstention_target_error` (0.10).
+   verdicts have accrued, becomes the lowest score at which the *rule-violation*
+   rate among accepted answers stays ≤ `abstention_target_error` (0.10).
+
+   *Why the label comes from the rules, not the critic.* The critic's PASS/FAIL
+   **is** `P(PASS) ≥ 0.5`. Calibrating the score against it made the label a
+   deterministic function of the score: every candidate `τ ≥ 0.5` had exactly
+   zero empirical error, so the scan always walked τ down to at most the lowest
+   passing score. Since C is only ever consulted on an answer that already
+   passed, every such answer cleared τ — **abstention was unreachable for any
+   data, and the `abstained` state was dead code.** Split-conformal calibration
+   needs a label that is not read off the score. The deterministic checks, which
+   the critic never sees, supply one.
+
+   *Consequence for the ablations.* Under `no_verifier` the deterministic layer
+   is off, `det_ok` is constant, and C has nothing to calibrate against — it
+   falls back to its floor. (B) and (C) are therefore coupled by design: that
+   collapse is the measured cost of removing (B), not a defect.
 
 10. **Stop conditions.** Rerouting repeats up to `max_reroutes` (default 3).
     After the budget is spent a question ends as **RESOLVED**, **REJECTED**
@@ -338,9 +384,10 @@ question to each expert's mean-*question* embedding.)
                                        ▼                        "suitable expert
                        Qwen-3B + LoRA expert answer              not found" (REJECTED)
                                        ▼
-                    (B) domain verifier  =  deterministic checks
-                                            (numbers, units, format)
-                                          + 8B critic  → pass/fail + confidence
+                    (B) domain verifier  =  deterministic checks → det_ok (label)
+                                            (degeneracy, lexical, numbers,
+                                             units, format, completeness)
+                                          + 8B critic → P(PASS) (score) + pass/fail
                                        │
             ┌──────────────────────────┼───────────────────────────────┐
             ▼                          ▼                                ▼
@@ -354,8 +401,10 @@ question to each expert's mean-*question* embedding.)
 ```
 
 Every verdict feeds **(A)** the competence model (boost on pass, demote on fail,
-local to the query region) and **(C)** the abstention calibrator (confidence +
-verdict as a self-supervised label, which sets the threshold τ).
+local to the query region) and **(C)** the abstention calibrator, which takes the
+critic's `P(PASS)` as the score and the deterministic checks' `det_ok` as the
+self-supervised label — two independent halves of (B) — and from that stream sets
+the threshold τ.
 
 ### Automated batch inference (`--infer_slg`)
 
@@ -421,28 +470,47 @@ carries assumptions worth stating for each.
   Qwen-3B, so it is not grading its own family (and the critic is ≥ the experts'
   size). It is still on-prem self-verification, not an external oracle — its
   agreement with ground truth should be validated on a labelled set.
-- **Deterministic checks are heuristics.** Numeric-sanity, units, and format
-  rules are regex/range based; only the absurd-magnitude and degenerate-answer
-  vetoes are hard. Units/format are soft (confidence-shaping), so a correct but
-  unconventionally phrased answer can be down-weighted, not rejected.
+- **Deterministic checks are heuristics.** They are regex, range, and
+  lexical-statistic based. `non_degenerate`, `lexically_plausible`, and
+  `numeric_sane` are hard vetoes; `no_punctuation_run`, `complete`,
+  `units_present`, and `format_adherence` are soft — they lower `det_score` and
+  flip the calibration label without overriding the critic. A correct but
+  unconventionally phrased answer is down-weighted, not rejected.
+- **The thresholds are corpus-calibrated, not universal.** The MATTR band and the
+  60-word refusal gate come from *this* corpus's answer distribution; the whole
+  layer false-vetoes 0.5% of a 400-answer sample of it. Ported to a corpus with a
+  different register (terse spec sheets, say) the bounds must be re-measured. The
+  checks themselves are domain-general — no aerospace- or dataset-specific rules.
+- **They carry the calibration label.** Beyond gating, `det_ok` is the only
+  signal in the system that is independent of the critic's score, which is what
+  makes (C) well-posed. This is a deliberate coupling, and it is why the
+  `no_verifier` ablation also degrades (C).
 
 ### (C) Calibrated abstention
 
 The threshold τ is a **selective-prediction heuristic, not a method with formal
 error guarantees.**
 
-- **Self-supervised label.** τ controls the *critic's* FAIL rate among accepted
-  answers, not true wrongness — and the same 8B acts as both critic and
-  verifier, so it is calibrated against its own judgement.
+- **Self-supervised label.** τ controls the *rule-violation* rate among accepted
+  answers, not true wrongness. The score comes from the 8B critic and the label
+  from the deterministic checks, so the two are independent — but neither is
+  ground truth, and a systematically lenient critic still shifts τ.
+- **The label must not be the score.** Labelling with the critic's own PASS/FAIL,
+  which is exactly `P(PASS) ≥ 0.5`, makes τ collapse to at most the lowest
+  passing score and renders abstention unreachable. See step 9 above; asserted by
+  `tests/test_verifier_calibration.py`.
 - **Not conformal in the strict sense.** There is no held-out calibration split
   and the online stream is reused adaptively, so the exchangeability assumptions
   of split-conformal prediction do not hold. τ is *calibrated*, not *guaranteed*.
+- **The scan stops at the first violation.** Empirical error is not monotone in τ
+  on a finite sample; honouring a later dip would let a lucky run of
+  low-score-but-valid answers drag τ into the tail.
 - **Small-N / per-session reset.** Below `abstention_min_calibration`
   observations τ is just the fixed floor (0.5); on short runs the calibration
   set is small and noisy.
 
 `target_error` (default 0.10) is therefore the tolerated fraction of
-critic-FAIL answers above the line, not a guaranteed bound on real error.
+rule-violating answers above the line, not a guaranteed bound on real error.
 
 ## Experiments
 

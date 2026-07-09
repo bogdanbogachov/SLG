@@ -222,13 +222,22 @@ routing:
 generation:
   max_new_tokens: 750
   temperature: 0.1
-  # Anti-repetition guards for greedy decoding (do_sample=False). Small fine-tuned
-  # experts otherwise collapse into looping text that the critic rejects.
-  # repetition_penalty >1 discourages reusing recent tokens; no_repeat_ngram_size
-  # hard-bans repeating any n-gram of this length. 1.0 / 0 disable them.
-  # These apply to free-form *expert answers* only.
-  repetition_penalty: 1.3
-  no_repeat_ngram_size: 3
+  # Anti-repetition guards for greedy decoding (do_sample=False), applied to
+  # free-form *expert answers* only. repetition_penalty >1 discourages reusing
+  # recent tokens; no_repeat_ngram_size hard-bans repeating any n-gram of this
+  # length anywhere in the sequence. 1.0 / 0 disable them.
+  #
+  # BOTH ARE OFF. They were added for the old 1B experts, which looped. On the
+  # Qwen-3B experts they caused the opposite degeneracy: forbidding every repeated
+  # trigram across a 750-token answer leaves the model no way to reuse ordinary
+  # phrasing, so it drifts into synonym cascades ("...endlessly indefinitely
+  # infinitely ad infinitum...") and never emits EOS. Measured: all five answers of
+  # the test_3 smoke run had MATTR-50 >= 0.933, while none of the 42,579 reference
+  # answers in qa_train exceeds 0.958 and the 99.9th percentile is 0.924.
+  # The verifier's `lexically_plausible` check now polices both tails directly, so
+  # a decoding guard is not the right place to fix looping either.
+  repetition_penalty: 1.0
+  no_repeat_ngram_size: 0
   # Structured-output roles (critic, router tiebreak, aggregator, compressor) decode
   # WITHOUT the guards above. no_repeat_ngram_size bans any n-gram already present in
   # the sequence *including the prompt*, and the critic's system prompt contains the

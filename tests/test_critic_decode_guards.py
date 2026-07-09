@@ -26,6 +26,10 @@ from inference.slg.reasoner import Reasoner, _VERDICT_CHOICES
 
 TOKENIZER_PATH = "downloaded_models/downloaded_qwen2_5_3b"
 
+# The n-gram size the trap is demonstrated at, independent of what config.yaml
+# currently sets for expert answers.
+_TRAP_NGRAM = 3
+
 # Stands in for any structured-output prompt that dictates the model's own tokens
 # (the critic's old verdict lines; the router's "Expert: <name>" last line).
 _DICTATED_PROMPT = (
@@ -69,13 +73,14 @@ if __name__ == "__main__":
     tok = AutoTokenizer.from_pretrained(TOKENIZER_PATH, trust_remote_code=True)
 
     # --- 1. the guard trap -------------------------------------------------
-    buggy = int(CONFIG["generation"]["no_repeat_ngram_size"])
-    assert buggy > 0, "expert answers should still be guarded against looping"
-    p, f = dictated_token_scores(tok, buggy)
+    # Demonstrated at a fixed n rather than the configured one: the expert-answer
+    # guards are currently off (see config.yaml), but Reasoner must disable them
+    # unconditionally so that re-enabling them can never silence a structured role.
+    p, f = dictated_token_scores(tok, _TRAP_NGRAM)
     assert p == float("-inf") and f == float("-inf"), (
-        f"expected dictated tokens banned under no_repeat_ngram_size={buggy}, got {p}, {f}"
+        f"expected dictated tokens banned under no_repeat_ngram_size={_TRAP_NGRAM}, got {p}, {f}"
     )
-    print(f"no_repeat_ngram_size={buggy}: dictated tokens {_VERDICT_CHOICES} -> -inf  <- the bug")
+    print(f"no_repeat_ngram_size={_TRAP_NGRAM}: dictated tokens {_VERDICT_CHOICES} -> -inf  <- the trap")
 
     rep_penalty, ngram_size = Reasoner._decode_guards()
     p, f = dictated_token_scores(tok, ngram_size)
@@ -85,12 +90,14 @@ if __name__ == "__main__":
     assert rep_penalty == 1.0, f"repetition_penalty must not skew these roles, got {rep_penalty}"
     print(f"Reasoner guards (rep={rep_penalty}, ngram={ngram_size}): reachable  <- fixed")
 
-    # generate() must still default to the guarded expert-answer settings.
+    # generate() must read the expert-answer settings from config, and let an
+    # explicit override (what Reasoner passes) win.
     assert generation._guards(None, None) == (
-        float(CONFIG["generation"]["repetition_penalty"]), buggy
-    ), "expert answers lost their anti-looping guards"
+        float(CONFIG["generation"]["repetition_penalty"]),
+        int(CONFIG["generation"]["no_repeat_ngram_size"]),
+    ), "expert answers no longer honour the configured guards"
     assert generation._guards(1.0, 0) == (1.0, 0), "explicit guards must override config"
-    print("expert-answer defaults preserved; explicit overrides honoured")
+    print("expert-answer defaults read from config; explicit overrides honoured")
 
     # --- 2. the verdict-token readout --------------------------------------
     pass_id = tok(_VERDICT_CHOICES[0], add_special_tokens=False).input_ids[0]

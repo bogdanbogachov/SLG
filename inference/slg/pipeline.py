@@ -591,6 +591,7 @@ class SmallLanguageRouter:
                         "confidence": float(v.confidence),
                         "det_score": float(v.det_score),
                         "llm_confidence": float(v.llm_confidence),
+                        "det_ok": bool(v.det_ok),
                         "checks": v.checks,
                         "critique": v.critique,
                     },
@@ -677,6 +678,7 @@ class SmallLanguageRouter:
                 checks=vd.get("checks", {}),
                 det_score=float(vd.get("det_score", 1.0)),
                 llm_confidence=float(vd.get("llm_confidence", 0.5)),
+                det_ok=bool(vd.get("det_ok", True)),
             )
             expert = r["expert"]
             session.observe_verdict(expert, q_emb[i], verdict)
