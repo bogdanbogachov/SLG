@@ -5,7 +5,7 @@ adapters generate through this single function so decoding behaviour stays
 consistent across the pipeline.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 import torch
 
@@ -16,6 +16,22 @@ from utils.prompt_utils import apply_chat_template
 # Chat-terminator tokens across the model families we load (Llama uses
 # <|eot_id|>, Qwen uses <|im_end|>). We stop on any that the tokenizer knows.
 _CHAT_STOP_TOKENS = ("<|eot_id|>", "<|im_end|>", "<|end|>")
+
+
+def _guards(
+    repetition_penalty: Optional[float],
+    no_repeat_ngram_size: Optional[int],
+) -> Tuple[float, int]:
+    """Resolve the anti-repetition guards, defaulting to the expert-answer values.
+
+    ``no_repeat_ngram_size`` bans n-grams found anywhere in the sequence, prompt
+    included, so roles whose prompt states the exact tokens they must emit (the
+    critic's ``VERDICT: PASS``/``VERDICT: FAIL``) have to pass 0 here.
+    """
+    gen = CONFIG["generation"]
+    rp = gen["repetition_penalty"] if repetition_penalty is None else repetition_penalty
+    ng = gen["no_repeat_ngram_size"] if no_repeat_ngram_size is None else no_repeat_ngram_size
+    return float(rp), int(ng)
 
 
 def _eos_ids(tokenizer):
@@ -36,11 +52,62 @@ def _eos_ids(tokenizer):
     return ids or None
 
 
+def choice_probs(
+    prompts: List[str],
+    choices: List[str],
+    model,
+    tokenizer,
+    batch_size: int = 1,
+    device: str = "cuda",
+) -> List[List[float]]:
+    """Probability of each string in ``choices`` continuing each rendered prompt.
+
+    One forward pass, no decoding: read the next-token distribution at the end of
+    the prompt, restrict it to the first token of each choice, and renormalise.
+    Used to read a *token-level* verdict probability off the critic instead of
+    trusting an integer it wrote about itself — verbalized LLM confidence is
+    coarse and clumps on a few values, which leaves the abstention calibrator
+    nothing to threshold on.
+
+    The choices must differ in their first token (asserted), which is what makes
+    the restricted softmax meaningful.
+    """
+    if not prompts:
+        return []
+    ids = [tokenizer(c, add_special_tokens=False).input_ids[0] for c in choices]
+    if len(set(ids)) != len(ids):
+        raise ValueError(f"choices {choices} do not differ in their first token: {ids}")
+    if batch_size is None or batch_size <= 0:
+        batch_size = len(prompts)
+
+    out: List[List[float]] = []
+    prev_side = tokenizer.padding_side
+    tokenizer.padding_side = "left"
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    try:
+        for start in range(0, len(prompts), batch_size):
+            chunk = prompts[start:start + batch_size]
+            inputs = tokenizer(
+                chunk, return_tensors="pt", padding=True, truncation=True
+            ).to(device)
+            with torch.no_grad():
+                logits = model(**inputs).logits[:, -1, :]  # left-padded => last is real
+            # float32 softmax: the fp16 logit gaps here are small and we divide by them.
+            probs = torch.softmax(logits[:, ids].float(), dim=-1)
+            out.extend(probs.tolist())
+    finally:
+        tokenizer.padding_side = prev_side
+    return out
+
+
 def generate(
     messages: List[Dict[str, str]],
     model,
     tokenizer,
     max_new_tokens: int,
+    repetition_penalty: Optional[float] = None,
+    no_repeat_ngram_size: Optional[int] = None,
 ) -> str:
     """Render ``messages`` with the chat template and greedily decode a reply."""
     formatted = apply_chat_template(messages, tokenizer, add_generation_prompt=True)
@@ -48,6 +115,7 @@ def generate(
         formatted, return_tensors="pt", padding=False, truncation=True
     ).to("cuda")
     eos_id = _eos_ids(tokenizer)
+    rep_penalty, ngram_size = _guards(repetition_penalty, no_repeat_ngram_size)
 
     with torch.no_grad():
         outputs = model.generate(
@@ -55,8 +123,8 @@ def generate(
             max_new_tokens=max_new_tokens,
             temperature=CONFIG["generation"]["temperature"],
             eos_token_id=eos_id,
-            repetition_penalty=CONFIG["generation"]["repetition_penalty"],
-            no_repeat_ngram_size=CONFIG["generation"]["no_repeat_ngram_size"],
+            repetition_penalty=rep_penalty,
+            no_repeat_ngram_size=ngram_size,
             do_sample=False,
         )
 
@@ -72,6 +140,8 @@ def generate_batch(
     tokenizer,
     max_new_tokens: int,
     batch_size: int = 1,
+    repetition_penalty: Optional[float] = None,
+    no_repeat_ngram_size: Optional[int] = None,
 ) -> List[str]:
     """Greedily decode a reply for each conversation in ``messages_list``.
 
@@ -94,7 +164,10 @@ def generate_batch(
     results: List[str] = []
     for start in range(0, len(messages_list), batch_size):
         chunk = messages_list[start:start + batch_size]
-        results.extend(_generate_chunk_safe(chunk, model, tokenizer, max_new_tokens))
+        results.extend(_generate_chunk_safe(
+            chunk, model, tokenizer, max_new_tokens,
+            repetition_penalty, no_repeat_ngram_size,
+        ))
     return results
 
 
@@ -103,6 +176,8 @@ def _generate_chunk_safe(
     model,
     tokenizer,
     max_new_tokens: int,
+    repetition_penalty: Optional[float] = None,
+    no_repeat_ngram_size: Optional[int] = None,
 ) -> List[str]:
     """Decode ``chunk`` with an automatic batch-halving fallback on CUDA OOM.
 
@@ -113,9 +188,15 @@ def _generate_chunk_safe(
     is re-raised.
     """
     if len(chunk) == 1:
-        return [generate(chunk[0], model, tokenizer, max_new_tokens)]
+        return [generate(
+            chunk[0], model, tokenizer, max_new_tokens,
+            repetition_penalty, no_repeat_ngram_size,
+        )]
     try:
-        return _generate_chunk(chunk, model, tokenizer, max_new_tokens)
+        return _generate_chunk(
+            chunk, model, tokenizer, max_new_tokens,
+            repetition_penalty, no_repeat_ngram_size,
+        )
     except RuntimeError as e:
         if "out of memory" not in str(e).lower():
             raise
@@ -125,8 +206,14 @@ def _generate_chunk_safe(
             "CUDA OOM on a batch of %d; freeing cache and retrying as %d + %d.",
             len(chunk), mid, len(chunk) - mid,
         )
-        left = _generate_chunk_safe(chunk[:mid], model, tokenizer, max_new_tokens)
-        right = _generate_chunk_safe(chunk[mid:], model, tokenizer, max_new_tokens)
+        left = _generate_chunk_safe(
+            chunk[:mid], model, tokenizer, max_new_tokens,
+            repetition_penalty, no_repeat_ngram_size,
+        )
+        right = _generate_chunk_safe(
+            chunk[mid:], model, tokenizer, max_new_tokens,
+            repetition_penalty, no_repeat_ngram_size,
+        )
         return left + right
 
 
@@ -135,12 +222,15 @@ def _generate_chunk(
     model,
     tokenizer,
     max_new_tokens: int,
+    repetition_penalty: Optional[float] = None,
+    no_repeat_ngram_size: Optional[int] = None,
 ) -> List[str]:
     """Decode one padded batch (>=2 prompts) and return the replies in order."""
     formatted = [
         apply_chat_template(m, tokenizer, add_generation_prompt=True) for m in chunk
     ]
     eos_id = _eos_ids(tokenizer)
+    rep_penalty, ngram_size = _guards(repetition_penalty, no_repeat_ngram_size)
 
     # Decoder-only batched generation requires left padding so every prompt ends
     # at the same position; a mask keeps the pad tokens out of attention.
@@ -159,8 +249,8 @@ def _generate_chunk(
                 temperature=CONFIG["generation"]["temperature"],
                 eos_token_id=eos_id,
                 pad_token_id=tokenizer.pad_token_id,
-                repetition_penalty=CONFIG["generation"]["repetition_penalty"],
-                no_repeat_ngram_size=CONFIG["generation"]["no_repeat_ngram_size"],
+                repetition_penalty=rep_penalty,
+                no_repeat_ngram_size=ngram_size,
                 do_sample=False,
             )
         # Left padding makes every prompt the same length, so the freshly

@@ -82,14 +82,21 @@ python main.py --inflate_overshadowing=True
 python main.py --split_qa=True
 python main.py --split_qa=True --qa_subset 100   # smoke test: 100 pairs (80 train/20 test), all experts kept
 
-# 3. Generate expert descriptions (after split_qa, before inference)
+# 3. Build the expert description registry (after split_qa, before inference)
 python main.py --slg_descriptions=True
-#   Base LLaMA 3.1-8B-Instruct reads a random 25-answer sample of each expert's
-#   deduplicated answers (an expert may have thousands, which would overflow the
-#   context; sample is seeded, experts with <=25 use all) and writes a distinct
-#   <=10-word description per expert, iteratively (each prompt sees the prior
-#   descriptions) -> experiments/<exp>/slg_descriptions/descriptions.json.
+#   Source is slg.description_source in config.yaml:
+#     'metadata' (default) -- each expert's community name straight from the
+#        corpus (`title`), plus a published tagline if question_answer/
+#        expert_taglines.json exists. No model, no GPU, exactly reproducible.
+#     'llm' -- base LLaMA 3.1-8B summarises a seeded random 25-answer sample of
+#        each expert's deduplicated answers (each truncated to 300 chars) into a
+#        distinct <=10-word phrase, iteratively. Only for corpora whose splits
+#        carry no meaningful topic label; on Stack Exchange the expert id already
+#        *is* the domain label, and the 8B mislabelled 8 of 12 experts.
+#   -> experiments/<exp>/slg_descriptions/descriptions.json.
 #   Skipped if that file already exists (delete to rebuild).
+#   Consumers: the routable-expert registry and the Qwen-3B router tiebreaker.
+#   NOT the classifier router, and NOT the critic.
 
 # 4. Fine-tune one LoRA expert per topic split
 python main.py --finetune=True
@@ -264,18 +271,32 @@ question to each expert's mean-*question* embedding.)
    the answer. In interactive mode any carried context from previous turns is
    prepended.
 
-7. **Verify the answer (B, the domain verifier).** Two checks run together:
+7. **Verify the answer (B, the domain verifier).** Two halves with *different*
+   jobs — the critic scores, the rules gate:
    - *Deterministic* (no model): numeric sanity (with a hard veto on
      empty answers or absurd/non-finite numbers), units-on-quantities when the
      question is quantitative, and format adherence for list-type questions.
+     A veto forces FAIL and zeroes the confidence.
    - *LLM critic* (Llama-3.1-8B, a different family from the Qwen experts):
-     relaxed prompt — PASS if the answer is on-topic, factually plausible, and
-     not degenerate; FAIL only genuinely wrong/useless answers. Emits
-     `VERDICT: PASS/FAIL` plus `CONFIDENCE: 0–100`.
+     relaxed prompt — acceptable if the answer is on-topic, factually plausible,
+     and not degenerate; unacceptable only if genuinely wrong/useless. It writes
+     a short assessment, then `VERDICT:` is appended to its own words and
+     **`P(PASS)`** is read off the next-token distribution over `" PASS"` /
+     `" FAIL"`. Nothing is parsed. The critic is *not* told which expert produced
+     the answer, so it cannot reject a correct answer as off-remit (that is a
+     routing error, and conflating the two would confound B with the router).
 
    The answer **passes** only if the critic says PASS *and* no deterministic veto
-   fired. The **confidence** returned is `sqrt(critic_confidence ×
-   deterministic_score)` (a conservative blend; 0 if vetoed).
+   fired. The **confidence** returned is `P(PASS)`, or 0 if vetoed.
+
+   *Why not blend the two?* `det_score` is a rubric fraction, not a probability,
+   and it saturates at 1.0 for nearly every answer — the old
+   `sqrt(critic_confidence × det_score)` therefore collapsed to
+   `sqrt(P(PASS))`, reporting 0.63 for a critic that said 0.4 and squeezing all
+   scores into a narrow band. That, plus the `CONFIDENCE: <int>` line the critic
+   often omitted (falling back to the constants 0.4/0.6), left the abstention
+   calibrator (C) a point mass to threshold on: coverage 0.0. `det_score` is
+   still recorded per verdict for diagnostics.
 
 8. **Learn from the verdict (feeds A and C).** The verdict updates two things:
    the expert's competence neighbourhood (reward on pass, punish on fail, local

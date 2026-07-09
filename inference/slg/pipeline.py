@@ -566,8 +566,7 @@ class SmallLanguageRouter:
         for c in range(0, len(order), self._reasoner_batch):
             chunk = order[c:c + self._reasoner_batch]
             vs = self._verifier.verify_batch([
-                (questions[i], assignment[i], self._descriptions.get(assignment[i], ""), answered[i])
-                for i in chunk
+                (questions[i], assignment[i], answered[i]) for i in chunk
             ])
             for i, v in zip(chunk, vs):
                 verdicts[i] = v
@@ -787,8 +786,7 @@ class SmallLanguageRouter:
             for c in range(0, len(to_verify), self._reasoner_batch):
                 chunk = to_verify[c:c + self._reasoner_batch]
                 verdicts = self._verifier.verify_batch([
-                    (questions[i], assignment[i], self._descriptions.get(assignment[i], ""), answered[i])
-                    for i in chunk
+                    (questions[i], assignment[i], answered[i]) for i in chunk
                 ])
                 for i, verdict in zip(chunk, verdicts):
                     expert = assignment[i]
@@ -1043,9 +1041,7 @@ class SmallLanguageRouter:
             # Verify each answer; surface verdict; update competence + calibration.
             self._critic.load()
             for expert in chosen:
-                verdict = self._verifier.verify(
-                    question, expert, self._descriptions.get(expert, ""), answers[expert]
-                )
+                verdict = self._verifier.verify(question, expert, answers[expert])
                 session.observe_verdict(expert, q_emb, verdict)
                 output_fn(
                     f"\n[verifier · {expert}] {'PASS' if verdict.passed else 'FAIL'} "

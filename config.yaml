@@ -146,7 +146,14 @@ rag:
 slg:
   slg_dir: "slg"                    # adapter subdirectory under experiments/<exp>/
   descriptions_dir: "slg_descriptions"  # where descriptions.json is stored (experiment-agnostic)
-  max_description_words: 10
+  max_description_words: 10          # only used by description_source: 'llm'
+  # Where expert descriptions come from. 'metadata' (default) reads the community
+  # name straight out of the corpus (`title`), optionally enriched by
+  # question_answer/expert_taglines.json — deterministic, GPU-free, and exact,
+  # because on the Stack Exchange corpus the expert id *is* the domain label.
+  # 'llm' summarises a sample of each expert's answers with the 8B (needed only
+  # for corpora whose splits carry no meaningful topic label).
+  description_source: 'metadata'
   out_of_scope_token: "NONE"
   # Which downloaded model plays each role (keys of paths.models). Experts +
   # reasoner (router tiebreak / aggregate / compress) are Qwen-3B; the critic is
@@ -216,11 +223,21 @@ generation:
   max_new_tokens: 750
   temperature: 0.1
   # Anti-repetition guards for greedy decoding (do_sample=False). Small fine-tuned
-  # LLaMA experts otherwise collapse into looping text that the critic rejects.
+  # experts otherwise collapse into looping text that the critic rejects.
   # repetition_penalty >1 discourages reusing recent tokens; no_repeat_ngram_size
   # hard-bans repeating any n-gram of this length. 1.0 / 0 disable them.
+  # These apply to free-form *expert answers* only.
   repetition_penalty: 1.3
   no_repeat_ngram_size: 3
+  # Structured-output roles (critic, router tiebreak, aggregator, compressor) decode
+  # WITHOUT the guards above. no_repeat_ngram_size bans any n-gram already present in
+  # the sequence *including the prompt*, and the critic's system prompt contains the
+  # literal strings "VERDICT: PASS" / "VERDICT: FAIL" — so after emitting "VERDICT:"
+  # both completions were -inf and no verdict could ever be produced. Likewise a
+  # repetition_penalty >1 punishes these roles for echoing expert names back from the
+  # prompt, which is exactly what they are asked to do.
+  reasoner_repetition_penalty: 1.0
+  reasoner_no_repeat_ngram_size: 0
   # Batched inference — how many prompts are decoded together per GPU. Greedy
   # decoding, so answers match the one-at-a-time path in practice (only padding
   # + float order differ). Sized to load an 80GB GPU toward ~75% without OOM;

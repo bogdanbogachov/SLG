@@ -59,7 +59,7 @@ class FakeVerdict:
 class FakeVerifier:
     def verify_batch(self, items):
         out = []
-        for (q, expert, desc, ans) in items:
+        for (q, expert, ans) in items:
             i = int(q[1:])
             # fail on expert 'a' the first time it's tried for i%5==0 -> forces reroute
             fail = (i % 5 == 0 and expert == "a")

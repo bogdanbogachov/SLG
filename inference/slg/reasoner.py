@@ -12,15 +12,17 @@ The same class backs two *different* model instances (see ``model_key``):
 Each instance loads its model on demand and reuses it across calls.
 """
 
-import re
 from typing import Dict, List, Optional, Tuple
 
 from config import CONFIG
 from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_base_model_and_tokenizer
-from utils.prompt_utils import create_system_message, create_user_message
+from utils.prompt_utils import apply_chat_template, create_system_message, create_user_message
 
-from inference.slg.generation import generate, generate_batch
+from inference.slg.generation import choice_probs, generate, generate_batch
+
+# The critic now writes a short assessment; the verdict is read from logits.
+_CRITIQUE_MAX_TOKENS = 192
 
 
 # --------------------------------------------------------------------- prompts
@@ -47,34 +49,39 @@ _ROUTER_USER = (
     "question, then on the final line output the expert name(s) or NONE."
 )
 
+# The critic judges the answer against the *question* only. The producing expert's
+# advertised remit is deliberately withheld: naming it invites the critic to reject
+# a correct answer for being outside that remit, which is a routing error, not an
+# answer defect — and that would confound mechanism (B) with the router.
 _CRITIC_SYSTEM = (
     "You are a fair quality checker for an engineering question-answering system. "
-    "You are given a user question, the specialist expert that produced an answer, "
-    "and the answer itself. Your job is to catch answers that are genuinely wrong "
-    "or useless — NOT to demand perfection. Real, helpful answers vary in style, "
-    "length, and completeness; pass them.\n"
-    "PASS the answer if ALL of these hold:\n"
+    "You are given a user question and a candidate answer. Your job is to catch "
+    "answers that are genuinely wrong or useless — NOT to demand perfection. Real, "
+    "helpful answers vary in style, length, and completeness; accept them.\n"
+    "An answer is acceptable if ALL of these hold:\n"
     "1. it is on-topic and addresses the question (even if partially),\n"
     "2. it is factually plausible — no clearly false statements or made-up terms,\n"
     "3. it is coherent and not degenerate (not empty, not looping/repeated text),\n"
     "4. any numbers/units it gives are not absurd or self-contradictory.\n"
-    "FAIL only if the answer is off-topic, clearly incorrect, nonsensical, "
-    "degenerate, or empty. Do NOT fail an answer merely for being brief, informal, "
-    "missing a caveat, not citing the expert's domain, or omitting detail you would "
-    "have liked. When in doubt, PASS.\n"
-    "Briefly note any real problems you find. Then output TWO final lines, each on "
-    "its own line and nothing after them:\n"
-    "CONFIDENCE: <integer 0-100, your confidence that the answer is correct and useful>\n"
-    "VERDICT: PASS   (acceptable) or VERDICT: FAIL (genuinely wrong/useless)"
+    "It is unacceptable only if it is off-topic, clearly incorrect, nonsensical, "
+    "degenerate, or empty. Do not reject an answer merely for being brief, informal, "
+    "missing a caveat, or omitting detail you would have liked. When in doubt, accept.\n"
+    "Reply with one or two sentences naming any real problems you find, or stating "
+    "that the answer is sound. Do not state a verdict — you will be asked for it "
+    "separately."
 )
 
 _CRITIC_USER = (
     "Question: {question}\n\n"
-    "Expert: {expert_id} — {description}\n\n"
     "Answer:\n{answer}\n\n"
-    "Decide whether to PASS or FAIL this answer, then output the CONFIDENCE "
-    "and VERDICT lines."
+    "Briefly assess this answer."
 )
+
+# Appended to the critic's own critique to read the verdict off the next-token
+# distribution rather than parsing generated text. The two continuations must
+# differ in their first token.
+_VERDICT_CUE = "\nVERDICT:"
+_VERDICT_CHOICES = (" PASS", " FAIL")
 
 _AGGREGATOR_SYSTEM = (
     "You are an answer aggregator. You are given one or more answers from different "
@@ -130,11 +137,30 @@ class Reasoner:
             self.model = None
             self.tokenizer = None
 
+    @staticmethod
+    def _decode_guards() -> Tuple[float, int]:
+        """Anti-repetition settings for the structured-output roles.
+
+        Every role on this class must reproduce tokens its prompt already contains
+        — the critic's ``VERDICT: PASS``/``VERDICT: FAIL``, the router's expert
+        names. The expert-answer guards would forbid exactly that, so they are
+        disabled here (see ``generation.reasoner_*`` in config.yaml).
+        """
+        gen = CONFIG["generation"]
+        return (
+            float(gen.get("reasoner_repetition_penalty", 1.0)),
+            int(gen.get("reasoner_no_repeat_ngram_size", 0)),
+        )
+
     def _generate(self, system: str, user: str, max_new_tokens: int) -> str:
         if self.model is None:
             self.load()
         messages = [create_system_message(system), create_user_message(user)]
-        return generate(messages, self.model, self.tokenizer, max_new_tokens)
+        rep_penalty, ngram_size = self._decode_guards()
+        return generate(
+            messages, self.model, self.tokenizer, max_new_tokens,
+            repetition_penalty=rep_penalty, no_repeat_ngram_size=ngram_size,
+        )
 
     def _generate_many(self, prompts: List[Tuple[str, str]], max_new_tokens: int) -> List[str]:
         """Batched counterpart of :meth:`_generate` — decode every (system, user)
@@ -148,8 +174,10 @@ class Reasoner:
             for system, user in prompts
         ]
         batch_size = int(CONFIG["generation"].get("reasoner_batch_size", 1))
+        rep_penalty, ngram_size = self._decode_guards()
         return generate_batch(
-            messages_list, self.model, self.tokenizer, max_new_tokens, batch_size
+            messages_list, self.model, self.tokenizer, max_new_tokens, batch_size,
+            repetition_penalty=rep_penalty, no_repeat_ngram_size=ngram_size,
         )
 
     # --------------------------------------------------------------- route
@@ -299,80 +327,68 @@ class Reasoner:
         return ordered[:max_experts]
 
     # ------------------------------------------------------------ criticize
-    def criticize(
-        self, question: str, expert_id: str, description: str, answer: str
-    ) -> Tuple[bool, float, str]:
-        """Return (passed, confidence, critique_text).
+    def criticize(self, question: str, answer: str, expert_id: str = "") -> Tuple[bool, float, str]:
+        """Return ``(passed, p_pass, critique_text)`` for one answer.
 
-        ``confidence`` is the critic's self-reported probability (in [0, 1]) that
-        the answer is correct and safe to return. It is the LLM half of the
-        domain verifier and feeds the abstention calibrator.
+        ``expert_id`` is for logging only — it is never shown to the critic.
         """
-        user = self._build_critic_user(question, expert_id, description, answer)
-        raw = self._generate(_CRITIC_SYSTEM, user, max_new_tokens=512)
-        passed = self._parse_verdict(raw)
-        confidence = self._parse_confidence(raw, passed)
-        logger.info(
-            "Critic verdict for '%s': %s (confidence=%.2f)",
-            expert_id, "PASS" if passed else "FAIL", confidence,
-        )
-        return passed, confidence, raw
+        return self.criticize_batch([(question, expert_id, answer)])[0]
 
     @staticmethod
-    def _build_critic_user(question: str, expert_id: str, description: str, answer: str) -> str:
-        return _CRITIC_USER.format(
-            question=question,
-            expert_id=expert_id,
-            description=description or "(no description)",
-            answer=answer,
-        )
+    def _build_critic_user(question: str, answer: str) -> str:
+        return _CRITIC_USER.format(question=question, answer=answer)
 
     def criticize_batch(
-        self, items: List[Tuple[str, str, str, str]]
+        self, items: List[Tuple[str, str, str]]
     ) -> List[Tuple[bool, float, str]]:
-        """Batched critic. ``items`` are ``(question, expert_id, description,
-        answer)`` tuples; returns ``(passed, confidence, critique)`` per item in
-        order. The critic judges each answer independently, so batching only
-        decodes the verdicts together — it does not couple them."""
-        prompts = [
-            (_CRITIC_SYSTEM, self._build_critic_user(q, eid, desc, ans))
-            for q, eid, desc, ans in items
+        """Batched critic. ``items`` are ``(question, expert_id, answer)`` tuples;
+        returns ``(passed, p_pass, critique)`` per item in order.
+
+        Two steps. The critic first writes a short free-text assessment. We then
+        append ``VERDICT:`` to its own words and read ``P(PASS)`` off the
+        next-token distribution (one extra forward pass, no decoding). That
+        probability *is* the confidence: it is continuous, always defined, and
+        needs no parsing — where a self-reported ``CONFIDENCE:`` integer clumps on
+        a handful of values (and vanishes entirely when the model omits the line),
+        leaving the abstention calibrator (C) nothing to threshold on.
+
+        The critic judges each answer independently, so batching only decodes them
+        together — it does not couple them.
+        """
+        if not items:
+            return []
+        if self.model is None:
+            self.load()
+
+        messages_list = [
+            [create_system_message(_CRITIC_SYSTEM),
+             create_user_message(self._build_critic_user(q, ans))]
+            for q, _eid, ans in items
         ]
-        raws = self._generate_many(prompts, max_new_tokens=512)
+        prompts = [(_CRITIC_SYSTEM, self._build_critic_user(q, ans)) for q, _eid, ans in items]
+        critiques = self._generate_many(prompts, max_new_tokens=_CRITIQUE_MAX_TOKENS)
+
+        # Re-render each prompt with the critic's own assessment appended, then cue
+        # the verdict token so the logits answer "given what you just said, PASS?"
+        scoring_prompts = [
+            apply_chat_template(messages, self.tokenizer, add_generation_prompt=True)
+            + critique + _VERDICT_CUE
+            for messages, critique in zip(messages_list, critiques)
+        ]
+        batch_size = int(CONFIG["generation"].get("reasoner_batch_size", 1))
+        probs = choice_probs(
+            scoring_prompts, list(_VERDICT_CHOICES), self.model, self.tokenizer, batch_size
+        )
+
         out: List[Tuple[bool, float, str]] = []
-        for (q, eid, desc, ans), raw in zip(items, raws):
-            passed = self._parse_verdict(raw)
-            confidence = self._parse_confidence(raw, passed)
+        for (_q, eid, _ans), critique, (p_pass, _p_fail) in zip(items, critiques, probs):
+            passed = p_pass >= 0.5
             logger.info(
-                "Critic verdict for '%s': %s (confidence=%.2f)",
-                eid, "PASS" if passed else "FAIL", confidence,
+                "Critic verdict for '%s': %s (P(PASS)=%.3f)",
+                eid, "PASS" if passed else "FAIL", p_pass,
             )
-            out.append((passed, confidence, raw))
+            out.append((passed, float(p_pass), critique))
         return out
-
-    @staticmethod
-    def _parse_verdict(raw: str) -> bool:
-        if "assistant" in raw:
-            raw = raw.split("assistant")[-1]
-        matches = re.findall(r"VERDICT\s*:\s*(PASS|FAIL)", raw, flags=re.IGNORECASE)
-        if matches:
-            return matches[-1].strip().upper() == "PASS"
-        # No explicit verdict line: be conservative and treat as failure.
-        logger.warning("Critic produced no parseable verdict; treating as FAIL.")
-        return False
-
-    @staticmethod
-    def _parse_confidence(raw: str, passed: bool) -> float:
-        """Parse the 'CONFIDENCE: <0-100>' line into [0, 1]."""
-        if "assistant" in raw:
-            raw = raw.split("assistant")[-1]
-        matches = re.findall(r"CONFIDENCE\s*:\s*(\d{1,3})", raw, flags=re.IGNORECASE)
-        if matches:
-            value = max(0, min(100, int(matches[-1]))) / 100.0
-            return value
-        # No parseable confidence: fall back to a verdict-consistent default so a
-        # PASS is not silently treated as low confidence (and vice-versa).
-        return 0.6 if passed else 0.4
 
     # ------------------------------------------------------------- aggregate
     def aggregate(self, question: str, labeled_answers: List[Tuple[str, str]]) -> str:

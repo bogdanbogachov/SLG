@@ -8,13 +8,21 @@ two complementary signals:
 * **Deterministic, domain-grounded checks** (no model, no GPU): numeric sanity,
   presence of units on quantities when the question is quantitative, format
   adherence, and degenerate/contradictory output. These are cheap, explainable,
-  and can *veto* a pass outright (e.g. non-finite numbers).
-* **The 8B critic's engineering-aware judgement** and its self-reported
-  confidence (see :meth:`Reasoner.criticize`).
+  and act as a *hard constraint*: a veto forces FAIL and zeroes the confidence.
+* **The 8B critic's engineering-aware judgement**, whose ``P(PASS)`` supplies the
+  confidence score (see :meth:`Reasoner.criticize`).
 
 The two are combined into a single structured :class:`Verdict` — a pass/fail
 decision plus a calibrated-ready confidence in ``[0, 1]`` and a per-check
 breakdown. The confidence is what the abstention calibrator consumes.
+
+The two halves play *different* roles rather than being averaged. The critic
+scores; the rules gate. Blending them (the old ``sqrt(llm_conf * det_score)``)
+was unsound: ``det_score`` is a rubric fraction, not a probability, and it
+saturates at 1.0 for the overwhelming majority of answers, so the geometric mean
+degenerated to ``sqrt(llm_conf)`` — pushing a critic's 0.4 up to 0.63 and
+compressing every score into a narrow band the calibrator could not separate.
+``det_score`` is still recorded on the Verdict for diagnostics.
 
 The checks are deliberately domain-general (no aerospace- or dataset-specific
 rules) so the verifier transfers to any engineering corpus.
@@ -60,8 +68,8 @@ class Verdict:
     confidence: float                 # in [0, 1], consumed by the calibrator
     critique: str = ""
     checks: Dict[str, bool] = field(default_factory=dict)
-    det_score: float = 1.0            # deterministic-check score in [0, 1]
-    llm_confidence: float = 0.5       # critic self-reported confidence
+    det_score: float = 1.0            # deterministic-check score, diagnostics only
+    llm_confidence: float = 0.5       # critic's P(PASS) from its verdict-token logits
 
     def to_dict(self) -> dict:
         return {
@@ -131,60 +139,43 @@ class DomainVerifier:
         return det_score, veto, checks
 
     # ----------------------------------------------------------- verify
-    def verify(self, question: str, expert_id: str, description: str, answer: str) -> Verdict:
-        if self._deterministic_enabled:
-            det_score, veto, checks = self._deterministic(question, answer)
-        else:
-            det_score, veto, checks = 1.0, False, {}
-        llm_passed, llm_conf, critique = self._reasoner.criticize(
-            question, expert_id, description, answer
-        )
-
-        passed = bool(llm_passed and not veto)
-        # Confidence blends the critic's self-report with the deterministic
-        # evidence (geometric mean keeps it conservative — a low factor on either
-        # side drags the result down). A hard veto zeroes it.
-        confidence = 0.0 if veto else float((max(llm_conf, 1e-6) * max(det_score, 1e-6)) ** 0.5)
-
-        return Verdict(
-            passed=passed,
-            confidence=confidence,
-            critique=critique,
-            checks=checks,
-            det_score=det_score,
-            llm_confidence=llm_conf,
-        )
+    def verify(self, question: str, expert_id: str, answer: str) -> Verdict:
+        return self.verify_batch([(question, expert_id, answer)])[0]
 
     # ------------------------------------------------------- verify (batched)
-    def verify_batch(self, items: List[Tuple[str, str, str, str]]) -> List[Verdict]:
+    def verify_batch(self, items: List[Tuple[str, str, str]]) -> List[Verdict]:
         """Verify a batch of answers, decoding all critic verdicts together.
 
-        ``items`` are ``(question, expert_id, description, answer)`` tuples.
-        The deterministic layer is pure CPU and stays per-item; only the 8B
-        critic is batched. Each answer is judged independently, so the produced
-        verdicts match the per-item :meth:`verify` (bar the batched-decode float
-        noise). The caller is responsible for applying the verdicts to the
-        online competence/calibration state in question order."""
+        ``items`` are ``(question, expert_id, answer)`` tuples. The deterministic
+        layer is pure CPU and stays per-item; only the 8B critic is batched. Each
+        answer is judged independently, so the produced verdicts match the
+        per-item path (bar the batched-decode float noise). The caller is
+        responsible for applying the verdicts to the online
+        competence/calibration state in question order.
+
+        ``expert_id`` is carried for logging only; the critic never sees which
+        expert produced the answer.
+        """
         if self._deterministic_enabled:
-            det = [self._deterministic(q, a) for (q, _e, _d, a) in items]
+            det = [self._deterministic(q, a) for (q, _e, a) in items]
         else:
             det = [(1.0, False, {}) for _ in items]
 
         crit = self._reasoner.criticize_batch(items)
 
         verdicts: List[Verdict] = []
-        for (det_score, veto, checks), (llm_passed, llm_conf, critique) in zip(det, crit):
+        for (det_score, veto, checks), (llm_passed, p_pass, critique) in zip(det, crit):
+            # The critic scores, the rules gate: confidence is the critic's P(PASS),
+            # and a deterministic veto forces FAIL and zeroes it outright.
             passed = bool(llm_passed and not veto)
-            confidence = 0.0 if veto else float(
-                (max(llm_conf, 1e-6) * max(det_score, 1e-6)) ** 0.5
-            )
+            confidence = 0.0 if veto else float(p_pass)
             verdicts.append(Verdict(
                 passed=passed,
                 confidence=confidence,
                 critique=critique,
                 checks=checks,
                 det_score=det_score,
-                llm_confidence=llm_conf,
+                llm_confidence=p_pass,
             ))
         return verdicts
 

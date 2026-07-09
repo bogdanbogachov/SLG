@@ -69,7 +69,7 @@ class FakeVerdict:
 class FakeVerifier:
     def verify_batch(self, items):
         out = []
-        for (q, expert, desc, ans) in items:
+        for (q, expert, ans) in items:
             i = int(q[1:])
             fail = (i % 5 == 0 and expert == "a")
             # Non-round-clean confidences: a regression that stored the rounded
