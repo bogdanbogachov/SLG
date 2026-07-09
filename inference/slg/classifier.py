@@ -258,6 +258,7 @@ def train_router(experiment: str) -> str:
         r=int(CONFIG["training"]["lora"]["r"]),
         lora_alpha=int(CONFIG["training"]["lora"]["alpha"]),
         lora_dropout=float(CONFIG["training"]["lora"]["dropout"]),
+        target_modules=CONFIG["training"]["lora"].get("target_modules"),
         modules_to_save=["score"],  # keep + save the classification head
     )
     model = get_peft_model(model, peft_cfg)

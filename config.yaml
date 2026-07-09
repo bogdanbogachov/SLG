@@ -87,9 +87,10 @@ models:
 
 # Training hyperparameters
 # Tuned to standard LoRA instruction-SFT practice to avoid the over-fitting that
-# drove greedy-decode repetition collapse. Three values changed from the old
-# aggressive setup; everything else (batch sizes, LoRA rank/alpha/dropout,
-# weight decay, warmup, grad clip) is unchanged:
+# drove greedy-decode repetition collapse. This follows the QLoRA recipe where
+# useful: 2e-4 LR for <=13B models, LoRA on all linear transformer layers, and
+# completion-only loss for instruction/response datasets. Keep the epoch cap at
+# 10; early_stopping_patience + load_best_model_at_end choose the actual stop.
 #   num_epochs 30 -> 10           (30 memorises the data and degenerates; 10 is a
 #                                  safe cap, and early_stopping_patience=3 +
 #                                  load_best_model_at_end stop it sooner if the
@@ -97,35 +98,38 @@ models:
 #   learning_rate 1e-3 -> 2e-4    (the canonical LoRA LR, e.g. QLoRA)
 #   label_smoothing 0.01 -> 0     (standard SFT uses none; smoothing flattens the
 #                                  output distribution and worsens greedy repetition)
+#   LoRA r/alpha 16/128 -> 64/128 (QLoRA uses rank 64; alpha=2r keeps scaling 2,
+#                                  not the old hidden 8x multiplier)
 training:
   num_epochs: 10
   learning_rate: 0.0002
   label_smoothing_factor: 0.0
   weight_decay: 0.001
   warmup_ratio: 0.05
-  # Per-device batch sizes are model-size-aware (see finetune.py): the 1B
-  # experts fit a large batch on an 80GB GPU, the 8B baseline fills memory much
-  # faster so it takes a smaller one. gradient_accumulation_steps=1 means the
-  # effective batch == per_device batch. NOTE: this enlarges the effective
-  # batch vs. the old 2x2=4, so it changes optimisation slightly over the fixed
-  # 30 epochs — consider linear-scaling the LR if you want to match old runs.
-  per_device_train_batch_size: 8       # 1B experts
-  per_device_eval_batch_size: 8        # 1B experts
-  per_device_train_batch_size_3b: 8    # 3B experts (Qwen-3B) — mid-size
-  per_device_eval_batch_size_3b: 8     # 3B experts
+  # Per-device batch sizes are model-size-aware (see finetune.py). The 1B/3B
+  # jobs have enough headroom on an 80GB GPU for a larger effective batch even
+  # with all-linear LoRA. The 8B baseline stays conservative because activations,
+  # not LoRA weights, dominate memory at max_length=1024.
+  per_device_train_batch_size: 16      # 1B baseline/router
+  per_device_eval_batch_size: 16       # 1B baseline/router
+  per_device_train_batch_size_3b: 16   # 3B experts (Qwen-3B)
+  per_device_eval_batch_size_3b: 16    # 3B experts
   per_device_train_batch_size_8b: 4    # 8B baseline (fills 80GB sooner)
-  per_device_eval_batch_size_8b: 4     # 8B baseline
+  per_device_eval_batch_size_8b: 8     # 8B baseline
   gradient_accumulation_steps: 1
   max_grad_norm: 1
   logging_steps: 50
   save_total_limit: 4
   early_stopping_patience: 3
+  padding_side: "left"
+  completion_only_loss: true
   
   # LoRA parameters
   lora:
     alpha: 128
     dropout: 0.05
-    r: 16
+    r: 64
+    target_modules: "all-linear"
 
 # Data processing constants
 data:

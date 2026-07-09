@@ -106,6 +106,15 @@ python main.py --slg_descriptions=True
 # 4. Fine-tune one LoRA expert per topic split
 python main.py --finetune=True
 
+# Quick smoke test: fine-tune only one SLG expert adapter. If inference or
+# evaluation is also requested, --train_expert filters qa_test to that expert
+# before --limit, so this trains aviation and tests on 5 held-out aviation
+# questions. Omit --train_limit to train on the full aviation training split.
+python main.py --finetune=True --train_expert=aviation --train_limit=100 --infer_slg=True --limit=5
+
+# Train the full aviation expert split, then run 5 held-out aviation questions.
+python main.py --slg_descriptions=True --finetune=True --train_expert=aviation --infer_slg=True --limit=5
+
 # 4b. Train the router classifier (Llama-1B seq-classification head) on the
 #     training questions -> experiments/<exp>/slg_router/. Cheap single-GPU job;
 #     one classifier serves every ablation + scalability pool size. Without it,
@@ -118,6 +127,10 @@ python main.py --infer_rag=True          # RAG baseline
 python main.py --infer_finetuned=True    # Single fine-tuned LLaMA
 python main.py --infer_slg=True          # SLG — automated batch inference
 python main.py --chat_slg=True           # SLG — interactive multi-turn session
+
+# Quick inference subset without --train_expert: --limit is a seeded,
+# title-stratified subset of the full qa_test, not a hard-coded domain.
+python main.py --infer_slg=True --limit=5
 
 # 6. Evaluate (scores the full run + baselines AND every ablation in the umbrella)
 python main.py --evaluate
@@ -650,12 +663,33 @@ concurrent workers: the retriever embeds/caches the **full** expert set once and
 applies the routing allow-list at query time, so parallel subset runs share one
 read-only cache with no write race (`_warm_expert_cache` builds it before dispatch).
 
-**Training batch sizes** are model-size-aware (`finetune/finetune.py`): the 1B
-experts use `training.per_device_train_batch_size`, the 8B baseline the smaller
-`training.per_device_train_batch_size_8b` (it fills 80GB sooner), with
-`gradient_accumulation_steps=1`. Note this enlarges the effective batch versus a
-2×2 setup, so it changes optimisation slightly over the fixed epoch budget —
-linear-scale the learning rate if you need to match older runs.
+**Training recipe** is configured in `config.yaml` and applied by
+`finetune/finetune.py`. Expert/baseline causal-LM fine-tunes use LoRA with
+`r=64`, `alpha=128` (`alpha/r = 2`), dropout `0.05`, and
+`target_modules: "all-linear"`; the 10-epoch cap is retained, while early
+stopping and `load_best_model_at_end` decide the actual checkpoint. Loss is
+completion-only: prompt/question tokens and padding are masked to `-100`, and
+the trainer uses a collator that preserves those labels, so `eval_loss` measures
+answer loss rather than question+answer loss. Tokenization uses left padding to
+match batched decoder-only inference; overlength examples are truncated to
+`data.max_length` with the final token forced to the tokenizer EOS/turn-end
+token, so truncated answers still teach a stop.
+
+**Training batch sizes** are model-size-aware: 1B jobs use
+`training.per_device_train_batch_size`, Qwen-3B expert jobs use the `_3b` keys,
+and the 8B baseline uses the smaller `_8b` keys because it fills memory sooner.
+The current defaults target an 80GB GPU. On a 40GB H100, use a smaller 3B batch such as
+`per_device_train_batch_size_3b: 8`, `per_device_eval_batch_size_3b: 8`, and
+`gradient_accumulation_steps: 2` to keep the effective batch size while reducing
+activation memory.
+
+**Single-expert training** is available with `--train_expert=<expert_id>` where
+the id is the `question_answer/split_by_title/*.json` stem, e.g. `aviation` or
+`aviation.json`. This trains only that SLG expert adapter and skips baseline
+fine-tunes. When inference/evaluation is requested in the same command,
+`qa_test` is filtered to that expert first; `--limit` is then sampled inside that
+expert-only held-out set. Without `--train_expert`, `--limit` remains a seeded,
+title-stratified subset of the full test set.
 
 The fine-tuned **baseline** inference (`ask_finetuned`) is batched the same way
 (model-size-aware batch size, saved once per batch so it resumes at batch

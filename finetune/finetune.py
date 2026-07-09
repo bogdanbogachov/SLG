@@ -1,7 +1,7 @@
 """Fine-tuning module for language models."""
 import torch
 import os
-from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, default_data_collator
 from datasets import load_dataset
 from peft import LoraConfig
 from trl import SFTTrainer
@@ -58,17 +58,19 @@ def finetune(
     test_split_ratio = data_config['test_split_ratio']
     max_length = data_config['max_length']
 
-    # Define a function to apply the chat template
     def apply_chat_template_to_example(example):
-        """Apply chat template to a dataset example."""
+        """Build full text plus the supervised assistant-prefix boundary."""
         from utils.prompt_utils import create_user_message, create_assistant_message
-        
-        messages = [
+
+        user_messages = [create_user_message(example['question'])]
+        full_messages = [
             create_user_message(example['question']),
             create_assistant_message(example['answer'])
         ]
-        prompt = apply_chat_template(messages, tokenizer, add_generation_prompt=False)
-        return {"prompt": prompt}
+        return {
+            "prompt": apply_chat_template(full_messages, tokenizer, add_generation_prompt=False),
+            "prompt_prefix": apply_chat_template(user_messages, tokenizer, add_generation_prompt=True),
+        }
 
     # Apply the chat template function to the dataset
     new_dataset = dataset.map(apply_chat_template_to_example)
@@ -83,26 +85,62 @@ def finetune(
             tokenizer.pad_token = "<|reserved_special_token_15|>"
         else:
             tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = str(training_config.get("padding_side", "left"))
+    model.config.pad_token_id = tokenizer.pad_token_id
+    eos_token_id = tokenizer.eos_token_id
 
-    # Tokenize the data
     def tokenize_function(example):
-        """Tokenize example with proper label handling."""
-        tokens = tokenizer(
-            example['prompt'],
-            padding="max_length",
-            truncation=True,
-            max_length=max_length
-        )
-        # Set padding token labels to -100 to ignore them in loss calculation
+        """Tokenize and mask labels so loss is computed only on completions."""
+        input_ids = tokenizer(example['prompt'], add_special_tokens=False)['input_ids']
+        was_truncated = len(input_ids) > max_length
+        if was_truncated:
+            input_ids = input_ids[:max_length]
+            if eos_token_id is not None and input_ids:
+                input_ids[-1] = eos_token_id
+
+        attention_mask = [1] * len(input_ids)
+        pad_len = max_length - len(input_ids)
+        if pad_len > 0:
+            padding = [tokenizer.pad_token_id] * pad_len
+            padding_mask = [0] * pad_len
+            if tokenizer.padding_side == "left":
+                input_ids = padding + input_ids
+                attention_mask = padding_mask + attention_mask
+            else:
+                input_ids = input_ids + padding
+                attention_mask = attention_mask + padding_mask
+
+        tokens = {
+            'input_ids': input_ids,
+            'attention_mask': attention_mask,
+        }
+        labels = list(tokens['input_ids'])
+        if bool(training_config.get("completion_only_loss", True)):
+            prefix_ids = tokenizer(
+                example['prompt_prefix'],
+                add_special_tokens=False,
+            )['input_ids']
+            prefix_len = len(prefix_ids)
+            if tokenizer.padding_side == "left":
+                prefix_len += pad_len
+            labels[:prefix_len] = [-100] * min(prefix_len, len(labels))
         tokens['labels'] = [
-            -100 if token == tokenizer.pad_token_id else token
-            for token in tokens['input_ids']
+            -100 if token == tokenizer.pad_token_id else label
+            for token, label in zip(tokens['input_ids'], labels)
         ]
+        tokens['truncated'] = was_truncated
         return tokens
 
     # Apply tokenize_function to each row
     tokenized_dataset = new_dataset.map(tokenize_function)
-    tokenized_dataset = tokenized_dataset.remove_columns(['question', 'answer', 'prompt'])
+    for split_name, split_dataset in tokenized_dataset.items():
+        truncated_count = sum(bool(v) for v in split_dataset['truncated'])
+        if truncated_count:
+            logger.warning(
+                "%s: truncated %d/%d overlength example(s); final token forced to EOS.",
+                split_name, truncated_count, len(split_dataset)
+            )
+    tokenized_dataset = tokenized_dataset.remove_columns(['question', 'answer', 'prompt', 'prompt_prefix', 'truncated'])
 
     # Get LoRA config from CONFIG
     lora_config = training_config['lora']
@@ -110,6 +148,7 @@ def finetune(
         lora_alpha=lora_config['alpha'],
         lora_dropout=lora_config['dropout'],
         r=lora_config['r'],
+        target_modules=lora_config.get('target_modules'),
         task_type='CAUSAL_LM'
     )
 
@@ -183,6 +222,7 @@ def finetune(
         train_dataset=tokenized_dataset["train"],
         eval_dataset=tokenized_dataset["test"],
         tokenizer=tokenizer,
+        data_collator=default_data_collator,
         callbacks=[EarlyStoppingCallback(early_stopping_patience=early_stopping_patience)]
     )
 

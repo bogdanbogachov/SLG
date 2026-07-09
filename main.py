@@ -24,11 +24,29 @@ if __name__ == '__main__':
     # Experiments (config > fallback)
     experiment = CONFIG['experiment']
 
-    # Quick-check subset (--limit N): repoint qa_test at a seeded, expert-
-    # stratified N-question subset and isolate outputs under a "__limitN" sibling
-    # folder so a fast smoke test never clobbers the full run. Adapters and
-    # descriptions are still read from the real experiment.
+    # Quick-check subsets: repoint qa_test for this process and spawned GPU
+    # workers, then isolate outputs under a matching sibling folder. If
+    # --train_expert is used with inference, test only that expert; --limit then
+    # samples inside the expert-only test file.
     output_suffix = ""
+    inference_requested = any([
+        args.infer_baseline, args.infer_rag, args.infer_finetuned, args.infer_slg,
+        args.slg_ablations, args.slg_metrics, args.slg_all, args.evaluate,
+    ])
+    test_expert = args.train_expert.strip()
+    if inference_requested and test_expert:
+        from utils.subset import build_expert_test_subset, slug_title
+        test_expert = slug_title(test_expert)
+        if test_expert.endswith(".json"):
+            test_expert = os.path.splitext(test_expert)[0]
+        subset_path = build_expert_test_subset(CONFIG['files']['qa_test'], test_expert)
+        if subset_path != CONFIG['files']['qa_test']:
+            CONFIG['files']['qa_test'] = subset_path
+            os.environ['SLG_QA_TEST_OVERRIDE'] = subset_path
+        output_suffix += f"__{test_expert}"
+        print(f"[--train_expert] test subset for '{test_expert}' -> {subset_path}; "
+              f"outputs -> answers/{experiment}/{experiment}{output_suffix}/")
+
     if args.limit and args.limit > 0:
         from utils.subset import build_test_subset
         subset_path = build_test_subset(
@@ -36,7 +54,7 @@ if __name__ == '__main__':
         if subset_path != CONFIG['files']['qa_test']:
             CONFIG['files']['qa_test'] = subset_path          # this process
             os.environ['SLG_QA_TEST_OVERRIDE'] = subset_path  # spawned GPU workers
-            output_suffix = f"__limit{args.limit}"
+            output_suffix += f"__limit{args.limit}"
             print(f"[--limit] {args.limit}-question subset -> {subset_path}; "
                   f"outputs -> answers/{experiment}/{experiment}{output_suffix}/")
 
@@ -60,7 +78,7 @@ if __name__ == '__main__':
     run_slg_descriptions(experiment) if args.slg_descriptions else None
 
     # Training
-    run_training(experiment, train_limit=args.train_limit) if args.finetune else None
+    run_training(experiment, train_limit=args.train_limit, train_expert=args.train_expert) if args.finetune else None
     run_finetune_router(experiment) if args.finetune_router else None
 
     # Inference

@@ -40,6 +40,8 @@ def build_parser() -> argparse.ArgumentParser:
     # (seeded) instead of the full training set. 0 = full set.
     parser.add_argument("--train_limit", type=int, default=0,
                         help="Fine-tune each adapter on only N training examples (seeded).")
+    parser.add_argument("--train_expert", type=str, default="",
+                        help="Fine-tune only this SLG expert id/file stem, e.g. aviation.")
 
     # SLG ablation / experiment tooling
     parser.add_argument("--slg_ablation", type=str, default="")

@@ -11,6 +11,39 @@ import random
 from collections import defaultdict
 
 
+def slug_title(title: str) -> str:
+    """Mirror split_qa_pairs_by_title's title -> expert id mapping."""
+    return (title or "").replace(" ", "_").replace("/", "_").replace("\n", "_").lower()
+
+
+def build_expert_test_subset(src_path: str, expert_id: str, out_path: str = None) -> str:
+    """Write and return a test file containing only one expert's questions."""
+    expert_id = slug_title(expert_id.strip())
+    if expert_id.endswith(".json"):
+        expert_id = os.path.splitext(expert_id)[0]
+
+    with open(src_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    subset = [rec for rec in data if slug_title(rec.get("title")) == expert_id]
+    if not subset:
+        available = sorted({slug_title(rec.get("title")) for rec in data})
+        raise ValueError(
+            f"No test questions found for expert '{expert_id}'. "
+            f"Available experts: {', '.join(available)}"
+        )
+
+    if len(subset) == len(data):
+        return src_path
+
+    if out_path is None:
+        base, ext = os.path.splitext(src_path)
+        out_path = f"{base}_{expert_id}{ext}"
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(subset, f, indent=2)
+    return out_path
+
+
 def build_test_subset(src_path: str, n: int, seed: int, out_path: str = None) -> str:
     """Write and return the path to an N-question stratified subset of ``src_path``.
 

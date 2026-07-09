@@ -27,7 +27,7 @@ def run_finetune_router(experiment: str) -> None:
     logger.info("Router classifier saved to %s", out_dir)
 
 
-def run_training(experiment: str, train_limit: int = 0) -> None:
+def run_training(experiment: str, train_limit: int = 0, train_expert: str = "") -> None:
     """Fine-tune every requested model.
 
     Each expert adapter and each baseline is an independent job, so the whole
@@ -38,6 +38,8 @@ def run_training(experiment: str, train_limit: int = 0) -> None:
 
     Args:
         experiment: Experiment identifier
+        train_limit: If >0, fine-tune each selected adapter on only this many examples.
+        train_expert: If set, fine-tune only this SLG expert id/file stem and skip baselines.
     """
     paths_config = CONFIG['paths']
     files_config = CONFIG['files']
@@ -59,11 +61,26 @@ def run_training(experiment: str, train_limit: int = 0) -> None:
 
     # One LoRA expert per title split (routing uses the prompt-based router +
     # descriptions.json).
+    train_expert = train_expert.strip()
+    if train_expert and train_expert.endswith(".json"):
+        train_expert = os.path.splitext(train_expert)[0]
+
+    if train_expert and not train_slg_system:
+        raise RuntimeError("--train_expert requires training_components.train_slg_system=true.")
+
     if train_slg_system:
         expert_key = CONFIG.get("slg", {}).get("expert_model", "3_2_1b")
         split_files = sorted(
             f for f in os.listdir(split_by_title_dir) if f.endswith(".json")
         )
+        if train_expert:
+            available = [os.path.splitext(f)[0] for f in split_files]
+            if train_expert not in available:
+                raise ValueError(
+                    f"Unknown expert '{train_expert}'. Available experts: {', '.join(available)}"
+                )
+            split_files = [f"{train_expert}.json"]
+            logger.info("Quick training mode: fine-tuning only SLG expert '%s'.", train_expert)
         if not split_files:
             logger.warning("No JSON files in split_by_title; no SLG experts were trained.")
         for file in split_files:
@@ -78,31 +95,34 @@ def run_training(experiment: str, train_limit: int = 0) -> None:
     else:
         logger.info("Skipping SLG system training")
 
-    # Baseline 3_2_1b
-    if train_3_2_1b:
-        tasks.append({
-            "model_to_tune": os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
-            "adapter_name": adapters_config['finetuned_3_2_1b'],
-            "data": files_config['qa_train'],
-            "experiment_number": experiment,
-            "slg": False,
-            "train_limit": train_limit,
-        })
+    if train_expert:
+        logger.info("Skipping baseline fine-tunes because --train_expert was set.")
     else:
-        logger.info("Skipping baseline 3_2_1b training")
+        # Baseline 3_2_1b
+        if train_3_2_1b:
+            tasks.append({
+                "model_to_tune": os.path.join(downloaded_models_dir, models_paths['3_2_1b']),
+                "adapter_name": adapters_config['finetuned_3_2_1b'],
+                "data": files_config['qa_train'],
+                "experiment_number": experiment,
+                "slg": False,
+                "train_limit": train_limit,
+            })
+        else:
+            logger.info("Skipping baseline 3_2_1b training")
 
-    # Baseline 3_1_8b
-    if train_3_1_8b:
-        tasks.append({
-            "model_to_tune": os.path.join(downloaded_models_dir, models_paths['3_1_8b']),
-            "adapter_name": adapters_config['finetuned_3_1_8b'],
-            "data": files_config['qa_train'],
-            "experiment_number": experiment,
-            "slg": False,
-            "train_limit": train_limit,
-        })
-    else:
-        logger.info("Skipping baseline 3_1_8b training")
+        # Baseline 3_1_8b
+        if train_3_1_8b:
+            tasks.append({
+                "model_to_tune": os.path.join(downloaded_models_dir, models_paths['3_1_8b']),
+                "adapter_name": adapters_config['finetuned_3_1_8b'],
+                "data": files_config['qa_train'],
+                "experiment_number": experiment,
+                "slg": False,
+                "train_limit": train_limit,
+            })
+        else:
+            logger.info("Skipping baseline 3_1_8b training")
 
     if not tasks:
         logger.info("No training tasks selected; nothing to do.")
