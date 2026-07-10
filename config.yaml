@@ -106,22 +106,24 @@ training:
   label_smoothing_factor: 0.0
   weight_decay: 0.001
   warmup_ratio: 0.05
-  # Per-device batch sizes are model-size-aware (see finetune.py). The 1B/3B
-  # jobs have enough headroom on an 80GB GPU for a larger effective batch even
-  # with all-linear LoRA. The 8B baseline stays conservative because activations,
-  # not LoRA weights, dominate memory at max_length=1024.
+  # Per-device batch sizes are model-size-aware (see finetune.py). Qwen-3B uses
+  # a smaller microbatch because all-linear r=64 LoRA plus 2048-token sequences
+  # is activation-heavy; gradient accumulation keeps the effective batch at 16.
   per_device_train_batch_size: 16      # 1B baseline/router
   per_device_eval_batch_size: 16       # 1B baseline/router
-  per_device_train_batch_size_3b: 16   # 3B experts (Qwen-3B)
-  per_device_eval_batch_size_3b: 16    # 3B experts
-  per_device_train_batch_size_8b: 4    # 8B baseline (fills 80GB sooner)
-  per_device_eval_batch_size_8b: 8     # 8B baseline
+  per_device_train_batch_size_3b: 4    # 3B experts (Qwen-3B)
+  per_device_eval_batch_size_3b: 4     # 3B experts
+  per_device_train_batch_size_8b: 2    # 8B baseline (fills memory sooner)
+  per_device_eval_batch_size_8b: 2     # 8B baseline
   gradient_accumulation_steps: 1
+  gradient_accumulation_steps_3b: 4
+  gradient_accumulation_steps_8b: 8
+  gradient_checkpointing: true
   max_grad_norm: 1
   logging_steps: 50
   save_total_limit: 4
   early_stopping_patience: 3
-  padding_side: "left"
+  padding_side: "right"
   completion_only_loss: true
   
   # LoRA parameters
@@ -134,7 +136,7 @@ training:
 # Data processing constants
 data:
   test_split_ratio: 0.20
-  max_length: 1024
+  max_length: 2048
   num_questions_per_text: 28
   prefix_length: 5
 

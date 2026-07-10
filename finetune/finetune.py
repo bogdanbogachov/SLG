@@ -87,6 +87,8 @@ def finetune(
             tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = str(training_config.get("padding_side", "left"))
     model.config.pad_token_id = tokenizer.pad_token_id
+    if bool(training_config.get("gradient_checkpointing", False)):
+        model.config.use_cache = False
     eos_token_id = tokenizer.eos_token_id
 
     def tokenize_function(example):
@@ -140,7 +142,12 @@ def finetune(
                 "%s: truncated %d/%d overlength example(s); final token forced to EOS.",
                 split_name, truncated_count, len(split_dataset)
             )
-    tokenized_dataset = tokenized_dataset.remove_columns(['question', 'answer', 'prompt', 'prompt_prefix', 'truncated'])
+    keep_columns = {'input_ids', 'attention_mask', 'labels'}
+    remove_columns = [
+        col for col in tokenized_dataset["train"].column_names
+        if col not in keep_columns
+    ]
+    tokenized_dataset = tokenized_dataset.remove_columns(remove_columns)
 
     # Get LoRA config from CONFIG
     lora_config = training_config['lora']
@@ -168,10 +175,14 @@ def finetune(
         suffix = ""
     per_device_train_batch_size = training_config[f'per_device_train_batch_size{suffix}']
     per_device_eval_batch_size = training_config[f'per_device_eval_batch_size{suffix}']
+    gradient_accumulation_steps = int(training_config.get(
+        f'gradient_accumulation_steps{suffix}',
+        training_config['gradient_accumulation_steps'],
+    ))
     logger.info(
         "Fine-tune batch sizes for %s: train=%d eval=%d (grad_accum=%d)",
         adapter_name, per_device_train_batch_size, per_device_eval_batch_size,
-        training_config['gradient_accumulation_steps'],
+        gradient_accumulation_steps,
     )
 
     # Create checkpoint directory
@@ -206,7 +217,9 @@ def finetune(
         max_grad_norm=training_config['max_grad_norm'],
         warmup_ratio=training_config['warmup_ratio'],
         lr_scheduler_type='cosine',
-        gradient_accumulation_steps=training_config['gradient_accumulation_steps'],
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        gradient_checkpointing=bool(training_config.get("gradient_checkpointing", False)),
+        gradient_checkpointing_kwargs={"use_reentrant": False},
         optim='adamw_torch',
         label_smoothing_factor=label_smoothing_factor,
         load_best_model_at_end=True,
@@ -221,7 +234,7 @@ def finetune(
         peft_config=peft_params,
         train_dataset=tokenized_dataset["train"],
         eval_dataset=tokenized_dataset["test"],
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=default_data_collator,
         callbacks=[EarlyStoppingCallback(early_stopping_patience=early_stopping_patience)]
     )

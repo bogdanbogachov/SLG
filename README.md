@@ -670,18 +670,20 @@ read-only cache with no write race (`_warm_expert_cache` builds it before dispat
 stopping and `load_best_model_at_end` decide the actual checkpoint. Loss is
 completion-only: prompt/question tokens and padding are masked to `-100`, and
 the trainer uses a collator that preserves those labels, so `eval_loss` measures
-answer loss rather than question+answer loss. Tokenization uses left padding to
-match batched decoder-only inference; overlength examples are truncated to
-`data.max_length` with the final token forced to the tokenizer EOS/turn-end
-token, so truncated answers still teach a stop.
+answer loss rather than question+answer loss. Training tokenization uses right
+padding to avoid TRL/fp16 left-padding issues; batched generation still forces
+left padding internally. Overlength examples are truncated to `data.max_length`
+with the final token forced to the tokenizer EOS/turn-end token, so truncated
+answers still teach a stop.
 
 **Training batch sizes** are model-size-aware: 1B jobs use
 `training.per_device_train_batch_size`, Qwen-3B expert jobs use the `_3b` keys,
 and the 8B baseline uses the smaller `_8b` keys because it fills memory sooner.
-The current defaults target an 80GB GPU. On a 40GB H100, use a smaller 3B batch such as
-`per_device_train_batch_size_3b: 8`, `per_device_eval_batch_size_3b: 8`, and
-`gradient_accumulation_steps: 2` to keep the effective batch size while reducing
-activation memory.
+The Qwen-3B defaults are `max_length: 2048`, microbatch 4, and
+`gradient_accumulation_steps_3b: 4`, with gradient checkpointing enabled; that
+keeps the effective batch at 16 while avoiding the 80GB OOM seen with
+microbatch 16. If a 40GB run still OOMs, reduce the 3B microbatch to 2 and set
+`gradient_accumulation_steps_3b: 8`.
 
 **Single-expert training** is available with `--train_expert=<expert_id>` where
 the id is the `question_answer/split_by_title/*.json` stem, e.g. `aviation` or
