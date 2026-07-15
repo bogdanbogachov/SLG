@@ -3,7 +3,7 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
@@ -23,4 +23,4 @@ source ENV/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --slg_embeddings=True --finetune=True --infer_slg=True
+python main.py --infer_slg=True

@@ -62,6 +62,13 @@ class SmallLanguageGraph:
         ]
 
         self.expert_nodes: List[str] = self._discover_expert_nodes()
+        # LangGraph reserves some characters (notably ":") in node names, while
+        # expert adapter directories are derived from titles and may contain them.
+        # Keep adapter/expert ids unchanged for paths and index lookup, but use
+        # deterministic safe ids inside the graph.
+        self.graph_node_by_expert: Dict[str, str] = {
+            expert: f"expert_{i:05d}" for i, expert in enumerate(self.expert_nodes)
+        }
 
         paths_cfg = CONFIG["paths"]
         jina_path = os.path.join(
@@ -314,7 +321,7 @@ class SmallLanguageGraph:
     def _route_to_main_expert(self, state: Dict[str, Any]) -> str:
         selected_expert = state.get("selected_expert")
         if selected_expert in set(self.expert_nodes):
-            return selected_expert
+            return self.graph_node_by_expert[selected_expert]
         return END
 
     def _route_from_confidence_router(self, state: Dict[str, Any]) -> str:
@@ -322,7 +329,7 @@ class SmallLanguageGraph:
         if pending:
             next_expert = pending.pop(0)
             state["pending_neighbors"] = pending
-            return next_expert
+            return self.graph_node_by_expert[next_expert]
         return "aggregator"
 
     def _route_after_expert(self, state: Dict[str, Any]) -> str:
@@ -333,7 +340,7 @@ class SmallLanguageGraph:
         if pending:
             next_expert = pending.pop(0)
             state["pending_neighbors"] = pending
-            return next_expert
+            return self.graph_node_by_expert[next_expert]
         return "aggregator"
 
     def _aggregator_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
@@ -360,7 +367,7 @@ class SmallLanguageGraph:
 
         for expert in self.expert_nodes:
             graph_builder.add_node(
-                expert,
+                self.graph_node_by_expert[expert],
                 functools.partial(
                     self._expert_node_builder,
                     model=expert,
@@ -371,7 +378,10 @@ class SmallLanguageGraph:
         graph_builder.add_conditional_edges("orchestrator", self._route_to_main_expert)
 
         for expert in self.expert_nodes:
-            graph_builder.add_conditional_edges(expert, self._route_after_expert)
+            graph_builder.add_conditional_edges(
+                self.graph_node_by_expert[expert],
+                self._route_after_expert,
+            )
 
         graph_builder.add_conditional_edges(
             "confidence_router", self._route_from_confidence_router
