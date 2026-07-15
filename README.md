@@ -59,6 +59,47 @@ python main.py --evaluate
 python main.py --evaluate --training_metrics  # Include training metrics
 ```
 
+## CQADupStack Clustered QA Dataset
+
+The clustered CQADupStack QA dataset is stored at:
+
+```text
+question_answer/cqadupstack_clustered/qa.json
+```
+
+It was created by combining BEIR CQADupStack with StackExchange answer dumps:
+
+1. Download BEIR CQADupStack, which provides question text and semantically similar question links in `qrels/test.tsv`.
+2. Build semantically similar question clusters from those links.
+3. Download the matching StackExchange `Posts.xml` dump for each CQADupStack domain.
+4. For each cluster, select one canonical answer from StackExchange, preferring the accepted answer and falling back to the highest-scored answer.
+5. Write one QA row per question variant, with all questions in the cluster sharing the selected answer.
+
+Each row follows the local QA schema:
+
+```json
+{
+  "chapter": "CQADupStack - physics",
+  "title": "cluster/source title",
+  "question": "semantically similar question variant",
+  "answer": "selected StackExchange answer"
+}
+```
+
+Current `qa.json` dataset size:
+
+```text
+3,435 QA rows
+72 answer/question clusters
+at least 20 questions per answer
+```
+
+The broader version with at least 4 questions per answer is preserved at:
+
+```text
+question_answer/cqadupstack_clustered/qa_min4_full.json
+```
+
 ## Project Structure
 
 ```
