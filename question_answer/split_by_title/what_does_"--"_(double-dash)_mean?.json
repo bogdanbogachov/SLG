@@ -1,0 +1,98 @@
+[
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "What does \"--\" mean in Linux/Unix command line?\n\n> **Possible Duplicate:** > What does “--” (double-dash) mean? `git diff [options] [<commit>] [--] [<path>…]` In here, how should I understand what [--] means? And when should I use it.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "How do I delete a unfortunately named folder?\n\nIn an unfortunate series of events, I happened to create a folder named `\\--bindir=`. Thing is, I cannot `cd` to him because when I try to `cd` I get this message: bash: cd: --: invalid option cd: usage: cd [-L][-P [-e]]] [dir] I also get similar messages for other binaries I am executing with that as a parameter, e.g `rm -rf`, `rmdir`, `ls` etc. I know this sounds funny, and like those epic fail stories, but I would be glad if you could propose a fix, because I'm all out of them. As a post of proof that I am not trolling or anything, here is a picture of that epic fail: ![enter image description here](http://i.stack.imgur.com/F59yH.png)",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "zip a directory that name start with `-`\n\nHow can I zip a directory like `-foo`? `$ zip \"-foo\" \"-foo\"` shows only help page. I think `-foo` is recognized as a options, but I don't know how to solve it.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "delete file with name --help.tgz\n\nI have file with name `\\--help.tgz`. I want to delete but don't know how. I tried `rm \"--help.tgz\"`, `rm \\\\-\\\\-help.tgz` and it did not work. How can I delete a file with such name?",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "Accidently created a file called -X, how can I delete it?\n\n> **Possible Duplicate:** > How do I delete a file whose name begins with \"-\" (hyphen a.k.a. dash or > minus)? Like an idiot, I ran this command: tar -cf -X awstats-icon icon tarfile.tar . I was trying to use the -X switch to exclude awstats-icon and icon directories. Now I have a large file named -X and I cannot seem to delete it. I tried using: rm -X rm `-X` rm '-X' However none of these have worked. Any suggestions?",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "How to remove/rename file which contains special character eg. \"-x\" using command line\n\n> **Possible Duplicate:** > What does “--” (double-dash) mean? Can anybody explain me below things i have file named \"-xyz\". if i try to remove or move that file using command line , it's unable to move. i tried below things : [rahul@srv100 ~]# ls -lrt -- \"-xyz\" -rw-r--r-- 1 rahul rahul 0 Dec 19 08:06 -xyz [rahul@srv100 ~]# mv \"-xyz\" xyz mv: invalid option -- x Try `mv --help' for more information. [rahul@srv100 ~]# mv \\-xyz xyz mv: invalid option -- x Try `mv --help' for more information. [rahul@srv100 ~]# mv -\\xyz xyz mv: invalid option -- x Try `mv --help' for more information. [rahul@srv100 ~]# mv '-xyz' xyz mv: invalid option -- x Try `mv --help' for more information. finally i rename that file using winscp, and after trying multiple ways i got one option and it's working. mv -- '-xyz' xyz Wish the help of \"--\", i created file/directory as below mkdir -- --abc touch -- -xyz So my Question is what is this \"--\" in bash ? Please explain.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "deal with file names with \"-\" as beginning on linux\n\n> **Possible Duplicate:** > How do I delete a file whose name begins with “-” (hyphen a.k.a. dash or > minus)? I'm using linux I have some files with file names like -0fdlfld -xfifd I want to delete them using shell \"rm\" but it doesn't work are there anyways to deal with such file names? thanks!",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "Why cat, grep and other commands can't understand files starting with minus sign?\n\nIf I have a file which name starting with single or several minus sign, for example `\\--1` it can't be used as a parameter of many commands. Even if I run cat --1 instead of file content I get unrecognised option error message: cat: unrecognized option '--1' Same effect appears when I type cat \"--1\" cat '--1' cat \\-\\-1 nothing works. Files starting with '-' is not illegal in file system, but it is quite hard to work with them in cli and scripts. OK, in case of `cat` or `grep` I can use cat <--1 and this will work, but rm --1 won't work either and it is quite hard to substitute this command with something else. Very uncomfortable after all. Is there any universal workaround different from not using such file names? BTW, if name file is single `-` and all most of commands will understand it as `stdin`, wouldn't they? And it would be hard not to use such file names since I can't rename them all in script using `mv` command either.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "Why do many CLI apps take a single “--” argument?\n\n> **Possible Duplicate:** > What does “--” (double-dash) mean? There are many command line tools that take a single \"--\" argument. For example: gem install mysql -- —–with-mysql-config=/usr/local/mysql/bin/mysql_config It seems to be used as some kind of separator. Does it have a special meaning? Is it a commonly used idiom? If so, what's its purpose? PS: I'm not talking about arguments of the form `\\--argument`, I'm talking about when you have a `\\--` followed by white characters and other arguments.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "How can I remove a file called \"--help\" with bash command line?\n\nI've somehow managed to create a file with the name \"--help\". If I try to remove the file using \"rm\" funny stuff happens. Please help here's a printout of the dir listing: [pavel@localhost test]$ ls -la total 3640 drwxrwxr-x. 5 pavel pavel 4096 Jun 19 18:33 . drwxrwxr-x. 6 pavel pavel 4096 Jun 9 12:23 .. -rw-rw-r--. 1 pavel pavel 1070592 Jun 12 09:40 --help",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "Proper escape sequence for a non-standard file name\n\nI'm trying to remove a file I made by mistake using `\\--exclude` with `tar`. I ended up making a `tar` file named `\\--exclude=*.tar` Now I want to delete it but I'd like to rename it first. How do I escape it correctly?",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "Handling an option-like filename in the shell\n\n> **Possible Duplicate:** > How do I delete a file whose name begins with \"--\"? Due to mismatched switches when I was trying to run a command, I have a log file named `-w` in a directory. I want to see its contents with `cat` (or `less`) and then delete it. I've tried escaping it with backslashes, single-quotes, double-quotes, parentheses, and backticks, but `cat` always complains that `w` is an unknown option. How can I properly reference this file?",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "What does \"--\" (double-dash) mean? (also known as \"bare double dash\")\n\nI have seen `\\--` used in the `compgen` command. For example: compgen -W \"foo bar baz\" -- b What is the meaning of the `\\--`.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "What does - mean with association to Linux files and directories\n\n> **Possible Duplicate:** > What does “--” (double-dash) mean? What does '--' (two dashes) mean with association to Linux files and directories. I've found something else but not too sure if it is correct and relates to the same thing. \"Another convention is to use '--' (two dashes) to indicate the end of flags, and the beginning of file names.\"",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "Single dashes `-` for single-character options, but double dashes `--` for words?\n\nWhere did the convention of using single dashes for letters and doubles dashes for words come from and why is continued to be used? For example if I type in `ls --help`, you see: -a, --all do not ignore entries starting with . -A, --almost-all do not list implied . and .. --author with -l, print the author of each file -b, --escape print octal escapes for nongraphic characters --block-size=SIZE use SIZE-byte blocks -B, --ignore-backups do not list implied entries ending with ~ ... I tried googling `\\- and -- convention` even with quotes with little success.",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    },
+    {
+        "chapter": "CQADupStack - unix",
+        "title": "What does \"--\" (double-dash) mean?",
+        "question": "How do I delete a file whose name begins with \"-\" (hyphen a.k.a. dash or minus)?\n\nHow do you remove a file whose filename begins with a dash (hyphen or minus) `-`? I'm ssh'd into a remote OSX server and I have this file in my directory: tohru:~ $ ls -l total 8 -rw-r--r-- 1 me staff 1352 Aug 18 14:33 --help ... How in the world can I delete `\\--help` from a CLI? This issue is something that I come across in different forms on occasion, these files are easy to create, but hard to get rid of. I have tried using backslash rm \\-\\-help I have tried quotes rm \"--help\" How do I prevent the minus (dash or hyphen) character to be interpreted as an option?",
+        "answer": "More precisely, a double dash (--\n) is used in most Bash built-in commands and many other commands to signify the end of command options, after which only positional arguments are accepted.\n\nExample use: Let's say you want to grep a file for the string -v\n. Normally -v\nwill be considered the option to reverse the matching meaning (only show lines that do not match), but with --\nyou can grep for the string -v\nlike this:\n\ngrep -- -v file"
+    }
+]

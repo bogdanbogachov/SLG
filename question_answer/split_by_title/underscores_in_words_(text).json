@@ -1,0 +1,98 @@
+[
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "Typing \"&\" in tables\n\n> **Possible Duplicate:** > Escape character in LaTeX > How to type & in LaTeX? \\begin{tabular}{ l | c || r | } A&B & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\\\ \\end{tabular} How would I type `&` in LaTeX? Because I want for example, `A&B` to be in one box, but I cant seem to figure out how.",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "LaTeX wont compile because of use of _ in text\n\nLaTeX wont let me use _ in my text, it keeps trying to compile it as math and therefor wont compile my pdf. Anyone know how i can make it not do that? Im using it in the following: \\textit{item_name} \\textit{current_item.name} \\textit{_qty} \\textit{id='small_qty'}",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "How to type & in LaTeX?\n\n> **Possible Duplicate:** > Escape character in LaTeX I'm trying to type the word & but I encounter with error : > misplaced alignment tab character & And when I put it into verbatim it will show Q&A in a seperated line! So how should I type & in LaTeX?",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "TEXMAKER when compiling gives me error misplaced alignment\n\n! Misplaced alignment tab character &. <argument> ...d/record.url?eid=2-s2.0-78751524824& partnerID=40&md5=4144bdb06... l.76 ...D=40&md5=4144bdb064f723bb3e27d5ff60673d79} I can't figure out why you would want to use a tab mark",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "textsuperscript and hash symbol\n\nHow can I get a text superscript of the hash (#) symbol in Latex to work? I tried `\\textsuperscript{\\\\#}` to no avail. I should have been more specific in my question. I am using `\\usepackage{fontspec}` and `\\usepackage{xltxtra}`, with `\\setmainfont{Calibri}`. While Latex/Xelatex prints the #, it does not print it as superscript. When I use fonts Arial, Computer Modern, or Palatino, Latex correctly prints the # as superscript. \\documentclass[10pt, a4paper]{article} \\usepackage{fontspec} \\usepackage{xltxtra} \\usepackage{microtype} \\defaultfontfeatures{Mapping=tex-text,Ligatures=TeX} \\setmainfont{Calibri} \\begin{document} \\textsuperscript{\\#}example \\end{document}",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "Underscore character (_) that's part of a word\n\n> **Possible Duplicate:** > Escape character in LaTeX > Underscore in words I want to write a name like **LKU_IF** which contains an underline. When I write it in Latex it doesn't show the result properly. Does anybody know what should I do?",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "How can I print escape characters in LaTeX?\n\nHow can I print `\\n`, `\\t`, `\\v` and so on in LaTeX document? I mean I want in my output two chars: `\\n` not a new line. I tried: 1. `\\\\\\n` 2. `\\verb!\\\\\\n!` With no effects...",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "How to type this in text?\n\nHow to type the ASCII characters, like ! \" # $ % & ' ( ) * + , - . / :",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "Writing text in math mode\n\nI was writing an IEEE paper.I wanted to insert some texts like **IMAGE_NEW** and **IMAGE_OLD** but when I am writing it is showing me some error.How to solve this issue.",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "How to solve \"Missing $ inserted\" error?\n\nHere is my LaTeX code block.. It's combination of formula and sentences. If I run it, an error always occurs: \"Missing $ inserted\" in that part (code block part). \\begin{itemize} \\item \\begin{singlespace} \\begin{verbatim} se=strel('disk',9); citra_dilasi=imdilate(cropped_img,se); \\end{verbatim} \\end{singlespace} The morphological dilation is performed to \"\\emph{cropped_img}\" with the SE (structuring element), where the SE is a disk-shaped structuring element and the radius is 9. \\emph{cropped_img} is the image that has crop horizontally. The error is like this. ![Error Messege](http://i.stack.imgur.com/qyLTm.png) How to solve it??",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "When should one use \\verb and when \\texttt\n\nSometimes people here use `\\verb!A SHORT COMMAND!` and sometimes `\\textt{A SHORT COMMAND}`. I'm unsure when to use which. Are there any guidelines or arguments for `\\verbatim` vs. `\\texttt`?",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "Underscores in words (text)\n\nHow can I produce the text `Word_one_two` in LaTeX? I tried: Samp\\_Dist\\_Corr But, it doesn't quite look right. Also, I want it in the typewriter font, so actually, I'm doing: \\texttt{Samp\\_Dist\\_Corr} I find it looks a bit like the underscore is merging in to the bottom of the \"D\", but maybe it's just because of the typewriter D?",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "Ignore math symbols (want underscore in regular text)\n\nI want to include the following expression without any changes in my LaTeX document: RES_0.5_SE_5 If I just type like that, LaTeX wants it to be math mode because of the underscores. If I use \\verb|RES_0.5_SE_5| the text has a different font. Is there a command to just use ignore math symbols? Thanks!",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "How to write \"@(x)x.^2\" in latex?\n\nI tried `\\texttt{@(x)x.^2}` or directly `@(x)x.^2` but texmaker gives `Missing $ inserted`. I gues it is because `x.^2` which is assumed to be math syntax. Can you help?",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "Including brackets inside text function\n\nI am having a programming function with name `WorkFunction_()`. I am trying to highlight this function using `\\texttt{}`, something like `\\texttt{WorkFunction_()}`. However this ends in error. Could anyone suggest an alternate for this?",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    },
+    {
+        "chapter": "CQADupStack - tex",
+        "title": "Underscores in words (text)",
+        "question": "When I use the elsarticle, I cannot compile through only when adding \"\\ead\"\n\n%% This is file `elsarticle-template-1-num.tex', %% %% Copyright 2009 Elsevier Ltd \\documentclass[preprint,12pt]{elsarticle} \\usepackage{amssymb} \\journal{Journal} \\begin{document} \\begin{frontmatter} \\title{PAS} \\author[a]{A\\fnref{fn1}} \\ead{A@163.com} %%%%%%%%%%%%%%%%%%%%%%%%% \\author[b]{B} \\author[a]{C\\corref{cor1}} \\cortext[cor1]{Corresponding author} \\fntext[fn1]{das} \\address[a]{UA} \\address[b]{UB} \\begin{abstract} %% Text of abstract \\end{abstract} \\begin{keyword} \\end{keyword} \\end{frontmatter} \\section{Introduction} \\label{} \\bibliographystyle{model1-num-names} \\bibliography{<your-bib-database>} \\end{document}",
+        "answer": "You may prefer the character from the tt font:\n\n\\documentclass{article}\n\n\\begin{document}\n\n\\texttt{Samp\\_Dist\\_Corr}\n\n\\verb|Samp_Dist_Corr|\n\n\\texttt{Samp\\char`_Dist\\char`_Corr}\n\n\\end{document}\n\nOr probably better add \\usepackage[T1]{fontenc}\nthen all the above forms will use the character from the font."
+    }
+]

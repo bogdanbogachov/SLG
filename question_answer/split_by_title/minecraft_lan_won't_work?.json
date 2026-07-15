@@ -1,0 +1,98 @@
+[
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "help with minecraft lan world\n\nWhy cant my friend join my lan world i go to the menu in minecraft click lan then set it up then in the chat screen comes up with the host name some numbers example (52642) my friend types that in to join but it tells him the Connection Failed can someone help me and answer this question how does he join? PS we are both running 1.7.4",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Can't connect to LAN server on Minecraft\n\nMe and my brother have been tying to step up a LAN to play minecraft. I have a mac running Mac OS X and he is using a pc running window's 7. We have tried with him creating the LAN world and when I try to automatically it gives a message that it has 'time out' and when I do Direct connect it fails and gives a message 'connection refused'. When I host the game and he does direct connected it gives the same message. We are both running the same version. Anyone have any ideas ???",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "My brother cannot connect to my Minecraft LAN world\n\nI have tried many times to play with my brother. We are on the same Wifi, with different accounts. I start up Minecraft 1.7.9, create a new Survival world, click Esc->Open To Lan. It tells me the port (which seems to be a random number) in the chat. My brother tries to connect to the world. On the Multiplayer screen it searches for the LAN world forever and it never shows up. Is it supposed to only have the port or it also need the IP like 192.168:{port} but for me I dont even have the IP. **Notes:** * We both use Windows 8 * Same Wifi * Different minecraft account * Same House * We try switching which side hosts a Lan server, and we get a different port",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Why can't I connect to a minecraft LAN server?\n\n> **Possible Duplicate:** > Why isn't my Minecraft LAN server working? My sister and I are trying to run a Minecraft server for us to play on together. We live in the same house, using the same internet connection and our computers are near each other but we are using different user names. When I try to connect I get the following error: **Failed to connect to the server** Connection timed out: connect Does anyone know how to fix this?",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "My brother and I are unable to connect to minecraft LAN servers, any way we can fix this?\n\n> **Possible Duplicate:** > Why isn't my Minecraft LAN server working? When we click 'Open To LAN' it gives us an ip address but when we use that to Direct Connect it doesn't work. We've also let the \"Searching for LAN worlds\" sit there for an hour and nothing happened. I'm not the best with computers but I do know a decent amount of stuff. Our internet is also NOT the best(ping, upload speeds, etc.) Is there anything we can do to fix it? Btw for moderators and such, I'm only posting a new questions since I: Couldn't comment on other question, and I tried many things that other people answered on similar questions.",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Minecraft LAN won't work?\n\nOk, I have no trouble setting up my server, or connecting to said server with my personal machine, but when my friend attempts to join we get this message: Internal client error: java.net.UnknownHostException: session.minecraft.net A quick google search seems to suggest that this is because his version is different than mine, except he's running MY FILES. (I copied my .minecraft folder and transferred them to his laptop, then we had him login once using his credentials to finalize the transfer)",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Why can't I connect to a modded LAN server?\n\nI am trying to join my little brothers modded LAN world I have all the mods and all but one problem is I can't connect. I did the whole Windows+R thing and typed cmd, checked the internet IP, tried connecting and all but for some reason it still won't work.",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Minecraft LAN won't work\n\nI've been going around the site looking for a way to fix my LAN but none of the suggestions I've found seem to be relevant to my problem. I got a new laptop a month ago and one of the first things I did with it was host a LAN game to play with my friends, which worked great. But a few days ago I tried it again, and when I set up a game, neither of my friends could access it. When one of them hosted a game, they were able to play with each other but I couldn't connect. Before I get the same suggestions that all the other threads like this produced, we were all on the same network, we were all using seperate legitimate accounts, we were all on the same version of minecraft (1.7.4) and I tried it again after turning off my firewall. I hadn't even played minecraft since the last time we used LAN, although I did download the multiplayer version to set up a sever on Hamachi. Other then this, I haven't done anything that could have effected the files, and am very worried that LAN has stopped working. Anybody help me out?",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Why isn't my Minecraft LAN server working? Is it because the zip codes are different?\n\n> **Possible Duplicate:** > Why isn't my Minecraft LAN server working? The thing is that i live in a town that has three different zip codes. I'm not sure if zip codes are related to LAN servers or anything but so far we can't get together because he lives on one side of town and i'm on the other. Even if it isn't zip codes that restrict the server could you tell me what does. Please help!!!!!",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "I can't get my sister on my singleplayer\n\nSometimes it lets her, sometimes it doesnt. I always open to LAN, check both internet connections, and always try twice by reopening Minecraft. Why cant she get on my singleplayer? We are both using the same internet connection and since she is my sister, we can be sitting right next to each other. My singleplayer still wont show up in her multiplayer. Again, some days it works and she can come on, other days it doesnt. Why? How can I fix this?",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "why is my minecraft open to LAN not working 1.5.2\n\nWhen my brother and I try to play together on minecraft LAN it does not work. I have allowed all access on firewall and the direct connect trick does not work. I am on Windows 8.",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Cant connect to LAN world\n\nMy wife can connect to my LAN world, but i cant connect to hers, it shows up in my multiplayer select but gets locked up and times out. Im all out of ideas, someone please help.",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Why isn't my Minecraft LAN server working?\n\nMy LAN server won't let my cousin join me or me join my cousin. It won't show up on the multiplayer screen - it keeps saying \"scanning for LAN servers\" but it never finds it. I am at his house and we use different computers but it won't connect. How can I fix this?",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Minecraft can't connect to Lan: Operation Timed Out\n\nMe and my friend are trying to connect via a LAN world on Feed the beasts Yogscraft, and I'm pretty sure it has something to do with him being on a mac. I don't really want to start up a bukkit server or whatever server Yogscraft uses, and he is using a mac that he doesn't know the password to, so I was initially going to check the firewall to see if Minecraft was allowed through. Is there any other suggestions? Another thing to note is that I am PC and I am unable to connect to his server when he starts it on mac (It simply doesn't show)",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "My Friend Can't Join My Lan And It Wont Show Up\n\nHelp My cousin Both are on the same LAN connection but the stupid thing wont show up it worked realer but now it doesn't wanna work???? Why some one please help me???",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    },
+    {
+        "chapter": "CQADupStack - gaming",
+        "title": "Minecraft LAN won't work?",
+        "question": "Issues with LAN Minecraft\n\nSo, I've been trying to set up a game over LAN with my brother. We're both running our own accounts, both on the same network, using Update 1.6.4. However, I'm running on Linux Mint while he's running on Windows 7. When he sets up a LAN game, I can see it in the multiplayer menu but when I try to connect it gives me the error: `io.netty.channel.connecttimeoutexception connection timed out: ` This is the only text on the screen, besides the cancel button. When I try to set up a LAN game, I click `Open to LAN` but it doesn't show up on his list of servers. Any help would be much appreciated.",
+        "answer": "The problem is that either the server cannot connect to Minecraft.net or that the person getting that error doesn't have a legitimate Minecraft account and so the server is refusing access.\n\nThe way to solve this is either to get all players a premium Minecraft account, or to change online-mode\nto false to stop it from checking the validity of the other account."
+    }
+]
