@@ -86,21 +86,22 @@ SLG_EMBEDDING_ARTIFACT_NAMES = (
 )
 
 
-def get_slg_index_dir(experiments_dir: str = None) -> str:
+def get_slg_index_dir(experiment_name: str, experiments_dir: str = None) -> str:
     """
-    Return the experiment-agnostic directory for SLG index artifacts
-    (``experiments/<slg_index>/``), containing chunk_embeddings_raw.npy, expert_ids.json, index.json.
+    Return the per-experiment directory for SLG index artifacts
+    (``experiments/<experiment>/<slg_index>/``), containing chunk_embeddings_raw.npy,
+    expert_ids.json, and index.json.
     """
     if experiments_dir is None:
         paths_config = CONFIG["paths"]
         experiments_dir = paths_config["experiments"]
     slg_index_name = CONFIG["paths"].get("slg_index", "slg_index")
-    return os.path.join(experiments_dir, slg_index_name)
+    return os.path.join(experiments_dir, experiment_name, slg_index_name)
 
 
 def validate_slg_embedding_artifacts(index_dir: str) -> None:
     """
-    Ensure the shared SLG index step has produced required files under ``index_dir``.
+    Ensure the experiment SLG index step has produced required files under ``index_dir``.
 
     Raises:
         FileNotFoundError: If the directory is missing or any artifact file is absent.
@@ -110,7 +111,8 @@ def validate_slg_embedding_artifacts(index_dir: str) -> None:
             f"SLG index directory does not exist: {index_dir}. "
             "Run the SLG embeddings step first "
             "(e.g. commands.slg_embeddings.run_slg_embeddings). It creates this folder under "
-            "experiments/<slg_index>/ and writes chunk_embeddings_raw.npy, expert_ids.json, and index.json."
+            "experiments/<experiment>/<slg_index>/ and writes chunk_embeddings_raw.npy, "
+            "expert_ids.json, and index.json."
         )
     missing = [
         name
@@ -123,7 +125,7 @@ def validate_slg_embedding_artifacts(index_dir: str) -> None:
         raise FileNotFoundError(
             f"Missing SLG index file(s) in {index_dir}: {listed}. "
             f"Expected all of: {expected}. "
-            "Run commands.slg_embeddings.run_slg_embeddings before inference."
+            "Run commands.slg_embeddings.run_slg_embeddings for this experiment before inference."
         )
 
 

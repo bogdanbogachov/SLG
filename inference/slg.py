@@ -40,7 +40,7 @@ class SmallLanguageGraph:
         paths_config = CONFIG["paths"]
         self.experiments_dir = paths_config["experiments"]
         self.slg_path = get_slg_path(self.experts_location, self.experiments_dir)
-        self.index_dir = get_slg_index_dir(self.experiments_dir)
+        self.index_dir = get_slg_index_dir(self.experts_location, self.experiments_dir)
         validate_slg_embedding_artifacts(self.index_dir)
         validate_dir_exists(
             self.slg_path,
@@ -91,7 +91,8 @@ class SmallLanguageGraph:
         if not os.path.isfile(self.index_path):
             raise FileNotFoundError(
                 f"SLG similarity index not found: {self.index_path}. "
-                "Run commands.slg_embeddings.run_slg_embeddings (writes under experiments/<slg_index>/)."
+                "Run commands.slg_embeddings.run_slg_embeddings "
+                "(writes under experiments/<experiment>/<slg_index>/)."
             )
 
         with open(self.index_path, "r", encoding="utf-8") as f:

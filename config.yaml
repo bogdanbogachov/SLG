@@ -44,7 +44,7 @@ rag_prompt: >
 # Paths
 paths:
   experiments: 'experiments'
-  # Shared SLG routing index (Jina embeddings + index.json); not per-experiment
+  # Per-experiment SLG routing index folder name (Jina embeddings + index.json)
   slg_index: 'slg_index'
   answers: 'answers'
   question_answer: 'question_answer'
@@ -147,5 +147,5 @@ adapters:
 # Controls which models/components to train
 training_components:
   train_slg_system: true            # Train SLG experts (routing: Jina + index.json)
-  train_3_2_1b: true               # Train baseline 3_2_1b model
-  train_3_1_8b: true                 # Train baseline 3_1_8b model
+  train_3_2_1b: false               # Train baseline 3_2_1b model
+  train_3_1_8b: false                 # Train baseline 3_1_8b model

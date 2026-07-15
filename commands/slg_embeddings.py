@@ -123,8 +123,8 @@ def save_slg_embedding_artifacts(
     max_neighbors = int(slg_formation["k_neighbours"])
     threshold = float(slg_formation.get("neighbor_similarity_threshold", 0.95))
 
-    # Shared index directory (experiment-agnostic); expert adapters stay under experiments/<exp>/<slg_dir>/
-    index_dir = get_slg_index_dir(experiments_dir)
+    # Per-experiment index directory; expert adapters stay under experiments/<exp>/<slg_dir>/
+    index_dir = get_slg_index_dir(experiment, experiments_dir)
     experts_slg_dir = os.path.join(experiments_dir, experiment, slg_formation["slg_dir"])
 
     logger.info(
@@ -182,7 +182,7 @@ def save_slg_embedding_artifacts(
 def run_slg_embeddings(experiment: str) -> None:
     paths_config = CONFIG["paths"]
     experiments_dir = paths_config["experiments"]
-    index_dir = get_slg_index_dir(experiments_dir)
+    index_dir = get_slg_index_dir(experiment, experiments_dir)
     index_path = os.path.join(index_dir, "index.json")
     if os.path.isfile(index_path):
         logger.info(
