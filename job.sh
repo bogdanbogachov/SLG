@@ -23,4 +23,4 @@ source ENV/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --slg_embeddings --finetune=True --infer_slg=True
+python main.py --slg_embeddings=True --finetune=True --infer_slg=True
