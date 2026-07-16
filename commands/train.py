@@ -5,6 +5,7 @@ from finetune.finetune import finetune
 from config import CONFIG
 from logging_config import logger
 from commands.slg_embeddings import run_slg_embeddings
+from utils.path_utils import slg_expert_id_from_filename
 
 
 def run_training(experiment: str):
@@ -41,7 +42,7 @@ def run_training(experiment: str):
 
         for file in split_by_title_files:
             logger.info(f"Training SLG expert for: {file}")
-            adapter_name = os.path.splitext(file)[0]
+            adapter_name = slg_expert_id_from_filename(file)
             data_path = os.path.join(split_by_title_dir, file)
 
             finetune(

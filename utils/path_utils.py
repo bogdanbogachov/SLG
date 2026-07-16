@@ -1,5 +1,7 @@
 """Utility functions for path management."""
+import hashlib
 import os
+import re
 from pathlib import Path
 from typing import Optional
 from exceptions import FileNotFoundError
@@ -76,6 +78,32 @@ def get_experiment_path(experiment_name: str, base_dir: str) -> str:
         Full path to the experiment directory
     """
     return os.path.join(base_dir, experiment_name)
+
+
+WINDOWS_FORBIDDEN_FILENAME_CHARS = r'<>:"/\|?*'
+
+
+def safe_path_component(name: str, max_length: int = 180) -> str:
+    """Return a deterministic Windows-safe path component."""
+    original = str(name)
+    safe = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", original)
+    safe = re.sub(r"_+", "_", safe).strip(" ._")
+    if not safe:
+        safe = "untitled"
+
+    changed = safe != original
+    if changed or len(safe) > max_length:
+        digest = hashlib.sha1(original.encode("utf-8")).hexdigest()[:8]
+        room = max_length - len(digest) - 1
+        safe = f"{safe[:room].rstrip(' ._')}_{digest}"
+
+    return safe
+
+
+def slg_expert_id_from_filename(filename: str) -> str:
+    """Map a split_by_title JSON filename to the matching SLG adapter directory."""
+    stem = os.path.splitext(os.path.basename(filename))[0]
+    return safe_path_component(stem)
 
 
 # Written by commands.slg_embeddings.save_slg_embedding_artifacts; required before SLG inference.

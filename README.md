@@ -53,6 +53,9 @@ python main.py --infer_baseline       # OpenAI GPT-4.1
 python main.py --infer_rag            # RAG with GPT-4.1-nano
 python main.py --infer_finetuned      # Fine-tuned LLaMA models
 python main.py --infer_slg            # Small Language Graph
+python main.py --interactive_slg True # Interactive Small Language Graph REPL
+python -m interactive_slg             # Same REPL as a package entry point
+python -m interactive_slg --question "How should I classify wing damage?"
 
 # 6. Evaluate results
 python main.py --evaluate

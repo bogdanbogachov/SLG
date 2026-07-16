@@ -60,6 +60,7 @@ class SmallLanguageGraph:
         self.slg_embeddings_by_expert: Dict[str, np.ndarray] = self.slg_index[
             "embeddings_by_expert"
         ]
+        self._compiled_graph = None
 
         self.expert_nodes: List[str] = self._discover_expert_nodes()
         # LangGraph reserves some characters (notably ":") in node names, while
@@ -390,6 +391,39 @@ class SmallLanguageGraph:
 
         return graph_builder.compile()
 
+    def _get_graph(self):
+        if self._compiled_graph is None:
+            self._compiled_graph = self._build_graph()
+        return self._compiled_graph
+
+    @staticmethod
+    def _initial_state(question: str) -> Dict[str, Any]:
+        return {
+            "question": question,
+            "phase": "main",
+            "selected_expert": None,
+            "visited_experts": [],
+            "answers": [],
+            "pending_neighbors": [],
+            "main_confidence": None,
+            "last_expert": None,
+        }
+
+    def ask_question(self, question: str) -> Dict[str, Any]:
+        """Run SLG for one question and return the final answer plus routing details."""
+        question = question.strip()
+        if not question:
+            raise ValueError("Question cannot be empty.")
+
+        result = self._get_graph().invoke(self._initial_state(question))
+        return {
+            "question": question,
+            "answer": result.get("final_answer"),
+            "selected_expert": result.get("selected_expert"),
+            "visited_experts": result.get("visited_experts", []),
+            "candidate_answers": result.get("answers", []),
+        }
+
     def ask_slg(self, file: str) -> None:
         """Run the SLG graph for all questions in a file."""
         from utils.path_utils import validate_file_exists
@@ -415,21 +449,12 @@ class SmallLanguageGraph:
             start_index = 0
             logger.info("Starting fresh SLG inference run.")
 
-        graph = self._build_graph()
+        graph = self._get_graph()
 
         for i, item in enumerate(data[start_index:], start=start_index):
             logger.info(f"Answering {i + 1}/{len(data)} questions.")
             logger.info(f"Inference of the title: {item['title']}")
-            initial_state: Dict[str, Any] = {
-                "question": item["question"],
-                "phase": "main",
-                "selected_expert": None,
-                "visited_experts": [],
-                "answers": [],
-                "pending_neighbors": [],
-                "main_confidence": None,
-                "last_expert": None,
-            }
+            initial_state = self._initial_state(item["question"])
             result = graph.invoke(initial_state)
 
             answers_list.append(

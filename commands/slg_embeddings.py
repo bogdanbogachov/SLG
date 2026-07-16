@@ -7,14 +7,7 @@ from sentence_transformers import SentenceTransformer
 
 from config import CONFIG
 from logging_config import logger
-from utils.path_utils import ensure_dir, get_slg_index_dir
-
-
-def _slg_expert_dir_name(adapter_stem: str) -> str:
-    """Directory name under experiments/<exp>/<slg_dir>; matches finetuned_<expert_stem> on disk."""
-    if adapter_stem.startswith("finetuned_"):
-        return adapter_stem
-    return f"finetuned_{adapter_stem}"
+from utils.path_utils import ensure_dir, get_slg_index_dir, slg_expert_id_from_filename
 
 
 def compute_chunk_embedding(
@@ -87,7 +80,7 @@ def collect_slg_chunk_embeddings() -> Tuple[List[str], List[np.ndarray]]:
     # Train SLG experts per title
     for file in split_by_title_files:
         logger.info(f"Training SLG expert for: {file}")
-        adapter_name = os.path.splitext(file)[0]
+        adapter_name = slg_expert_id_from_filename(file)
         data_path = os.path.join(split_by_title_dir, file)
 
         # Compute a fixed representation for this training chunk.

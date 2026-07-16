@@ -19,6 +19,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("--infer_finetuned", type=bool, default=False)
     parser.add_argument("--infer_slg", type=bool, default=False)
+    parser.add_argument("--interactive_slg", type=bool, default=False)
+    parser.add_argument("--show_routing", type=bool, default=False)
 
     parser.add_argument("--infer_baseline", type=bool, default=False)
     parser.add_argument("--infer_rag", type=bool, default=False)

@@ -66,3 +66,9 @@ def run_slg(experiment: str):
     files_config = CONFIG['files']
     slg = SmallLanguageGraph(experts_location=experiment, experiment=experiment)
     slg.ask_slg(file=files_config['qa_test'])
+
+
+def run_interactive_slg(experiment: str, show_routing: bool = False):
+    from interactive_slg import run_interactive_slg as run_repl
+
+    run_repl(experiment=experiment, show_routing=show_routing)
