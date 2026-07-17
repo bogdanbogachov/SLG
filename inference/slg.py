@@ -17,9 +17,12 @@ from typing import Any, Dict, List
 import numpy as np
 import torch
 from langgraph.graph import END, START, StateGraph
+from peft import PeftModel
 from sentence_transformers import SentenceTransformer
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from config import CONFIG
+from finetune.router import ROUTER_METADATA_FILE
 from logging_config import logger
 from utils.model_loader import cleanup_model_memory, load_model_with_adapter
 from utils.path_utils import (
@@ -27,21 +30,39 @@ from utils.path_utils import (
     get_slg_index_dir,
     get_slg_path,
     validate_dir_exists,
+    validate_file_exists,
     validate_slg_embedding_artifacts,
 )
 from utils.prompt_utils import apply_chat_template, create_user_message
 
 
+ROUTER_COSINE = "cosine"
+ROUTER_FINETUNED = "finetuned"
+SUPPORTED_ROUTER_METHODS = {ROUTER_COSINE, ROUTER_FINETUNED}
+
+
 class SmallLanguageGraph:
-    def __init__(self, experts_location: str, experiment: str):
+    def __init__(
+        self,
+        experts_location: str,
+        experiment: str,
+        router_method: str = None,
+    ):
         self.experts_location = experts_location
         self.experiment = experiment
+        self.router_method = router_method or CONFIG.get("routing", {}).get(
+            "method", ROUTER_COSINE
+        )
+        if self.router_method not in SUPPORTED_ROUTER_METHODS:
+            supported = ", ".join(sorted(SUPPORTED_ROUTER_METHODS))
+            raise ValueError(
+                f"Unsupported SLG router method: {self.router_method!r}. "
+                f"Expected one of: {supported}."
+            )
 
         paths_config = CONFIG["paths"]
         self.experiments_dir = paths_config["experiments"]
         self.slg_path = get_slg_path(self.experts_location, self.experiments_dir)
-        self.index_dir = get_slg_index_dir(self.experts_location, self.experiments_dir)
-        validate_slg_embedding_artifacts(self.index_dir)
         validate_dir_exists(
             self.slg_path,
             error_message=(
@@ -50,16 +71,6 @@ class SmallLanguageGraph:
                 f"so adapters exist under experiments/<experiment>/{CONFIG['slg_formation']['slg_dir']}/."
             ),
         )
-        self.index_path = os.path.join(self.index_dir, "index.json")
-
-        self.slg_index = self._load_slg_index()
-        self.slg_neighbors_by_expert: Dict[str, List[str]] = self.slg_index[
-            "neighbors_by_expert"
-        ]
-        self.neighbor_k: int = int(self.slg_index["neighbor_k"])
-        self.slg_embeddings_by_expert: Dict[str, np.ndarray] = self.slg_index[
-            "embeddings_by_expert"
-        ]
         self._compiled_graph = None
 
         self.expert_nodes: List[str] = self._discover_expert_nodes()
@@ -71,12 +82,67 @@ class SmallLanguageGraph:
             expert: f"expert_{i:05d}" for i, expert in enumerate(self.expert_nodes)
         }
 
-        paths_cfg = CONFIG["paths"]
+        self.index_dir = None
+        self.index_path = None
+        self.slg_index: Dict[str, Any] = {}
+        self.slg_neighbors_by_expert: Dict[str, List[str]] = {}
+        self.neighbor_k = 0
+        self.slg_embeddings_by_expert: Dict[str, np.ndarray] = {}
+        self._embedding_model = None
+
+        self.router_adapter_path = None
+        self.router_metadata_path = None
+        self.router_metadata: Dict[str, Any] = {}
+
+        if self.router_method == ROUTER_COSINE:
+            self._init_cosine_router(paths_config)
+        else:
+            self._init_finetuned_router(paths_config)
+
+    def _init_cosine_router(self, paths_config: Dict[str, Any]) -> None:
+        self.index_dir = get_slg_index_dir(self.experts_location, self.experiments_dir)
+        validate_slg_embedding_artifacts(self.index_dir)
+        self.index_path = os.path.join(self.index_dir, "index.json")
+
+        self.slg_index = self._load_slg_index()
+        self.slg_neighbors_by_expert = self.slg_index["neighbors_by_expert"]
+        self.neighbor_k = int(self.slg_index["neighbor_k"])
+        self.slg_embeddings_by_expert = self.slg_index["embeddings_by_expert"]
+
         jina_path = os.path.join(
-            paths_cfg["downloaded_models"],
-            paths_cfg["models"]["jina_embeddings"],
+            paths_config["downloaded_models"],
+            paths_config["models"]["jina_embeddings"],
         )
         self._embedding_model = SentenceTransformer(jina_path, trust_remote_code=True)
+
+    def _init_finetuned_router(self, paths_config: Dict[str, Any]) -> None:
+        adapter_name = CONFIG["adapters"]["slg_router_3_2_1b"]
+        self.router_adapter_path = os.path.join(
+            paths_config["experiments"],
+            self.experiment,
+            adapter_name,
+        )
+        self.router_metadata_path = os.path.join(
+            self.router_adapter_path,
+            ROUTER_METADATA_FILE,
+        )
+        validate_dir_exists(
+            self.router_adapter_path,
+            error_message=(
+                f"Fine-tuned SLG router adapter not found: {self.router_adapter_path}. "
+                "Train it with training_components.train_slg_router before using "
+                "--router finetuned."
+            ),
+        )
+        validate_file_exists(
+            self.router_metadata_path,
+            error_message=(
+                f"Fine-tuned SLG router metadata not found: {self.router_metadata_path}. "
+                "Re-train the router so label mappings are saved."
+            ),
+        )
+        with open(self.router_metadata_path, "r", encoding="utf-8") as f:
+            self.router_metadata = json.load(f)
 
     def _discover_expert_nodes(self) -> List[str]:
         if not os.path.isdir(self.slg_path):
@@ -130,6 +196,8 @@ class SmallLanguageGraph:
         self, question: str, candidate_experts: List[str]
     ) -> str:
         """Pick the expert whose index chunk embedding has highest cosine similarity to the question."""
+        if self._embedding_model is None:
+            raise RuntimeError("Cosine router is not initialized.")
         emb_map = self.slg_embeddings_by_expert
         expert_set = set(self.expert_nodes)
         candidates = [
@@ -162,9 +230,91 @@ class SmallLanguageGraph:
                 best_e = e
         return best_e
 
+    def _set_classifier_pad_token(
+        self,
+        tokenizer: AutoTokenizer,
+        model: AutoModelForSequenceClassification,
+    ) -> None:
+        if tokenizer.pad_token is None:
+            reserved_pad = "<|reserved_special_token_15|>"
+            if reserved_pad in tokenizer.get_vocab():
+                tokenizer.pad_token = reserved_pad
+            else:
+                tokenizer.pad_token = tokenizer.eos_token
+        model.config.pad_token_id = tokenizer.pad_token_id
+
+    def _route_question_by_finetuned_router(self, question: str) -> str:
+        """Pick the expert using the fine-tuned question -> expert classifier."""
+        id2label_raw = self.router_metadata.get("id2label")
+        if not isinstance(id2label_raw, dict) or not id2label_raw:
+            raise RuntimeError(
+                f"Invalid SLG router metadata in {self.router_metadata_path}: "
+                "missing id2label mapping."
+            )
+        id2label = {int(idx): str(label) for idx, label in id2label_raw.items()}
+        label2id = {label: idx for idx, label in id2label.items()}
+
+        paths_config = CONFIG["paths"]
+        base_model_path = os.path.join(
+            paths_config["downloaded_models"],
+            paths_config["models"]["3_2_1b"],
+        )
+
+        tokenizer = AutoTokenizer.from_pretrained(
+            self.router_adapter_path,
+            trust_remote_code=True,
+        )
+        base_model = AutoModelForSequenceClassification.from_pretrained(
+            base_model_path,
+            num_labels=len(id2label),
+            id2label=id2label,
+            label2id=label2id,
+            torch_dtype=torch.float16,
+            device_map=None,
+            trust_remote_code=True,
+        ).to(torch.device("cuda"))
+        self._set_classifier_pad_token(tokenizer, base_model)
+        router_model = None
+
+        try:
+            router_model = PeftModel.from_pretrained(
+                base_model,
+                self.router_adapter_path,
+            )
+            router_model = router_model.to(torch.device("cuda"))
+            router_model.eval()
+            inputs = tokenizer(
+                question,
+                return_tensors="pt",
+                padding=False,
+                truncation=True,
+                max_length=CONFIG["data"]["max_length"],
+            ).to("cuda")
+            with torch.no_grad():
+                outputs = router_model(**inputs)
+            label_id = int(torch.argmax(outputs.logits, dim=-1).item())
+            selected = id2label.get(label_id)
+            if not selected:
+                raise RuntimeError(
+                    f"Fine-tuned router predicted unknown label id: {label_id}."
+                )
+            if selected not in set(self.expert_nodes):
+                raise RuntimeError(
+                    f"Fine-tuned router selected expert {selected!r}, but no matching "
+                    f"adapter exists under {self.slg_path}."
+                )
+            return selected
+        finally:
+            cleanup_model_memory(router_model or base_model, tokenizer)
+
     def _task_analysis_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Route the question to the main expert via embedding similarity to index.json vectors."""
+        """Route the question to the main expert."""
         question = state["question"]
+
+        if self.router_method == ROUTER_FINETUNED:
+            state["selected_expert"] = self._route_question_by_finetuned_router(question)
+            return state
+
         on_disk = set(self.expert_nodes)
         with_emb = set(self.slg_embeddings_by_expert.keys())
         experts_list_of_strings = sorted(on_disk & with_emb)
@@ -335,6 +485,8 @@ class SmallLanguageGraph:
 
     def _route_after_expert(self, state: Dict[str, Any]) -> str:
         if state.get("phase") == "main":
+            if self.router_method == ROUTER_FINETUNED:
+                return "aggregator"
             return "confidence_router"
 
         pending = state.get("pending_neighbors", [])
@@ -419,6 +571,7 @@ class SmallLanguageGraph:
         return {
             "question": question,
             "answer": result.get("final_answer"),
+            "router_method": self.router_method,
             "selected_expert": result.get("selected_expert"),
             "visited_experts": result.get("visited_experts", []),
             "candidate_answers": result.get("answers", []),
@@ -436,7 +589,12 @@ class SmallLanguageGraph:
         paths_config = CONFIG["paths"]
         output_dir = os.path.join(paths_config["answers"], self.experiment)
         ensure_dir(output_dir)
-        output_path = os.path.join(output_dir, "slg.json")
+        output_name = (
+            "slg.json"
+            if self.router_method == ROUTER_COSINE
+            else f"slg_{self.router_method}_router.json"
+        )
+        output_path = os.path.join(output_dir, output_name)
 
         # Load existing progress if available
         if os.path.exists(output_path):
@@ -463,6 +621,7 @@ class SmallLanguageGraph:
                     "title": item["title"],
                     "question": item["question"],
                     "answer": result.get("final_answer"),
+                    "router_method": self.router_method,
                 }
             )
 

@@ -38,8 +38,8 @@ if __name__ == '__main__':
     run_baseline(experiment) if args.infer_baseline else None
     run_rag(experiment) if args.infer_rag else None
     run_finetuned(experiment) if args.infer_finetuned else None
-    run_slg(experiment) if args.infer_slg else None
-    run_interactive_slg(experiment, show_routing=args.show_routing) if args.interactive_slg else None
+    run_slg(experiment, router_method=args.router) if args.infer_slg else None
+    run_interactive_slg(experiment, show_routing=args.show_routing, router_method=args.router) if args.interactive_slg else None
 
     # Evaluation
     run_evaluation(experiment, include_training_metrics=args.training_metrics) if args.evaluate else None

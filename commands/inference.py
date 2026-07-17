@@ -58,17 +58,29 @@ def run_finetuned(experiment: str):
                       experiment=experiment)
 
 
-def run_slg(experiment: str):
+def run_slg(experiment: str, router_method: str = None):
     from inference.slg import SmallLanguageGraph
     paths_config = CONFIG['paths']
     answers_dir = paths_config['answers']
     ensure_dir(os.path.join(answers_dir, experiment))
     files_config = CONFIG['files']
-    slg = SmallLanguageGraph(experts_location=experiment, experiment=experiment)
+    slg = SmallLanguageGraph(
+        experts_location=experiment,
+        experiment=experiment,
+        router_method=router_method,
+    )
     slg.ask_slg(file=files_config['qa_test'])
 
 
-def run_interactive_slg(experiment: str, show_routing: bool = False):
+def run_interactive_slg(
+    experiment: str,
+    show_routing: bool = False,
+    router_method: str = None,
+):
     from interactive_slg import run_interactive_slg as run_repl
 
-    run_repl(experiment=experiment, show_routing=show_routing)
+    run_repl(
+        experiment=experiment,
+        show_routing=show_routing,
+        router_method=router_method,
+    )

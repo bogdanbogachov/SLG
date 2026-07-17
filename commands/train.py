@@ -2,6 +2,7 @@ import os
 from typing import List
 
 from finetune.finetune import finetune
+from finetune.router import finetune_slg_router
 from config import CONFIG
 from logging_config import logger
 from commands.slg_embeddings import run_slg_embeddings
@@ -24,6 +25,7 @@ def run_training(experiment: str):
     training_config = CONFIG.get('training_components', {})
 
     train_slg_system = training_config.get('train_slg_system', False)
+    train_slg_router = training_config.get('train_slg_router', False)
     train_3_2_1b = training_config.get('train_3_2_1b', False)
     train_3_1_8b = training_config.get('train_3_1_8b', False)
 
@@ -65,6 +67,17 @@ def run_training(experiment: str):
 
     else:
         logger.info("Skipping SLG system training")
+
+    if train_slg_router:
+        logger.info("Training SLG fine-tuned router: 3_2_1b")
+        finetune_slg_router(
+            model_to_tune=os.path.join(downloaded_models_dir, models_paths["3_2_1b"]),
+            adapter_name=adapters_config["slg_router_3_2_1b"],
+            split_by_title_dir=split_by_title_dir,
+            experiment_number=experiment,
+        )
+    else:
+        logger.info("Skipping SLG fine-tuned router training")
 
     # Baseline 3_2_1b
     if train_3_2_1b:

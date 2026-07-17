@@ -18,12 +18,14 @@ class InteractiveSLGSession:
 
     experiment: str
     show_routing: bool = False
+    router_method: Optional[str] = None
     prompt: str = "SLG> "
 
     def __post_init__(self) -> None:
         self.slg = SmallLanguageGraph(
             experts_location=self.experiment,
             experiment=self.experiment,
+            router_method=self.router_method,
         )
 
     def answer(self, question: str) -> dict:
@@ -60,9 +62,10 @@ class InteractiveSLGSession:
             answer = result.get("answer") or ""
             output_fn(answer)
             if self.show_routing:
+                router = result.get("router_method") or "unknown"
                 selected = result.get("selected_expert") or "unknown"
                 visited = ", ".join(result.get("visited_experts") or []) or "none"
-                output_fn(f"[routing] selected={selected}; visited={visited}")
+                output_fn(f"[routing] router={router}; selected={selected}; visited={visited}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -84,6 +87,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print selected and visited experts after each answer.",
     )
     parser.add_argument(
+        "--router",
+        choices=["cosine", "finetuned"],
+        default=None,
+        help="SLG router to use. Defaults to routing.method in config.yaml.",
+    )
+    parser.add_argument(
         "--prompt",
         default="SLG> ",
         help="Prompt text for interactive mode.",
@@ -95,11 +104,13 @@ def run_interactive_slg(
     experiment: str,
     question: Optional[str] = None,
     show_routing: bool = False,
+    router_method: Optional[str] = None,
     prompt: str = "SLG> ",
 ) -> Optional[dict]:
     session = InteractiveSLGSession(
         experiment=experiment,
         show_routing=show_routing,
+        router_method=router_method,
         prompt=prompt,
     )
     if question is None:
@@ -109,9 +120,10 @@ def run_interactive_slg(
     result = session.answer(question)
     print(result.get("answer") or "")
     if show_routing:
+        router = result.get("router_method") or "unknown"
         selected = result.get("selected_expert") or "unknown"
         visited = ", ".join(result.get("visited_experts") or []) or "none"
-        print(f"[routing] selected={selected}; visited={visited}")
+        print(f"[routing] router={router}; selected={selected}; visited={visited}")
     return result
 
 
@@ -121,5 +133,6 @@ def main() -> None:
         experiment=args.experiment,
         question=args.question,
         show_routing=args.show_routing,
+        router_method=args.router,
         prompt=args.prompt,
     )

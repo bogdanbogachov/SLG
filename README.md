@@ -47,15 +47,18 @@ python main.py --data_overlap_check
 
 # 4. Fine-tune models
 python main.py --finetune
+# Enable training_components.train_slg_router in config.yaml to train the SLG classifier router.
 
 # 5. Run inference
 python main.py --infer_baseline       # OpenAI GPT-4.1
 python main.py --infer_rag            # RAG with GPT-4.1-nano
 python main.py --infer_finetuned      # Fine-tuned LLaMA models
-python main.py --infer_slg            # Small Language Graph
-python main.py --interactive_slg True # Interactive Small Language Graph REPL
+python main.py --infer_slg            # Small Language Graph, using routing.method from config.yaml
+python main.py --infer_slg --router cosine
+python main.py --infer_slg --router finetuned
+python main.py --interactive_slg True --router finetuned # Interactive Small Language Graph REPL
 python -m interactive_slg             # Same REPL as a package entry point
-python -m interactive_slg --question "How should I classify wing damage?"
+python -m interactive_slg --router finetuned --question "How should I classify wing damage?"
 
 # 6. Evaluate results
 python main.py --evaluate
@@ -129,6 +132,7 @@ eng_llm/
 - **LoRA Fine-tuning**: Efficient fine-tuning of LLaMA 3.2-1B and 3.1-8B models
 - **RAG**: Retrieval-augmented generation with FAISS vector search
 - **SLG**: Small Language Graph with expert routing and multi-model inference
+- **SLG router selection**: cosine similarity routing or a fine-tuned LLaMA 3.2 1B classifier router
 - **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert
 
 ## Output Structure
@@ -138,7 +142,7 @@ experiments/
 └── {experiment_name}/
     ├── finetuned_3_2_1b/       # Fine-tuned adapter
     ├── finetuned_3_1_8b/       # Fine-tuned adapter
-    ├── orchestrator_3_2_1b/    # Orchestrator adapter
+    ├── slg_router_3_2_1b/      # Fine-tuned SLG classifier router adapter
     ├── slg/                    # SLG expert adapters
     └── metrics.json            # Evaluation results
 
@@ -148,5 +152,6 @@ answers/
     ├── rag.json
     ├── finetuned_3_2_1b.json
     ├── finetuned_3_1_8b.json
-    └── slg.json
+    ├── slg.json
+    └── slg_finetuned_router.json
 ```
