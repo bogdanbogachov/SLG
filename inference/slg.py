@@ -12,6 +12,7 @@ import functools
 import json
 import math
 import os
+import time
 from typing import Any, Dict, List
 
 import numpy as np
@@ -29,6 +30,7 @@ from utils.path_utils import (
     ensure_dir,
     get_slg_index_dir,
     get_slg_path,
+    slg_expert_id_from_filename,
     validate_dir_exists,
     validate_file_exists,
     validate_slg_embedding_artifacts,
@@ -192,10 +194,10 @@ class SmallLanguageGraph:
             "embeddings_by_expert": embeddings_by_expert,
         }
 
-    def _route_question_by_embedding(
+    def _rank_question_by_embedding(
         self, question: str, candidate_experts: List[str]
-    ) -> str:
-        """Pick the expert whose index chunk embedding has highest cosine similarity to the question."""
+    ) -> List[Dict[str, Any]]:
+        """Rank experts by cosine similarity to the question embedding."""
         if self._embedding_model is None:
             raise RuntimeError("Cosine router is not initialized.")
         emb_map = self.slg_embeddings_by_expert
@@ -218,17 +220,35 @@ class SmallLanguageGraph:
         )[0].astype(np.float32, copy=False)
         qn = float(np.linalg.norm(q))
         if qn < 1e-12:
-            return candidates[0]
+            return [
+                {
+                    "rank": i + 1,
+                    "expert": expert,
+                    "score": None,
+                    "score_type": "cosine_similarity",
+                }
+                for i, expert in enumerate(candidates)
+            ]
         q = q / qn
 
-        best_e = candidates[0]
-        best_s = -1.0
-        for e in candidates:
-            sim = float(np.dot(q, emb_map[e]))
-            if sim > best_s:
-                best_s = sim
-                best_e = e
-        return best_e
+        ranked = [
+            {
+                "expert": expert,
+                "score": float(np.dot(q, emb_map[expert])),
+                "score_type": "cosine_similarity",
+            }
+            for expert in candidates
+        ]
+        ranked.sort(key=lambda item: float(item["score"]), reverse=True)
+        for i, item in enumerate(ranked):
+            item["rank"] = i + 1
+        return ranked
+
+    def _route_question_by_embedding(
+        self, question: str, candidate_experts: List[str]
+    ) -> str:
+        """Pick the highest-cosine expert."""
+        return self._rank_question_by_embedding(question, candidate_experts)[0]["expert"]
 
     def _set_classifier_pad_token(
         self,
@@ -243,8 +263,8 @@ class SmallLanguageGraph:
                 tokenizer.pad_token = tokenizer.eos_token
         model.config.pad_token_id = tokenizer.pad_token_id
 
-    def _route_question_by_finetuned_router(self, question: str) -> str:
-        """Pick the expert using the fine-tuned question -> expert classifier."""
+    def _rank_question_by_finetuned_router(self, question: str) -> List[Dict[str, Any]]:
+        """Rank experts using the fine-tuned question -> expert classifier."""
         id2label_raw = self.router_metadata.get("id2label")
         if not isinstance(id2label_raw, dict) or not id2label_raw:
             raise RuntimeError(
@@ -292,27 +312,49 @@ class SmallLanguageGraph:
             ).to("cuda")
             with torch.no_grad():
                 outputs = router_model(**inputs)
-            label_id = int(torch.argmax(outputs.logits, dim=-1).item())
-            selected = id2label.get(label_id)
-            if not selected:
-                raise RuntimeError(
-                    f"Fine-tuned router predicted unknown label id: {label_id}."
+            logits = outputs.logits[0].detach().float().cpu()
+            probs = torch.softmax(logits, dim=-1)
+            ranked: List[Dict[str, Any]] = []
+            for label_id in torch.argsort(probs, descending=True).tolist():
+                expert = id2label.get(int(label_id))
+                if not expert:
+                    continue
+                ranked.append(
+                    {
+                        "rank": len(ranked) + 1,
+                        "expert": expert,
+                        "probability": float(probs[label_id].item()),
+                        "logit": float(logits[label_id].item()),
+                        "score": float(probs[label_id].item()),
+                        "score_type": "classification_probability",
+                    }
                 )
+            if not ranked:
+                raise RuntimeError("Fine-tuned router produced no ranked candidates.")
+            selected = ranked[0]["expert"]
             if selected not in set(self.expert_nodes):
                 raise RuntimeError(
                     f"Fine-tuned router selected expert {selected!r}, but no matching "
                     f"adapter exists under {self.slg_path}."
                 )
-            return selected
+            return ranked
         finally:
             cleanup_model_memory(router_model or base_model, tokenizer)
+
+    def _route_question_by_finetuned_router(self, question: str) -> str:
+        """Pick the highest-probability fine-tuned router expert."""
+        return self._rank_question_by_finetuned_router(question)[0]["expert"]
 
     def _task_analysis_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Route the question to the main expert."""
         question = state["question"]
+        start = time.perf_counter()
 
         if self.router_method == ROUTER_FINETUNED:
-            state["selected_expert"] = self._route_question_by_finetuned_router(question)
+            ranked = self._rank_question_by_finetuned_router(question)
+            state["selected_expert"] = ranked[0]["expert"]
+            state["routing_candidates"] = ranked
+            state["routing_latency_seconds"] = time.perf_counter() - start
             return state
 
         on_disk = set(self.expert_nodes)
@@ -321,9 +363,10 @@ class SmallLanguageGraph:
         if not experts_list_of_strings:
             experts_list_of_strings = list(self.expert_nodes)
 
-        state["selected_expert"] = self._route_question_by_embedding(
-            question, experts_list_of_strings
-        )
+        ranked = self._rank_question_by_embedding(question, experts_list_of_strings)
+        state["selected_expert"] = ranked[0]["expert"]
+        state["routing_candidates"] = ranked
+        state["routing_latency_seconds"] = time.perf_counter() - start
         return state
 
     @staticmethod
@@ -510,6 +553,416 @@ class SmallLanguageGraph:
         state["final_answer"] = str(best.get("answer") or "")
         return state
 
+    def _slg_output_basename(self) -> str:
+        if self.router_method == ROUTER_COSINE:
+            return "slg"
+        return f"slg_{self.router_method}_router"
+
+    def _other_router_report_path(self, report_path: str) -> str:
+        other_basename = (
+            "slg_finetuned_router"
+            if self.router_method == ROUTER_COSINE
+            else "slg"
+        )
+        return os.path.join(
+            os.path.dirname(report_path),
+            f"{other_basename}_routing_report.json",
+        )
+
+    @staticmethod
+    def _expected_expert_id_from_title(title: str) -> str:
+        split_title = (
+            str(title)
+            .replace(" ", "_")
+            .replace("/", "_")
+            .replace("\n", "_")
+            .lower()
+        )
+        return slg_expert_id_from_filename(f"{split_title}.json")
+
+    @staticmethod
+    def _token_f1(reference: str, candidate: str) -> float:
+        ref_tokens = str(reference or "").lower().split()
+        cand_tokens = str(candidate or "").lower().split()
+        if not ref_tokens and not cand_tokens:
+            return 1.0
+        if not ref_tokens or not cand_tokens:
+            return 0.0
+        ref_counts: Dict[str, int] = {}
+        for token in ref_tokens:
+            ref_counts[token] = ref_counts.get(token, 0) + 1
+        overlap = 0
+        for token in cand_tokens:
+            count = ref_counts.get(token, 0)
+            if count:
+                overlap += 1
+                ref_counts[token] = count - 1
+        if overlap == 0:
+            return 0.0
+        precision = overlap / len(cand_tokens)
+        recall = overlap / len(ref_tokens)
+        return 2 * precision * recall / (precision + recall)
+
+    @staticmethod
+    def _expected_rank(
+        expected_expert: str,
+        routing_candidates: List[Dict[str, Any]],
+    ) -> int | None:
+        for candidate in routing_candidates:
+            if candidate.get("expert") == expected_expert:
+                return int(candidate.get("rank") or 0) or None
+        return None
+
+    def _build_routing_record(
+        self,
+        index: int,
+        item: Dict[str, Any],
+        result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        expected_expert = self._expected_expert_id_from_title(item.get("title", ""))
+        selected_expert = result.get("selected_expert")
+        candidate_answers = result.get("answers", [])
+        selected_candidate = next(
+            (
+                candidate
+                for candidate in candidate_answers
+                if candidate.get("expert") == selected_expert
+            ),
+            None,
+        )
+        final_answer = str(result.get("final_answer") or "")
+        reference_answer = str(item.get("answer") or "")
+        routing_candidates = result.get("routing_candidates", [])
+        expected_rank = self._expected_rank(expected_expert, routing_candidates)
+        top_router_candidates = routing_candidates[:10]
+        selected_route = next(
+            (
+                candidate
+                for candidate in routing_candidates
+                if candidate.get("expert") == selected_expert
+            ),
+            None,
+        )
+        return {
+            "index": index,
+            "chapter": item.get("chapter"),
+            "title": item.get("title"),
+            "question": item.get("question"),
+            "expected_expert": expected_expert,
+            "expected_expert_exists": expected_expert in set(self.expert_nodes),
+            "selected_expert": selected_expert,
+            "routing_correct": bool(expected_expert and selected_expert)
+            and expected_expert == selected_expert,
+            "expected_rank": expected_rank,
+            "top_router_candidates": top_router_candidates,
+            "selected_router_score": (
+                float(selected_route["score"])
+                if selected_route and selected_route.get("score") is not None
+                else None
+            ),
+            "selected_router_score_type": (
+                selected_route.get("score_type") if selected_route else None
+            ),
+            "router_method": self.router_method,
+            "visited_experts": result.get("visited_experts", []),
+            "selected_confidence": (
+                float(selected_candidate["confidence"])
+                if selected_candidate and selected_candidate.get("confidence") is not None
+                else None
+            ),
+            "candidate_answers": candidate_answers,
+            "answer_quality": {
+                "exact_match": int(final_answer.strip() == reference_answer.strip()),
+                "token_f1": self._token_f1(reference_answer, final_answer),
+                "reference_length_tokens": len(reference_answer.split()),
+                "answer_length_tokens": len(final_answer.split()),
+            },
+            "latency_seconds": {
+                "routing": result.get("routing_latency_seconds"),
+                "total": result.get("total_latency_seconds"),
+            },
+        }
+
+    @staticmethod
+    def _routing_report_summary(records: List[Dict[str, Any]]) -> Dict[str, Any]:
+        total = len(records)
+        correct = sum(1 for record in records if record.get("routing_correct"))
+        missing_expected = sum(
+            1 for record in records if not record.get("expected_expert_exists")
+        )
+        by_expected: Dict[str, Dict[str, int]] = {}
+        for record in records:
+            expected = str(record.get("expected_expert") or "unknown")
+            stats = by_expected.setdefault(expected, {"total": 0, "correct": 0})
+            stats["total"] += 1
+            if record.get("routing_correct"):
+                stats["correct"] += 1
+
+        for stats in by_expected.values():
+            stats["accuracy"] = (
+                stats["correct"] / stats["total"] if stats["total"] else 0.0
+            )
+
+        return {
+            "total": total,
+            "correct": correct,
+            "incorrect": total - correct,
+            "accuracy": correct / total if total else 0.0,
+            "accuracy_ci_95_wilson": SmallLanguageGraph._wilson_ci(correct, total),
+            "missing_expected_expert_count": missing_expected,
+            "by_expected_expert": by_expected,
+            "top_k_accuracy": SmallLanguageGraph._top_k_accuracy(records),
+            "by_chapter": SmallLanguageGraph._accuracy_by_field(records, "chapter"),
+            "confusion_matrix": SmallLanguageGraph._confusion_matrix(records),
+            "answer_quality_by_routing_correctness": (
+                SmallLanguageGraph._answer_quality_by_routing_correctness(records)
+            ),
+            "latency_seconds": SmallLanguageGraph._latency_summary(records),
+            "error_examples": SmallLanguageGraph._error_examples(records),
+        }
+
+    @staticmethod
+    def _wilson_ci(correct: int, total: int, z: float = 1.96) -> Dict[str, float | None]:
+        if total <= 0:
+            return {"low": None, "high": None}
+        phat = correct / total
+        denom = 1 + z * z / total
+        center = (phat + z * z / (2 * total)) / denom
+        margin = z * math.sqrt((phat * (1 - phat) + z * z / (4 * total)) / total) / denom
+        return {"low": max(0.0, center - margin), "high": min(1.0, center + margin)}
+
+    @staticmethod
+    def _top_k_accuracy(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, float | int]]:
+        output: Dict[str, Dict[str, float | int]] = {}
+        for k in (1, 3, 5, 10):
+            eligible = [
+                record
+                for record in records
+                if record.get("expected_rank") is not None
+            ]
+            correct = sum(
+                1 for record in eligible if int(record["expected_rank"]) <= k
+            )
+            output[f"top_{k}"] = {
+                "total": len(eligible),
+                "correct": correct,
+                "accuracy": correct / len(eligible) if eligible else 0.0,
+            }
+        return output
+
+    @staticmethod
+    def _accuracy_by_field(
+        records: List[Dict[str, Any]],
+        field: str,
+    ) -> Dict[str, Dict[str, float | int]]:
+        grouped: Dict[str, Dict[str, int]] = {}
+        for record in records:
+            key = str(record.get(field) or "unknown")
+            stats = grouped.setdefault(key, {"total": 0, "correct": 0})
+            stats["total"] += 1
+            if record.get("routing_correct"):
+                stats["correct"] += 1
+
+        return {
+            key: {
+                "total": stats["total"],
+                "correct": stats["correct"],
+                "accuracy": stats["correct"] / stats["total"] if stats["total"] else 0.0,
+            }
+            for key, stats in sorted(grouped.items())
+        }
+
+    @staticmethod
+    def _confusion_matrix(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, int]]:
+        matrix: Dict[str, Dict[str, int]] = {}
+        for record in records:
+            expected = str(record.get("expected_expert") or "unknown")
+            selected = str(record.get("selected_expert") or "unknown")
+            row = matrix.setdefault(expected, {})
+            row[selected] = row.get(selected, 0) + 1
+        return matrix
+
+    @staticmethod
+    def _mean(values: List[float]) -> float | None:
+        return sum(values) / len(values) if values else None
+
+    @staticmethod
+    def _answer_quality_by_routing_correctness(
+        records: List[Dict[str, Any]],
+    ) -> Dict[str, Dict[str, float | int | None]]:
+        output: Dict[str, Dict[str, float | int | None]] = {}
+        for label, desired in (("correct_routes", True), ("incorrect_routes", False)):
+            bucket = [
+                record
+                for record in records
+                if bool(record.get("routing_correct")) is desired
+            ]
+            exact = [
+                float(record.get("answer_quality", {}).get("exact_match", 0))
+                for record in bucket
+            ]
+            token_f1 = [
+                float(record.get("answer_quality", {}).get("token_f1", 0.0))
+                for record in bucket
+            ]
+            output[label] = {
+                "total": len(bucket),
+                "exact_match_rate": SmallLanguageGraph._mean(exact),
+                "avg_token_f1": SmallLanguageGraph._mean(token_f1),
+            }
+        return output
+
+    @staticmethod
+    def _latency_summary(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, float | None]]:
+        output: Dict[str, Dict[str, float | None]] = {}
+        for key in ("routing", "total"):
+            values = [
+                float(record.get("latency_seconds", {}).get(key))
+                for record in records
+                if record.get("latency_seconds", {}).get(key) is not None
+            ]
+            if not values:
+                output[key] = {"mean": None, "min": None, "max": None}
+                continue
+            output[key] = {
+                "mean": sum(values) / len(values),
+                "min": min(values),
+                "max": max(values),
+            }
+        return output
+
+    @staticmethod
+    def _error_examples(records: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+        wrong = [record for record in records if not record.get("routing_correct")]
+        correct = [record for record in records if record.get("routing_correct")]
+
+        def compact(record: Dict[str, Any]) -> Dict[str, Any]:
+            return {
+                "index": record.get("index"),
+                "chapter": record.get("chapter"),
+                "title": record.get("title"),
+                "expected_expert": record.get("expected_expert"),
+                "selected_expert": record.get("selected_expert"),
+                "selected_router_score": record.get("selected_router_score"),
+                "selected_confidence": record.get("selected_confidence"),
+                "question": record.get("question"),
+            }
+
+        wrong.sort(
+            key=lambda record: float(record.get("selected_router_score") or -1.0),
+            reverse=True,
+        )
+        correct.sort(
+            key=lambda record: float(record.get("selected_router_score") or 1e9)
+        )
+        return {
+            "high_router_score_wrong_routes": [compact(record) for record in wrong[:10]],
+            "low_router_score_correct_routes": [compact(record) for record in correct[:10]],
+        }
+
+    @staticmethod
+    def _mcnemar_test(
+        current_records: List[Dict[str, Any]],
+        other_records: List[Dict[str, Any]],
+    ) -> Dict[str, float | int | None]:
+        other_by_index = {record.get("index"): record for record in other_records}
+        current_only = 0
+        other_only = 0
+        comparable = 0
+        for record in current_records:
+            other = other_by_index.get(record.get("index"))
+            if other is None:
+                continue
+            comparable += 1
+            current_correct = bool(record.get("routing_correct"))
+            other_correct = bool(other.get("routing_correct"))
+            if current_correct and not other_correct:
+                current_only += 1
+            elif other_correct and not current_correct:
+                other_only += 1
+
+        discordant = current_only + other_only
+        if discordant == 0:
+            return {
+                "comparable": comparable,
+                "current_correct_other_wrong": current_only,
+                "other_correct_current_wrong": other_only,
+                "chi_square": None,
+                "p_value": None,
+            }
+
+        chi_square = (abs(current_only - other_only) - 1) ** 2 / discordant
+        p_value = math.erfc(math.sqrt(chi_square / 2))
+        return {
+            "comparable": comparable,
+            "current_correct_other_wrong": current_only,
+            "other_correct_current_wrong": other_only,
+            "chi_square": chi_square,
+            "p_value": p_value,
+        }
+
+    def _router_comparison(
+        self,
+        report_path: str,
+        current_summary: Dict[str, Any],
+        current_records: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        other_path = self._other_router_report_path(report_path)
+        if not os.path.isfile(other_path):
+            return {
+                "available": False,
+                "missing_report": other_path,
+            }
+
+        with open(other_path, "r", encoding="utf-8") as f:
+            other_report = json.load(f)
+
+        other_summary = other_report.get("summary", {})
+        other_records = other_report.get("records", [])
+        current_accuracy = float(current_summary.get("accuracy") or 0.0)
+        other_accuracy = float(other_summary.get("accuracy") or 0.0)
+        return {
+            "available": True,
+            "current_router": self.router_method,
+            "other_router": other_report.get("router_method"),
+            "current_accuracy": current_accuracy,
+            "other_accuracy": other_accuracy,
+            "accuracy_delta_current_minus_other": current_accuracy - other_accuracy,
+            "current_total": current_summary.get("total"),
+            "other_total": other_summary.get("total"),
+            "mcnemar": self._mcnemar_test(current_records, other_records),
+        }
+
+    def _save_routing_report(
+        self,
+        report_path: str,
+        answer_path: str,
+        records: List[Dict[str, Any]],
+    ) -> None:
+        summary = self._routing_report_summary(records)
+        report = {
+            "experiment": self.experiment,
+            "router_method": self.router_method,
+            "answer_file": answer_path,
+            "summary": summary,
+            "router_comparison": self._router_comparison(
+                report_path,
+                summary,
+                records,
+            ),
+            "records": records,
+        }
+        with open(report_path, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=2)
+        logger.info(
+            "SLG routing accuracy: %.4f (%s/%s), router=%s, report=%s",
+            float(summary["accuracy"]),
+            int(summary["correct"]),
+            int(summary["total"]),
+            self.router_method,
+            report_path,
+        )
+
     def _build_graph(self):
         logger.info("Building SLG graph.")
         graph_builder = StateGraph(dict)
@@ -559,6 +1012,9 @@ class SmallLanguageGraph:
             "pending_neighbors": [],
             "main_confidence": None,
             "last_expert": None,
+            "routing_candidates": [],
+            "routing_latency_seconds": None,
+            "total_latency_seconds": None,
         }
 
     def ask_question(self, question: str) -> Dict[str, Any]:
@@ -567,7 +1023,9 @@ class SmallLanguageGraph:
         if not question:
             raise ValueError("Question cannot be empty.")
 
+        start = time.perf_counter()
         result = self._get_graph().invoke(self._initial_state(question))
+        result["total_latency_seconds"] = time.perf_counter() - start
         return {
             "question": question,
             "answer": result.get("final_answer"),
@@ -575,6 +1033,9 @@ class SmallLanguageGraph:
             "selected_expert": result.get("selected_expert"),
             "visited_experts": result.get("visited_experts", []),
             "candidate_answers": result.get("answers", []),
+            "routing_candidates": result.get("routing_candidates", []),
+            "routing_latency_seconds": result.get("routing_latency_seconds"),
+            "total_latency_seconds": result.get("total_latency_seconds"),
         }
 
     def ask_slg(self, file: str) -> None:
@@ -589,12 +1050,15 @@ class SmallLanguageGraph:
         paths_config = CONFIG["paths"]
         output_dir = os.path.join(paths_config["answers"], self.experiment)
         ensure_dir(output_dir)
-        output_name = (
-            "slg.json"
-            if self.router_method == ROUTER_COSINE
-            else f"slg_{self.router_method}_router.json"
-        )
+        output_basename = self._slg_output_basename()
+        output_name = f"{output_basename}.json"
         output_path = os.path.join(output_dir, output_name)
+        routing_report_dir = os.path.join(output_dir, "routing_reports")
+        ensure_dir(routing_report_dir)
+        routing_report_path = os.path.join(
+            routing_report_dir,
+            f"{output_basename}_routing_report.json",
+        )
 
         # Load existing progress if available
         if os.path.exists(output_path):
@@ -607,13 +1071,39 @@ class SmallLanguageGraph:
             start_index = 0
             logger.info("Starting fresh SLG inference run.")
 
+        routing_records: List[Dict[str, Any]] = []
+        if os.path.exists(routing_report_path):
+            with open(routing_report_path, "r", encoding="utf-8") as f:
+                report_data = json.load(f)
+            routing_records = list(report_data.get("records", []))
+        elif answers_list:
+            logger.warning(
+                "Existing SLG answers found without routing report; rebuilding from "
+                "the beginning so routing analysis is complete."
+            )
+
+        consistent_index = min(len(answers_list), len(routing_records))
+        if consistent_index != len(answers_list) or consistent_index != len(routing_records):
+            logger.warning(
+                "SLG answer/report resume mismatch (answers=%s, routing_records=%s); "
+                "resuming from %s.",
+                len(answers_list),
+                len(routing_records),
+                consistent_index,
+            )
+            answers_list = answers_list[:consistent_index]
+            routing_records = routing_records[:consistent_index]
+            start_index = consistent_index
+
         graph = self._get_graph()
 
         for i, item in enumerate(data[start_index:], start=start_index):
             logger.info(f"Answering {i + 1}/{len(data)} questions.")
             logger.info(f"Inference of the title: {item['title']}")
             initial_state = self._initial_state(item["question"])
+            question_start = time.perf_counter()
             result = graph.invoke(initial_state)
+            result["total_latency_seconds"] = time.perf_counter() - question_start
 
             answers_list.append(
                 {
@@ -624,10 +1114,16 @@ class SmallLanguageGraph:
                     "router_method": self.router_method,
                 }
             )
+            routing_records.append(self._build_routing_record(i, item, result))
 
             # Save progress incrementally so we can resume after interruptions.
             with open(output_path, "w", encoding="utf-8") as f:
                 json.dump(answers_list, f, indent=4)
+            self._save_routing_report(
+                report_path=routing_report_path,
+                answer_path=output_path,
+                records=routing_records,
+            )
             logger.info(40 * "-")
 
         return None

@@ -3,12 +3,12 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
-#SBATCH --gpus=h100_3g.40gb:1
+#SBATCH --gpus=h100_2g.20gb:1
 
 module load python/3.11.5
 module load rust
@@ -23,4 +23,4 @@ source ENV/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --finetune=True --infer_finetuned=True
+python main.py --finetune=True --infer_slg=True --router="finetuned"

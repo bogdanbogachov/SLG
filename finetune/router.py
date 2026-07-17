@@ -4,14 +4,17 @@ import json
 import os
 from typing import Dict, List
 
+import numpy as np
 import torch
-from datasets import Dataset
+from datasets import Dataset, DatasetDict
 from peft import LoraConfig, TaskType, get_peft_model
+from sklearn.model_selection import train_test_split
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
     EarlyStoppingCallback,
     Trainer,
+    TrainerCallback,
     TrainingArguments,
 )
 
@@ -56,6 +59,46 @@ def _collect_router_rows(
     return rows, label2id
 
 
+def _expert_id_from_title(title: str) -> str:
+    split_title = (
+        str(title)
+        .replace(" ", "_")
+        .replace("/", "_")
+        .replace("\n", "_")
+        .lower()
+    )
+    return slg_expert_id_from_filename(f"{split_title}.json")
+
+
+def _collect_router_test_rows(
+    qa_test_path: str,
+    label2id: Dict[str, int],
+) -> List[Dict[str, object]]:
+    with open(qa_test_path, "r", encoding="utf-8") as f:
+        examples = json.load(f)
+
+    rows: List[Dict[str, object]] = []
+    skipped = 0
+    for example in examples:
+        question = str(example.get("question", "")).strip()
+        expert_id = _expert_id_from_title(example.get("title", ""))
+        if not question or expert_id not in label2id:
+            skipped += 1
+            continue
+        rows.append({"question": question, "labels": label2id[expert_id]})
+
+    if skipped:
+        logger.warning(
+            "Skipped %s router test rows whose title did not map to a trained expert.",
+            skipped,
+        )
+    if not rows:
+        raise ValueError(
+            f"No qa_test rows in {qa_test_path} map to trained router classes."
+        )
+    return rows
+
+
 def _set_pad_token(
     tokenizer: AutoTokenizer,
     model: AutoModelForSequenceClassification,
@@ -67,6 +110,53 @@ def _set_pad_token(
         else:
             tokenizer.pad_token = tokenizer.eos_token
     model.config.pad_token_id = tokenizer.pad_token_id
+
+
+def _split_router_rows(
+    rows: List[Dict[str, object]],
+    test_split_ratio: float,
+    seed: int,
+) -> DatasetDict:
+    """Create train/eval splits from the already-prepared router training data."""
+    if not 0 < test_split_ratio < 0.5:
+        raise ValueError(
+            f"Router test_split_ratio must be in (0, 0.5), got {test_split_ratio}."
+        )
+
+    labels = [int(row["labels"]) for row in rows]
+    indices = list(range(len(rows)))
+
+    train_idx, eval_idx = train_test_split(
+        indices,
+        test_size=test_split_ratio,
+        random_state=seed,
+        stratify=labels,
+    )
+
+    return DatasetDict({
+        "train": Dataset.from_list([rows[i] for i in train_idx]),
+        "eval": Dataset.from_list([rows[i] for i in eval_idx]),
+    })
+
+
+def _compute_accuracy(eval_pred) -> Dict[str, float]:
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    return {"accuracy": float(np.mean(predictions == labels))}
+
+
+class RouterMetricsLoggerCallback(TrainerCallback):
+    """Mirror router accuracy metrics into the project logger."""
+
+    def on_evaluate(self, args, state, control, metrics=None, **kwargs):
+        if not metrics:
+            return
+        if "eval_accuracy" in metrics:
+            logger.info(
+                "SLG router eval accuracy at step %s: %.4f",
+                state.global_step,
+                float(metrics["eval_accuracy"]),
+            )
 
 
 def finetune_slg_router(
@@ -105,10 +195,14 @@ def finetune_slg_router(
     test_split_ratio = data_config["test_split_ratio"]
     max_length = data_config["max_length"]
 
-    dataset = Dataset.from_list(rows).train_test_split(
-        test_size=test_split_ratio,
-        seed=int(CONFIG["seed"]),
+    seed = int(CONFIG["seed"])
+    dataset = _split_router_rows(
+        rows=rows,
+        test_split_ratio=float(test_split_ratio),
+        seed=seed,
     )
+    test_rows = _collect_router_test_rows(CONFIG["files"]["qa_test"], label2id)
+    dataset["test"] = Dataset.from_list(test_rows)
 
     def tokenize_function(example):
         return tokenizer(
@@ -176,18 +270,29 @@ def finetune_slg_router(
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset["train"],
-        eval_dataset=tokenized_dataset["test"],
+        eval_dataset=tokenized_dataset["eval"],
         tokenizer=tokenizer,
         callbacks=[
             EarlyStoppingCallback(
                 early_stopping_patience=training_config["early_stopping_patience"]
-            )
+            ),
+            RouterMetricsLoggerCallback(),
         ],
+        compute_metrics=_compute_accuracy,
     )
 
     trainer.train()
     trainer.model.to(torch.device("cuda"))
-    trainer.evaluate()
+    eval_metrics = trainer.evaluate(
+        eval_dataset=tokenized_dataset["eval"],
+        metric_key_prefix="eval",
+    )
+    test_metrics = trainer.evaluate(
+        eval_dataset=tokenized_dataset["test"],
+        metric_key_prefix="test",
+    )
+    logger.info("SLG router final eval metrics: %s", eval_metrics)
+    logger.info("SLG router final test metrics on qa_test: %s", test_metrics)
 
     save_path = os.path.join(
         paths_config["experiments"],
@@ -210,3 +315,7 @@ def finetune_slg_router(
     training_log_path = os.path.join(save_path, "training_log.txt")
     with open(training_log_path, "a", encoding="utf-8") as log_file:
         log_file.write(str(trainer.state.log_history))
+        log_file.write("\n\nFinal eval metrics:\n")
+        log_file.write(json.dumps(eval_metrics, indent=2))
+        log_file.write("\n\nFinal test metrics on qa_test:\n")
+        log_file.write(json.dumps(test_metrics, indent=2))

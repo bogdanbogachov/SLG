@@ -153,5 +153,17 @@ answers/
     ├── finetuned_3_2_1b.json
     ├── finetuned_3_1_8b.json
     ├── slg.json
-    └── slg_finetuned_router.json
+    ├── slg_finetuned_router.json
+    └── routing_reports/
+        ├── slg_routing_report.json
+        └── slg_finetuned_router_routing_report.json
 ```
+
+SLG routing reports include per-question expected expert, selected expert, correctness,
+visited experts, candidate answer confidences, and aggregate routing accuracy. Fine-tuned
+router training logs `eval_accuracy` and final `test_accuracy` on `qa_test`; SLG inference
+also logs and stores full routing reports. The report includes confusion matrices, top-k
+routing accuracy, per-chapter and per-expert accuracy, Wilson confidence intervals,
+answer-quality summaries by routing correctness, high-confidence error examples,
+latency summaries, and router comparison statistics when both cosine and fine-tuned
+router reports exist.
