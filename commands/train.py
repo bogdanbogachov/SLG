@@ -35,6 +35,17 @@ def run_training(experiment: str):
 
     os.makedirs(experiments_dir, exist_ok=True)
 
+    if train_slg_router:
+        logger.info("Training SLG fine-tuned router: 3_2_1b")
+        finetune_slg_router(
+            model_to_tune=os.path.join(downloaded_models_dir, models_paths["3_2_1b"]),
+            adapter_name=adapters_config["slg_router_3_2_1b"],
+            split_by_title_dir=split_by_title_dir,
+            experiment_number=experiment,
+        )
+    else:
+        logger.info("Skipping SLG fine-tuned router training")
+
     # Finetune SLG experts per title (routing uses Jina embeddings + index.json, not a finetuned orchestrator)
     if train_slg_system:
         logger.info("Training SLG experts...")
@@ -67,17 +78,6 @@ def run_training(experiment: str):
 
     else:
         logger.info("Skipping SLG system training")
-
-    if train_slg_router:
-        logger.info("Training SLG fine-tuned router: 3_2_1b")
-        finetune_slg_router(
-            model_to_tune=os.path.join(downloaded_models_dir, models_paths["3_2_1b"]),
-            adapter_name=adapters_config["slg_router_3_2_1b"],
-            split_by_title_dir=split_by_title_dir,
-            experiment_number=experiment,
-        )
-    else:
-        logger.info("Skipping SLG fine-tuned router training")
 
     # Baseline 3_2_1b
     if train_3_2_1b:
