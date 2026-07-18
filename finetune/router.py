@@ -178,13 +178,20 @@ def finetune_slg_router(
         len(label2id),
     )
 
+    bf16_supported = torch.cuda.is_bf16_supported()
+    model_dtype = torch.bfloat16 if bf16_supported else torch.float32
+    logger.info(
+        "Using %s precision for SLG router training.",
+        "bf16" if bf16_supported else "fp16 AMP with fp32 model weights",
+    )
+
     tokenizer = AutoTokenizer.from_pretrained(model_to_tune, trust_remote_code=True)
     model = AutoModelForSequenceClassification.from_pretrained(
         model_to_tune,
         num_labels=len(label2id),
         id2label=id2label,
         label2id=label2id,
-        torch_dtype=torch.float16,
+        torch_dtype=model_dtype,
         device_map=None,
         trust_remote_code=True,
     ).to(torch.device("cuda"))
@@ -242,7 +249,8 @@ def finetune_slg_router(
         save_strategy="epoch",
         logging_steps=training_config["logging_steps"],
         seed=int(CONFIG["seed"]),
-        fp16=True,
+        fp16=not bf16_supported,
+        bf16=bf16_supported,
         use_cpu=False,
         dataloader_pin_memory=True,
         report_to="tensorboard",
