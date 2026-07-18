@@ -2,6 +2,7 @@
 
 import json
 import os
+import random
 from typing import Dict, List
 
 import numpy as np
@@ -115,7 +116,7 @@ def _set_pad_token(
 def _split_router_rows(
     rows: List[Dict[str, object]],
     test_split_ratio: float,
-    seed: int,
+    seed: int | None,
 ) -> DatasetDict:
     """Create train/eval splits from the already-prepared router training data."""
     if not 0 < test_split_ratio < 0.5:
@@ -178,11 +179,25 @@ def finetune_slg_router(
         len(label2id),
     )
 
+    base_training_config = CONFIG["training"]
+    router_config = CONFIG.get("slg_router_finetuning", {})
+    training_config = router_config.get("training", {})
+    data_config = CONFIG["data"]
+
+    def training_value(key: str, fallback_key: str = None, default=None):
+        if key in training_config:
+            return training_config[key]
+        source_key = fallback_key or key
+        return base_training_config.get(source_key, default)
+
+    requested_fp16 = bool(training_value("fp16", default=True))
     bf16_supported = torch.cuda.is_bf16_supported()
-    model_dtype = torch.bfloat16 if bf16_supported else torch.float32
+    use_bf16 = requested_fp16 and bf16_supported
+    use_fp16 = requested_fp16 and not use_bf16
+    model_dtype = torch.bfloat16 if use_bf16 else torch.float32
     logger.info(
         "Using %s precision for SLG router training.",
-        "bf16" if bf16_supported else "fp16 AMP with fp32 model weights",
+        "bf16" if use_bf16 else "fp16 AMP with fp32 model weights" if use_fp16 else "fp32",
     )
 
     tokenizer = AutoTokenizer.from_pretrained(model_to_tune, trust_remote_code=True)
@@ -197,16 +212,25 @@ def finetune_slg_router(
     ).to(torch.device("cuda"))
     _set_pad_token(tokenizer, model)
 
-    training_config = CONFIG["training"]
-    data_config = CONFIG["data"]
     test_split_ratio = data_config["test_split_ratio"]
-    max_length = data_config["max_length"]
+    max_length = int(training_value("max_length", default=data_config["max_length"]))
 
-    seed = int(CONFIG["seed"])
+    seed_env = os.getenv("SEED")
+    configured_seed = (
+        int(seed_env)
+        if seed_env is not None
+        else training_config.get("seed", CONFIG.get("seed"))
+    )
+    split_seed = None if configured_seed is None else int(configured_seed)
+    trainer_seed = (
+        random.SystemRandom().randint(0, 2**32 - 1)
+        if configured_seed is None
+        else int(configured_seed)
+    )
     dataset = _split_router_rows(
         rows=rows,
         test_split_ratio=float(test_split_ratio),
-        seed=seed,
+        seed=split_seed,
     )
     test_rows = _collect_router_test_rows(CONFIG["files"]["qa_test"], label2id)
     dataset["test"] = Dataset.from_list(test_rows)
@@ -222,11 +246,20 @@ def finetune_slg_router(
     tokenized_dataset = dataset.map(tokenize_function)
     tokenized_dataset = tokenized_dataset.remove_columns(["question"])
 
-    lora_config = training_config["lora"]
+    base_lora_config = base_training_config["lora"]
+    lora_config = router_config.get("lora", {})
     peft_params = LoraConfig(
-        lora_alpha=lora_config["alpha"],
-        lora_dropout=lora_config["dropout"],
-        r=lora_config["r"],
+        lora_alpha=lora_config.get(
+            "lora_alpha",
+            lora_config.get("alpha", base_lora_config["alpha"]),
+        ),
+        lora_dropout=lora_config.get(
+            "lora_dropout",
+            lora_config.get("dropout", base_lora_config["dropout"]),
+        ),
+        r=lora_config.get("r", base_lora_config["r"]),
+        target_modules=lora_config.get("target_modules"),
+        bias=lora_config.get("bias", "none"),
         task_type=TaskType.SEQ_CLS,
         modules_to_save=["score"],
     )
@@ -242,37 +275,77 @@ def finetune_slg_router(
 
     logging_dir = os.path.join(CONFIG["logging"]["log_dir"], experiment_number)
 
-    training_args = TrainingArguments(
+    per_device_train_batch_size = int(
+        training_value("per_device_train_batch_size")
+    )
+    gradient_accumulation_steps = training_value("gradient_accumulation_steps")
+    effective_batch_size = training_config.get("effective_batch_size")
+    if gradient_accumulation_steps is None:
+        if effective_batch_size is None:
+            gradient_accumulation_steps = base_training_config[
+                "gradient_accumulation_steps"
+            ]
+        else:
+            effective_batch_size = int(effective_batch_size)
+            if effective_batch_size % per_device_train_batch_size != 0:
+                raise ValueError(
+                    "Router effective_batch_size must be divisible by "
+                    "per_device_train_batch_size."
+                )
+            gradient_accumulation_steps = max(
+                1, effective_batch_size // per_device_train_batch_size
+            )
+    gradient_accumulation_steps = int(gradient_accumulation_steps)
+
+    eval_strategy = training_value("eval_strategy", default="epoch")
+    save_strategy = training_value("save_strategy", default="epoch")
+    eval_steps = training_config.get("eval_steps")
+    save_steps = training_config.get("save_steps")
+    if save_steps is None:
+        save_steps = eval_steps
+
+    training_args_kwargs = dict(
         output_dir=checkpoint_dir,
-        num_train_epochs=training_config["num_epochs"],
-        eval_strategy="epoch",
-        save_strategy="epoch",
-        logging_steps=training_config["logging_steps"],
-        seed=int(CONFIG["seed"]),
-        fp16=not bf16_supported,
-        bf16=bf16_supported,
+        num_train_epochs=training_value("num_train_epochs", "num_epochs"),
+        eval_strategy=eval_strategy,
+        save_strategy=save_strategy,
+        logging_steps=training_value("logging_steps"),
+        seed=trainer_seed,
+        fp16=use_fp16,
+        bf16=use_bf16,
         use_cpu=False,
         dataloader_pin_memory=True,
         report_to="tensorboard",
         log_level="info",
         logging_dir=logging_dir,
-        per_device_train_batch_size=training_config["per_device_train_batch_size"],
-        per_device_eval_batch_size=training_config["per_device_eval_batch_size"],
-        learning_rate=training_config["learning_rate"],
-        weight_decay=training_config["weight_decay"],
+        per_device_train_batch_size=per_device_train_batch_size,
+        per_device_eval_batch_size=training_value("per_device_eval_batch_size"),
+        learning_rate=training_value("learning_rate"),
+        weight_decay=training_value("weight_decay", default=0.0),
         adam_beta1=0.9,
         adam_beta2=0.999,
-        max_grad_norm=training_config["max_grad_norm"],
-        warmup_ratio=training_config["warmup_ratio"],
-        lr_scheduler_type="cosine",
-        gradient_accumulation_steps=training_config["gradient_accumulation_steps"],
-        optim="adamw_torch",
-        label_smoothing_factor=training_config["label_smoothing_factor"],
-        load_best_model_at_end=True,
-        metric_for_best_model="eval_loss",
-        greater_is_better=False,
-        save_total_limit=training_config["save_total_limit"],
+        max_grad_norm=training_value("max_grad_norm", default=1.0),
+        warmup_ratio=training_value("warmup_ratio", default=0.0),
+        lr_scheduler_type=training_value("lr_scheduler_type", default="cosine"),
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        optim=training_value("optim", default="adamw_torch"),
+        label_smoothing_factor=training_value(
+            "label_smoothing_factor",
+            default=0.0,
+        ),
+        load_best_model_at_end=training_value("load_best_model_at_end", default=True),
+        metric_for_best_model=training_value("metric_for_best_model", default="eval_loss"),
+        greater_is_better=training_value("greater_is_better", default=False),
+        save_total_limit=training_value("save_total_limit"),
     )
+    if eval_steps is not None:
+        training_args_kwargs["eval_steps"] = int(eval_steps)
+    if save_steps is not None:
+        training_args_kwargs["save_steps"] = int(save_steps)
+    if training_config.get("warmup_steps") is not None:
+        training_args_kwargs["warmup_steps"] = int(training_config["warmup_steps"])
+
+    training_args = TrainingArguments(**training_args_kwargs)
 
     trainer = Trainer(
         model=model,
@@ -282,7 +355,11 @@ def finetune_slg_router(
         tokenizer=tokenizer,
         callbacks=[
             EarlyStoppingCallback(
-                early_stopping_patience=training_config["early_stopping_patience"]
+                early_stopping_patience=training_value("early_stopping_patience"),
+                early_stopping_threshold=training_value(
+                    "early_stopping_threshold",
+                    default=0.0,
+                ),
             ),
             RouterMetricsLoggerCallback(),
         ],
@@ -316,6 +393,9 @@ def finetune_slg_router(
         "adapter_name": adapter_name,
         "label2id": label2id,
         "id2label": {str(idx): label for idx, label in id2label.items()},
+        "router_finetuning": router_config,
+        "effective_gradient_accumulation_steps": gradient_accumulation_steps,
+        "trainer_seed": trainer_seed,
     }
     with open(os.path.join(save_path, ROUTER_METADATA_FILE), "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
