@@ -7,6 +7,9 @@ cluster. The output keeps the local row-wise QA schema:
 
     {"chapter": ..., "title": ..., "question": ..., "answer": ...}
 
+For CQADupStack rows, ``title`` intentionally mirrors ``chapter`` so downstream
+title-based routing uses the CQADupStack domain as the class label.
+
 By default only clusters with at least four question variants are used.
 """
 
@@ -455,7 +458,8 @@ def convert_cqadupstack_clusters_to_qa(
                 continue
 
             answer_source_id, source_question, answer, selection = picked
-            title = source_question.title
+            chapter = f"CQADupStack - {domain}"
+            source_title = source_question.title
             answer_text = answer.body
             pending_rows: list[dict[str, str]] = []
             pending_row_keys: list[tuple[str, str, str]] = []
@@ -468,8 +472,8 @@ def convert_cqadupstack_clusters_to_qa(
                     text = QuestionText(post_id=post_id, title=stack_question.title, body=stack_question.body)
                 question = _question_from_text(text, stack_questions.get(post_id))
                 row = _make_row(
-                    chapter=f"CQADupStack - {domain}",
-                    title=title,
+                    chapter=chapter,
+                    title=chapter,
                     question=question,
                     answer=answer_text,
                 )
@@ -496,7 +500,7 @@ def convert_cqadupstack_clusters_to_qa(
                     "answer_source_question_id": answer_source_id,
                     "answer_selection": selection,
                     "question_ids": " ".join(cluster),
-                    "title": title,
+                    "title": source_title,
                 })
             else:
                 skipped_no_answer += 1

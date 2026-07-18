@@ -86,11 +86,15 @@ Each row follows the local QA schema:
 ```json
 {
   "chapter": "CQADupStack - physics",
-  "title": "cluster/source title",
+  "title": "CQADupStack - physics",
   "question": "semantically similar question variant",
   "answer": "selected StackExchange answer"
 }
 ```
+
+For CQADupStack rows, `title` intentionally mirrors `chapter` so title-based
+splitting uses the CQADupStack domain as the class label. The original cluster
+source title is preserved in `clusters.csv`.
 
 Current `qa.json` dataset size:
 
