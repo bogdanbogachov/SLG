@@ -158,7 +158,9 @@ rag:
 # SLG formation (jina-v2-base-en local embeddings → 768-dim vectors)
 slg_formation:
   embedding_dimension: 768
-  batch_size: 100
+  # Keep local Jina embedding batches small because long answers make
+  # attention memory scale with the longest sequence in the batch.
+  batch_size: 1
   # Max neighbors per expert after threshold filter (cosine on L2-normalized chunk embeddings).
   k_neighbours: 3
   # Only link experts with cosine similarity >= this; then keep up to k_neighbours highest.

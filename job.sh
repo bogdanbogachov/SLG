@@ -23,4 +23,4 @@ source ENV/bin/activate
 export OPENAI_API_KEY="dummy"
 
 # Run the Python script
-python main.py --finetune=True --infer_slg=True --router="finetuned"
+python main.py --infer_slg=True --router="finetuned"
