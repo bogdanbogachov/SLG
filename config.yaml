@@ -193,5 +193,5 @@ adapters:
 training_components:
   train_slg_system: true             # Train SLG experts (routing: Jina + index.json)
   train_slg_router: true             # Train SLG question -> expert classifier router
-  train_3_2_1b: false               # Train baseline 3_2_1b model
-  train_3_1_8b: false                # Train baseline 3_1_8b model
+  train_3_2_1b: true               # Train baseline 3_2_1b model
+  train_3_1_8b: true                # Train baseline 3_1_8b model
