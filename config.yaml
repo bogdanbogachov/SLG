@@ -181,6 +181,7 @@ generation:
 # Evaluation: save resume checkpoints every N test questions (row-wise); see experiments/<exp>/evaluation_checkpoints/
 evaluation:
   checkpoint_every: 10
+  workers: 1
 
 # Adapter names
 adapters:

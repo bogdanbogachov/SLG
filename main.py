@@ -42,5 +42,9 @@ if __name__ == '__main__':
     run_interactive_slg(experiment, show_routing=args.show_routing, router_method=args.router) if args.interactive_slg else None
 
     # Evaluation
-    run_evaluation(experiment, include_training_metrics=args.training_metrics) if args.evaluate else None
+    run_evaluation(
+        experiment,
+        include_training_metrics=args.training_metrics,
+        eval_workers=args.eval_workers,
+    ) if args.evaluate else None
     plot_experiments_metrics() if args.plot_metrics else None

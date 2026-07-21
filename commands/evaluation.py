@@ -1,10 +1,15 @@
 import os
 import json
+from typing import Optional
 from utils.path_utils import ensure_dir
 from config import CONFIG
 
 
-def run_evaluation(experiment: str, include_training_metrics: bool = False):
+def run_evaluation(
+    experiment: str,
+    include_training_metrics: bool = False,
+    eval_workers: Optional[int] = None,
+):
     from evaluate.evaluate import load_data, evaluate, pull_training_metrics
     from logging_config import logger
 
@@ -36,7 +41,12 @@ def run_evaluation(experiment: str, include_training_metrics: bool = False):
         if os.path.isfile(checkpoint_path):
             predictions_path = os.path.join(answers_dir, predictions_file)
             predictions, ground_truth = load_data(predictions_path, ground_truth_file)
-            results = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
+            results = evaluate(
+                predictions,
+                ground_truth,
+                checkpoint_path=checkpoint_path,
+                eval_workers=eval_workers,
+            )
             by_stem[stem] = results
         elif stem in by_stem:
             logger.info(
@@ -48,7 +58,12 @@ def run_evaluation(experiment: str, include_training_metrics: bool = False):
         else:
             predictions_path = os.path.join(answers_dir, predictions_file)
             predictions, ground_truth = load_data(predictions_path, ground_truth_file)
-            results = evaluate(predictions, ground_truth, checkpoint_path=checkpoint_path)
+            results = evaluate(
+                predictions,
+                ground_truth,
+                checkpoint_path=checkpoint_path,
+                eval_workers=eval_workers,
+            )
             by_stem[stem] = results
 
         metrics_list = [{k: by_stem[k]} for k in sorted(by_stem.keys())]

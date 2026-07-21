@@ -27,6 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--infer_rag", type=bool, default=False)
 
     parser.add_argument("--evaluate", type=bool, default=False)
+    parser.add_argument("--eval_workers", type=int, default=None)
 
     parser.add_argument("--training_metrics", type=bool, default=False)
     parser.add_argument("--plot_metrics", type=bool, default=False)

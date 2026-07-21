@@ -1,4 +1,5 @@
 import json
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from rouge_score import rouge_scorer
 import os
@@ -15,10 +16,10 @@ from logging_config import logger
 from config import CONFIG
 
 
-# Download WordNet for synonym matching
-nltk.download('wordnet')
-
 logger.propagate = False
+
+_EVAL_CLIENT = None
+_WORDNET_READY = None
 
 def load_data(predictions_file, ground_truth_file):
     """
@@ -64,8 +65,29 @@ def calculate_meteor_score(reference, candidate):
     """
     Calculate meteor score between a reference and a candidate answer.
     """
-    score = meteor_score(references=[word_tokenize(reference)], hypothesis=word_tokenize(candidate))
-    return score
+    try:
+        return meteor_score(references=[word_tokenize(reference)], hypothesis=word_tokenize(candidate))
+    except LookupError:
+        if _ensure_wordnet():
+            return meteor_score(references=[word_tokenize(reference)], hypothesis=word_tokenize(candidate))
+        raise
+
+
+def _ensure_wordnet():
+    global _WORDNET_READY
+    if _WORDNET_READY is not None:
+        return _WORDNET_READY
+
+    for resource in ('corpora/wordnet', 'corpora/wordnet.zip'):
+        try:
+            nltk.data.find(resource)
+            _WORDNET_READY = True
+            return _WORDNET_READY
+        except LookupError:
+            continue
+
+    _WORDNET_READY = nltk.download('wordnet', quiet=True)
+    return _WORDNET_READY
 
 
 def get_embedding(text: str, client) -> np.ndarray:
@@ -139,29 +161,85 @@ def _empty_score_lists():
     )
 
 
+def _score_records_to_lists(score_records):
+    bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts = _empty_score_lists()
+    for scores in score_records:
+        bleu_scores.append(scores['BLEU'])
+        for key in rouge_scores.keys():
+            rouge_scores[key].append(scores['ROUGE'][key])
+        exact_matches.append(scores['Exact Match'])
+        meteor_scores.append(scores['METEOR'])
+        entailment_scores.append(scores['Entailment'])
+        ai_experts.append(scores['AI Expert'])
+    return bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts
+
+
+def _aggregate_score_records(score_by_index):
+    ordered_scores = [
+        score_by_index[i]
+        for i in sorted(score_by_index.keys())
+    ]
+    return _aggregate_metrics(*_score_records_to_lists(ordered_scores))
+
+
+def _checkpoint_from_v1_state(state: dict):
+    next_i = int(state['next_i'])
+    bleu_scores = state['bleu_scores']
+    rouge_scores = state['rouge_scores']
+    exact_matches = state['exact_matches']
+    meteor_scores = state['meteor_scores']
+    entailment_scores = state['entailment_scores']
+    ai_experts = state['ai_experts']
+
+    score_count = len(bleu_scores)
+    lengths = {
+        score_count,
+        len(rouge_scores.get('rouge1', [])),
+        len(rouge_scores.get('rouge2', [])),
+        len(rouge_scores.get('rougeL', [])),
+        len(exact_matches),
+        len(meteor_scores),
+        len(entailment_scores),
+        len(ai_experts),
+    }
+    if lengths != {next_i}:
+        raise ValueError(
+            'legacy checkpoint cannot be converted because score lists do not match next_i'
+        )
+
+    completed_scores = {}
+    for i in range(next_i):
+        completed_scores[i] = {
+            'BLEU': bleu_scores[i],
+            'ROUGE': {
+                'rouge1': rouge_scores['rouge1'][i],
+                'rouge2': rouge_scores['rouge2'][i],
+                'rougeL': rouge_scores['rougeL'][i],
+            },
+            'Exact Match': exact_matches[i],
+            'METEOR': meteor_scores[i],
+            'Entailment': float(entailment_scores[i]),
+            'AI Expert': ai_experts[i],
+        }
+    return completed_scores, set()
+
+
 def _save_eval_checkpoint(
     path: str,
-    next_i: int,
     n_pairs: int,
-    bleu_scores,
-    rouge_scores,
-    exact_matches,
-    meteor_scores,
-    entailment_scores,
-    ai_experts,
-    partial_metrics: dict,
+    score_by_index,
+    skipped_indices,
 ):
     """Persist progress so evaluation can resume after interruption."""
+    partial_metrics = _aggregate_score_records(score_by_index)
     state = {
-        'version': 1,
-        'next_i': next_i,
+        'version': 2,
         'n_pairs': n_pairs,
-        'bleu_scores': bleu_scores,
-        'rouge_scores': rouge_scores,
-        'exact_matches': exact_matches,
-        'meteor_scores': meteor_scores,
-        'entailment_scores': [float(x) for x in entailment_scores],
-        'ai_experts': ai_experts,
+        'completed_scores': {
+            str(i): score_by_index[i]
+            for i in sorted(score_by_index.keys())
+        },
+        'skipped_indices': sorted(skipped_indices),
         'partial_metrics': partial_metrics,
     }
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -172,6 +250,92 @@ def _save_eval_checkpoint(
 def _load_eval_checkpoint(path: str):
     with open(path, encoding='utf-8') as f:
         return json.load(f)
+
+
+def _load_eval_progress(path: str, n_pairs: int):
+    state = _load_eval_checkpoint(path)
+    if state.get('n_pairs') != n_pairs:
+        logger.warning(
+            'Checkpoint does not match current data length (%s vs %s); starting evaluation from scratch.',
+            state.get('n_pairs'),
+            n_pairs,
+        )
+        return {}, set()
+
+    version = state.get('version', 1)
+    if version == 1:
+        return _checkpoint_from_v1_state(state)
+    if version != 2:
+        raise ValueError(f'unsupported evaluation checkpoint version: {version}')
+
+    completed_scores = {
+        int(i): scores
+        for i, scores in state.get('completed_scores', {}).items()
+    }
+    skipped_indices = {
+        int(i)
+        for i in state.get('skipped_indices', [])
+    }
+    return completed_scores, skipped_indices
+
+
+def _normalise_answer(value):
+    if value == '' or value is None:
+        return 'Empty'
+    return value
+
+
+def _init_eval_worker(api_key: str):
+    global _EVAL_CLIENT
+    _EVAL_CLIENT = OpenAI(api_key=api_key)
+
+
+def _get_eval_client():
+    global _EVAL_CLIENT
+    if _EVAL_CLIENT is None:
+        _EVAL_CLIENT = OpenAI(api_key=CONFIG['open_ai_api_key'])
+    return _EVAL_CLIENT
+
+
+def _score_eval_pair(task):
+    i, pred, truth = task
+    if pred['question'] != truth['question']:
+        return {
+            'index': i,
+            'matched': False,
+            'chapter': pred.get('chapter'),
+            'title': pred.get('title'),
+            'pred_question': pred['question'],
+            'truth_question': truth['question'],
+        }
+
+    gt_answer = _normalise_answer(truth['answer'])
+    pred_answer = _normalise_answer(pred['answer'])
+    client = _get_eval_client()
+
+    bleu = calculate_bleu(gt_answer, pred_answer)
+    rouge = calculate_rouge(gt_answer, pred_answer)
+    exact_match = calculate_exact_match(gt_answer, pred_answer)
+    meteor = calculate_meteor_score(gt_answer, pred_answer)
+    entailment = check_entailment(gt_answer, pred_answer, api_client=client)
+    ai_expert = calculate_ai_expert(gt_answer, pred_answer, api_client=client)
+
+    return {
+        'index': i,
+        'matched': True,
+        'scores': {
+            'BLEU': bleu,
+            'ROUGE': {
+                'rouge1': rouge['rouge1'].fmeasure,
+                'rouge2': rouge['rouge2'].fmeasure,
+                'rougeL': rouge['rougeL'].fmeasure,
+            },
+            'Exact Match': exact_match,
+            'METEOR': meteor,
+            'Entailment': float(entailment),
+            'AI Expert': ai_expert,
+        },
+    }
 
 
 def calculate_ai_expert(reference, candidate, api_client):
@@ -207,7 +371,53 @@ def calculate_ai_expert(reference, candidate, api_client):
         return 0
 
 
-def evaluate(predictions, ground_truth, checkpoint_path: Optional[str] = None):
+def _record_eval_result(result, score_by_index, skipped_indices):
+    i = result['index']
+    if result['matched']:
+        score_by_index[i] = result['scores']
+        return
+
+    skipped_indices.add(i)
+    logger.info(
+        "Warning: questions didn't match at chapter: %s, and title: %s",
+        result['chapter'],
+        result['title'],
+    )
+    logger.info('Pred question: %s', result['pred_question'])
+    logger.info('Truth question: %s', result['truth_question'])
+    logger.info(40 * '-')
+
+
+def _configured_eval_workers(eval_workers: Optional[int], n_pairs: int) -> int:
+    eval_cfg = CONFIG.get('evaluation') or {}
+    if eval_workers is None:
+        eval_workers = eval_cfg.get('workers', 1)
+    try:
+        workers = int(eval_workers)
+    except (TypeError, ValueError):
+        logger.warning('Invalid evaluation worker count %r; using 1 worker.', eval_workers)
+        workers = 1
+    if workers < 1:
+        workers = 1
+    if n_pairs > 0:
+        workers = min(workers, n_pairs)
+    return workers
+
+
+def _log_eval_progress(processed_count: int, n_pairs: int, threshold: int) -> int:
+    percent_checked = (processed_count / n_pairs) * 100 if n_pairs else 100
+    if threshold < percent_checked:
+        logger.info('Evaluated %s%%', threshold)
+        threshold += 10
+    return threshold
+
+
+def evaluate(
+    predictions,
+    ground_truth,
+    checkpoint_path: Optional[str] = None,
+    eval_workers: Optional[int] = None,
+):
     """
     Evaluate predictions against ground truth using BLEU, ROUGE, and Exact Match.
 
@@ -220,131 +430,91 @@ def evaluate(predictions, ground_truth, checkpoint_path: Optional[str] = None):
     if checkpoint_every < 1:
         checkpoint_every = 1
 
-    client = OpenAI(api_key=CONFIG['open_ai_api_key'])
-
     n_pairs = min(len(predictions), len(ground_truth))
-    start_i = 0
-    bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts = _empty_score_lists()
+    workers = _configured_eval_workers(eval_workers, n_pairs)
+    score_by_index = {}
+    skipped_indices = set()
 
     if checkpoint_path and os.path.isfile(checkpoint_path):
         try:
-            state = _load_eval_checkpoint(checkpoint_path)
-            if state.get('n_pairs') != n_pairs:
-                logger.warning(
-                    'Checkpoint does not match current data length (%s vs %s); starting evaluation from scratch.',
-                    state.get('n_pairs'),
-                    n_pairs,
-                )
-            else:
-                start_i = int(state['next_i'])
-                bleu_scores = state['bleu_scores']
-                rouge_scores = state['rouge_scores']
-                exact_matches = state['exact_matches']
-                meteor_scores = state['meteor_scores']
-                entailment_scores = state['entailment_scores']
-                ai_experts = state['ai_experts']
-                logger.info(
-                    'Resuming evaluation from question index %s/%s (checkpoint).',
-                    start_i,
-                    n_pairs,
-                )
+            score_by_index, skipped_indices = _load_eval_progress(checkpoint_path, n_pairs)
+            logger.info(
+                'Resuming evaluation with %s/%s questions already processed (checkpoint).',
+                len(score_by_index) + len(skipped_indices),
+                n_pairs,
+            )
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
             logger.warning('Could not load evaluation checkpoint (%s); starting from scratch.', e)
 
-    logger.info('Evaluation has started.')
+    pending_tasks = [
+        (i, predictions[i], ground_truth[i])
+        for i in range(n_pairs)
+        if i not in score_by_index and i not in skipped_indices
+    ]
+
+    logger.info('Evaluation has started with %s worker process(es).', workers)
     threshold = 10
-    for i in range(start_i, n_pairs):
-        pred, truth = predictions[i], ground_truth[i]
-        percent_checked = ((i + 1) / n_pairs) * 100 if n_pairs else 0
-        if threshold < percent_checked:
-            logger.info('Evaluated %s%%', threshold)
-            threshold += 10
+    processed_count = len(score_by_index) + len(skipped_indices)
+    threshold = _log_eval_progress(processed_count, n_pairs, threshold)
+    processed_since_checkpoint = 0
 
-        if pred['question'] != truth['question']:
-            logger.info(
-                "Warning: questions didn't match at chapter: %s, and title: %s",
-                pred['chapter'],
-                pred['title'],
-            )
-            logger.info('Pred question: %s', pred['question'])
-            logger.info('Truth question: %s', truth['question'])
-            logger.info(40 * '-')
+    def maybe_save_checkpoint(force: bool = False):
+        if not checkpoint_path:
+            return
+        if not force and processed_since_checkpoint < checkpoint_every:
+            return
+        _save_eval_checkpoint(
+            checkpoint_path,
+            n_pairs,
+            score_by_index,
+            skipped_indices,
+        )
+        logger.info(
+            'Saved evaluation checkpoint (%s/%s questions processed).',
+            len(score_by_index) + len(skipped_indices),
+            n_pairs,
+        )
+
+    if pending_tasks:
+        if workers == 1:
+            _init_eval_worker(CONFIG['open_ai_api_key'])
+            for task in pending_tasks:
+                result = _score_eval_pair(task)
+                _record_eval_result(result, score_by_index, skipped_indices)
+                processed_count = len(score_by_index) + len(skipped_indices)
+                threshold = _log_eval_progress(processed_count, n_pairs, threshold)
+                processed_since_checkpoint += 1
+                if processed_since_checkpoint >= checkpoint_every:
+                    maybe_save_checkpoint()
+                    processed_since_checkpoint = 0
         else:
-            if truth['answer'] == '':
-                gt_answer = 'Empty'
-            elif truth['answer'] is None:
-                gt_answer = 'Empty'
-            else:
-                gt_answer = truth['answer']
+            with ProcessPoolExecutor(
+                max_workers=workers,
+                initializer=_init_eval_worker,
+                initargs=(CONFIG['open_ai_api_key'],),
+            ) as executor:
+                futures = [
+                    executor.submit(_score_eval_pair, task)
+                    for task in pending_tasks
+                ]
+                for future in as_completed(futures):
+                    try:
+                        result = future.result()
+                    except Exception:
+                        maybe_save_checkpoint(force=True)
+                        raise
+                    _record_eval_result(result, score_by_index, skipped_indices)
+                    processed_count = len(score_by_index) + len(skipped_indices)
+                    threshold = _log_eval_progress(processed_count, n_pairs, threshold)
+                    processed_since_checkpoint += 1
+                    if processed_since_checkpoint >= checkpoint_every:
+                        maybe_save_checkpoint()
+                        processed_since_checkpoint = 0
 
-            if pred['answer'] == '':
-                pred_answer = 'Empty'
-            elif pred['answer'] is None:
-                pred_answer = 'Empty'
-            else:
-                pred_answer = pred['answer']
+    if pending_tasks and processed_since_checkpoint > 0:
+        maybe_save_checkpoint(force=True)
 
-            logger.debug('Calculating BLEU score.')
-            bleu = calculate_bleu(gt_answer, pred_answer)
-            bleu_scores.append(bleu)
-
-            logger.debug('Calculating ROUGE score.')
-            rouge = calculate_rouge(gt_answer, pred_answer)
-            for key in rouge_scores.keys():
-                rouge_scores[key].append(rouge[key].fmeasure)
-
-            logger.debug('Calculating Exact Match (EM) score.')
-            exact_matches.append(calculate_exact_match(gt_answer, pred_answer))
-
-            logger.debug('Calculating METEOR score.')
-            meteor = calculate_meteor_score(gt_answer, pred_answer)
-            meteor_scores.append(meteor)
-
-            logger.debug('Calculating entailment score.')
-            entailment = check_entailment(gt_answer, pred_answer, api_client=client)
-            entailment_scores.append(float(entailment))
-
-            logger.debug('Calculating AI expert score.')
-            ai_expert = calculate_ai_expert(gt_answer, pred_answer, api_client=client)
-            ai_experts.append(ai_expert)
-
-        if checkpoint_path and (
-            (i + 1) % checkpoint_every == 0 or (i + 1) == n_pairs
-        ):
-            partial = _aggregate_metrics(
-                bleu_scores,
-                rouge_scores,
-                exact_matches,
-                meteor_scores,
-                entailment_scores,
-                ai_experts,
-            )
-            _save_eval_checkpoint(
-                checkpoint_path,
-                i + 1,
-                n_pairs,
-                bleu_scores,
-                rouge_scores,
-                exact_matches,
-                meteor_scores,
-                entailment_scores,
-                ai_experts,
-                partial,
-            )
-            logger.info(
-                'Saved evaluation checkpoint (%s/%s questions processed).',
-                i + 1,
-                n_pairs,
-            )
-
-    result = _aggregate_metrics(
-        bleu_scores,
-        rouge_scores,
-        exact_matches,
-        meteor_scores,
-        entailment_scores,
-        ai_experts,
-    )
+    result = _aggregate_score_records(score_by_index)
     logger.info('Evaluation has been completed.')
     logger.info(40 * '-')
 
