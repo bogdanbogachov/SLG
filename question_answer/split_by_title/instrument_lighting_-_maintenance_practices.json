@@ -1,0 +1,794 @@
+[
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What steps are necessary to safely remove, replace, and verify the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What controls the illumination of individual instruments and how does the TST - BRT - DIM switch affect the RH navigation indicator lights?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the detailed process for replacing engine instrument light bulbs, including panel removal, electrical safety measures, bulb replacement, and post-installation testing?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the wiring and control system allow independent operation of instrument and gage lights in the panel illumination?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely replacing engine instrument light bulbs, including panel removal, electrical safety measures, and post-replacement testing?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Where can you find the procedures for removing and installing instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the replaceable light sources for flight and engine instruments installed and managed within the aircraft's lighting system?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be consulted for the procedures related to instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be consulted for the procedures on instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and reinstalling the dimming assembly in the airplane's instrument panel, including steps for disconnecting electrical power, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which document should be consulted for procedures on instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the location of the instrument lighting dimming assembly and how is the dimming control mounted in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be referenced to find the procedures for removing and installing instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the replaceable light bar and bulbs for flight and engine instruments powered and controlled within the aircraft's lighting system?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How do you safely replace and test the flight instrument light bar on an aircraft?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the steps to replace the flight instrument light bar and verify its operation?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "In the aircraft's instrument panel, how does the TST - BRT - DIM switch affect the illumination of the RH navigation indicators when set to the BRT position?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific actions required to remove and reinstall the dimming assembly in the airplane's instrument panel while ensuring electrical safety and proper component securing?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch impact the illumination of the RH navigation indicators regardless of the RADIO LT dimmer setting?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the sequential steps required to remove and reinstall the dimming assembly in the airplane's instrument panel while ensuring proper electrical connections and safety precautions?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch influence the illumination of the RH navigation indicators when set to the BRT position?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the sequence of actions required to replace engine instrument light bulbs and confirm their proper illumination?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to disconnect, replace, and verify the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What manual should be referenced for the removal and installation of radio lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual provides guidance on the removal and installation of radio lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely removing, replacing, and testing the flight instrument light bar during aircraft maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be referenced for procedures on instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual provides instructions for removing and installing instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How is the panel illumination controlled and what is the function of the TST - BRT - DIM switch for the RH navigation indicators?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing, replacing, and testing the flight instrument light bar to ensure proper operation?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for removing and reinstalling the dimming assembly in the airplane's instrument panel?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What reference should be used for the removal and installation of instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling the dimming assembly in the airplane's instrument panel, including disconnecting electrical connections, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the lighting and dimming controls for flight and engine instruments physically arranged within the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific procedures for removing and reinstalling the dimming assembly in the airplane's instrument panel, including steps for disconnecting electrical power, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch interact with the PANEL LT dimmer to control the illumination of the RH navigation indicators?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely replacing engine instrument light bulbs and confirming their proper illumination after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What procedures must be followed to safely disconnect, remove, and reinstall the dimming assembly in the airplane's instrument panel while ensuring proper electrical safety and secure mounting?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch affect the illumination of the RH navigation indicators when set to the BRT position?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps involved in removing and installing the dimming assembly in the airplane's instrument panel?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Where is the instrument lighting dimming control mounted in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the individual light sources for flight and engine instruments powered and managed within the aircraft's lighting system?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "In what way does the TST - BRT - DIM switch override the RADIO LT dimmer when controlling the RH navigation indicator lights?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch control the illumination of the RH navigation indicators independently of the RADIO LT dimmer?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in accessing, disconnecting, removing, reinstalling, and verifying the operation of the dimming assembly in the airplane's instrument panel?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for disconnecting, replacing, and testing the flight instrument light bar to ensure proper functionality?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What steps must be taken to safely remove, replace, and verify the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the lighting sources for flight and engine instruments individually powered and controlled in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What manual contains the procedures for removing and installing radio lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely remove, replace, and verify the functionality of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for disconnecting, removing, and reinstalling the dimming assembly in the airplane's instrument panel while maintaining proper electrical connections and safety measures?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in disconnecting, replacing, and testing the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the key safety and procedural steps to replace engine instrument light bulbs and ensure their proper operation after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which maintenance manual provides guidance on removing and installing radio lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps required to safely remove and reinstall the dimming assembly in the airplane's instrument panel, including disconnecting electrical power, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the sequential steps to safely replace engine instrument light bulbs and verify their proper illumination after reinstallation, including necessary electrical safety precautions and panel assembly procedures?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What steps should be followed to remove and reinstall the dimming assembly in the airplane's instrument panel?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the sequence of actions required to safely replace the flight instrument light bar and confirm its proper operation?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in replacing the flight instrument light bar and performing a functionality check?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which maintenance practices manual should be referenced for instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to access, replace, and verify the functionality of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the detailed process for safely replacing engine instrument light bulbs and confirming their proper illumination after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be consulted for the procedures related to instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the operation of the PANEL LT dimmer and the TST - BRT - DIM switch collectively influence the illumination of the instrument and RH navigation indicator lights?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the function of the replaceable light bar installed at the top of the flight instruments?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps required to remove and reinstall the dimming assembly in the airplane's instrument panel, including disconnecting electrical power, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be referenced to find the procedures for removing and installing instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What procedures should be followed to safely replace and test the flight instrument light bar?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the proper sequence for disconnecting, replacing, and testing the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the key steps involved in safely replacing engine instrument light bulbs and verifying their proper operation after reinstallation, including electrical safety precautions and panel access procedures?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the necessary steps to safely replace engine instrument light bulbs and verify their proper operation after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the individual instrument lights wired and controlled in the panel illumination system?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the lighting and dimming controls for flight and engine instruments arranged within the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the necessary steps to safely disconnect, replace, and test the flight instrument light bar on an aircraft?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the process for replacing engine instrument light bulbs and testing their operation after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What steps should be taken to replace engine instrument light bulbs and ensure their proper functionality after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the wiring configuration of the instrument lights enable independent control via the PANEL LT dimmer and the TST - BRT - DIM switch?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be referenced to perform removal and installation of instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the function of the TST - BRT - DIM switch in controlling the illumination of the RH navigation indicators?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What precautions and procedures are required to replace the flight instrument light bar and ensure it functions correctly?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What components are used to illuminate and control the lighting of flight and engine instruments in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific procedures for disconnecting, removing, and reinstalling the dimming assembly in the airplane's instrument panel to ensure proper electrical connections and secure mounting?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be consulted for the procedures related to instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "In what locations are the light sources for flight and engine instruments installed and how are they controlled within the aircraft's lighting system?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the replaceable light sources for flight and engine instruments connected to the dimming assembly and control in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the replaceable light sources for flight and engine instruments powered and managed within the aircraft's lighting system?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "In the aircraft's instrument panel, what is the function of the TST - BRT - DIM switch in relation to the illumination of the RH navigation indicators?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the location of the dimming assembly that controls the instrument lighting in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch affect the operation of the RH navigation indicator lights when set to the BRT position?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the necessary steps to replace and verify the functionality of the flight instrument light bar?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Where can you find the detailed procedures for removing and installing instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual provides guidance on the removal and installation of instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling the dimming assembly in the airplane's instrument panel, including accessing the assembly, disconnecting electrical connections, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for disconnecting, replacing, and testing the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the role of the TST - BRT - DIM switch in controlling the instrument illumination for the RH navigation indicators?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Where are the replaceable light bars and bulbs for flight and engine instruments installed and how are they controlled?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely replace engine instrument light bulbs and verify their proper operation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch regulate the illumination of the RH navigation indicators independently of the PANEL LT dimmer?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the lighting sources for flight and engine instruments individually powered and controlled in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the steps involved in removing, replacing, and verifying the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the recommended procedure for replacing engine instrument light bulbs and verifying their proper operation after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the lighting system ensure proper illumination and control for both flight and engine instruments in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch influence the illumination of the RH navigation indicators when set to the BRT position?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for disconnecting, replacing, and testing the flight instrument light bar to ensure proper operation during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely access, replace, and verify the operation of engine instrument light bulbs while maintaining proper electrical safety procedures?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the lighting sources for flight and engine instruments connected to the dimming system and where are these controls located?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the wiring configuration of the instrument lights affect their control via the PANEL LT dimmer?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What procedures are involved in replacing engine instrument light bulbs and verifying their functionality?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What is the process for removing, replacing, and testing the flight instrument light bar?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps involved in safely replacing engine instrument light bulbs and verifying their proper illumination after reinstallation?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling the dimming assembly in the airplane's instrument panel, including disconnecting electrical connections, securing components, and verifying proper operation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to remove and reinstall the dimming assembly in the airplane's instrument panel, ensuring proper electrical disconnection, component removal, and secure reinstallation?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be referenced to perform removal and installation of instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch affect the illumination of the RH navigation indicators when it is set to the BRT position?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps to safely disconnect, replace, and verify the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the PANEL LT dimmer affect the operation of instrument and gage lights?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What procedures are necessary to safely remove and reinstall the dimming assembly in the airplane's instrument panel?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed procedures for safely disconnecting, replacing, and verifying the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the detailed steps involved in removing and reinstalling the dimming assembly in the airplane's instrument panel, ensuring proper electrical disconnection, component securing, and functional verification?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Which manual should be consulted for the procedures on instrument lighting dimming control removal and installation?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the key steps involved in safely removing, replacing, and reinstalling engine instrument light bulbs while ensuring proper electrical procedures and post-replacement verification?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the light sources for flight and engine instruments different and what controls are used for their dimming?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to safely disconnect, replace, and verify the operation of the flight instrument light bar during maintenance?",
+        "answer": "Replace Flight Instrument Light Bar . Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. Remove necessary instrument panel assemblies to gain access to flight instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. Remove screws securing light bar to flight instrument. Replace light bar and secure with screws. (8) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and (9) Connect the electrical power to the airplane.  Press the ALT/BAT MASTER switch to ON to do a check of the light bar."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the lighting system for flight and engine instruments differ in terms of light sources and control placement?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the flight and engine instruments individually illuminated and controlled in the aircraft?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch determine the illumination status of the RH navigation indicators in the pilot's instrument panel?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the specific steps to safely remove, replace, and reinstall engine instrument light bulbs while ensuring electrical safety and verifying proper illumination after reassembly?",
+        "answer": "Replace Engine Instrument Light Bulbs . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove necessary instrument panel assemblies to gain access to engine instrument. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Remove engine instrument. (5) Remove screws securing light cover plate to bottom of instrument. (6) Replace light bulbs. (7) Secure light cover plate to bottom of instrument with screws. (8) Install engine instrument. (9) Install instrument panel assemblies previously removed. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices.  Connect the electrical power to the airplane. Press the ALT/BAT MASTER switch to ON to do a check of the instrument light bulb."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How are the replaceable light sources for flight and engine instruments powered and managed within the aircraft's lighting system?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What document outlines the procedures for removing and installing instrument lighting dimming control?",
+        "answer": "For Instrument Lighting Dimming Control Removal and Installation, refer to Radio Lighting - Maintenance Practices, Radio Lighting Dimming Control Removal and Installation."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "How does the TST - BRT - DIM switch determine the illumination status of the RH navigation indicators regardless of the PANEL LT dimmer setting?",
+        "answer": "Panel illumination is operated with independent lights installed in each instrument and gage. The lights are wired parallel and are controlled by the PANEL LT dimmer, found below the navigation indicators. Instrument illumination for the RH navigation indicators in the pilot's instrument panel, is controlled by the TST  - BRT  - DIM  switch. When the switch is in the BRT position, the instrument lights will be off regardless of the RADIO LT dimmer position."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "Where is the dimming assembly for the instrument lighting located?",
+        "answer": "Flight instruments are individually lighted by a replaceable light bar installed at the top of the instrument. Engine instruments are individually lighted by replaceable light bulbs. Both flight and engine instruments are connected to a dimming assembly and an instrument lighting dimming control. The dimming assembly is located behind  the copilot instrument panel assembly at RBL 18.00 and WL 15.00. The instrument lighting dimming control  is mounted on the right side of the circuit panel assembly."
+    },
+    {
+        "chapter": "CHAPTER 33 - LIGHTS",
+        "title": "INSTRUMENT LIGHTING - MAINTENANCE PRACTICES",
+        "question": "What are the necessary steps to safely remove and reinstall the dimming assembly in the airplane's instrument panel while ensuring proper electrical and component connections?",
+        "answer": "Remove Dimming Assembly . (1) Disconnect the electrical power from the airplane. (2) Make sure the ALT/BAT MASTER switch is in the off position. (3) Remove copilot instrument panel assembly to gain access to dimming assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4) Disconnect dimming module connector . Remove screws securing dimming assembly to heat sink support assembly.Install Dimming Assembly . (1) Position dimming assembly and secure to heat sink support assembly with screws. (2) Connect dimming module connector . (3) Install copilot instrument panel assembly. Refer to Chapter 31, Instrument and Control Panels - Maintenance Practices. (4)  Connect the electrical power to the airplane. (5) Press the ALT/BAT MASTER switch to ON to do a check of the dimming assembly."
+    }
+]
