@@ -81,7 +81,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What precautions should be taken when connecting external power to the airplane's electrical system, and how does the circuit design ensure safety?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -99,13 +99,13 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "Why is it important to perform interior cleaning operations in an area with good airflow while following safety precautions for each cleaning material?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What precautions should be taken to ensure safety and effectiveness when selecting cleaning materials and procedures for an airplane's interior?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -129,13 +129,13 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the key considerations for connecting external 24-volt DC power for cold weather starting and ground maintenance, and how does the system ensure correct polarity connection?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the key safety and environmental considerations when selecting cleaning materials and procedures for an airplane's interior?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -147,13 +147,13 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What features of the ground power system help prevent damage due to incorrect connection during external power hookup?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the function of the polarity reversal protection in the ground power system when connecting external 24-volt DC power for engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -171,7 +171,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system ensure correct polarity connection during external power hookup?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -183,7 +183,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "Why is it important to follow safety precautions specific to each cleaning material during airplane interior cleaning?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -297,7 +297,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system facilitate cold weather engine starting and ground maintenance while ensuring correct polarity connection?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -309,7 +309,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the significance of the negative ground connection and polarity reversal protection when connecting external 24-volt DC power for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -357,7 +357,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the recommended cleaning materials and procedures for maintaining the airplane's interior safety and cleanliness?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -369,7 +369,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "Why is it essential to perform airplane interior cleaning in an area with good airflow while following safety precautions for each cleaning material?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -417,13 +417,13 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the recommended safety precautions and environmental conditions to consider when performing interior cleaning procedures on an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the significance of choosing an area with good airflow when performing interior cleaning operations on an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -459,7 +459,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the key safety features of the ground power system that ensure proper connection and prevent damage when supplying 24-volt DC power with negative ground for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -489,7 +489,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the recommended environment for performing interior cleaning procedures on an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -501,7 +501,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system ensure proper connection and prevent damage when supplying 24-volt DC power for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -549,7 +549,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the recommended cleaning materials and procedures for maintaining the airplane's interior safety and cleanliness?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -579,7 +579,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system's polarity reversal protection ensure safe connection during external 24-volt DC power supply for engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -609,7 +609,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What considerations should be taken into account when selecting cleaning materials and procedures for an airplane's interior?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -621,7 +621,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the purpose of the polarity reversal protection in the ground power receptacle circuit?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -645,7 +645,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the importance of ensuring good airflow and safety precautions during interior cleaning procedures on an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -711,7 +711,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the function of the polarity reversal protection in the ground power system when connecting a 24-volt DC power source with negative ground for engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -765,7 +765,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the significance of connecting the external power unit with negative ground and ensuring correct polarity during cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -783,7 +783,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "Why is it important to perform interior cleaning operations in an area with good airflow?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -867,7 +867,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system's design prevent damage if the external power plug is connected incorrectly during cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -897,19 +897,19 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system's polarity reversal protection function to prevent damage when connecting external 24-volt DC power for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the significance of connecting the external 24-volt DC power source with negative ground, and how does the system's polarity reversal protection ensure proper and safe connection during engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What guidelines should be followed to ensure safety and effectiveness when cleaning the interior of an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -951,7 +951,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the purpose of connecting the external 24-volt DC power supply with negative ground and how does the system prevent incorrect polarity connections during engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -999,7 +999,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the key safety and environmental considerations when selecting cleaning materials and procedures for an airplane's interior?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1035,7 +1035,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What specific safety precautions should be followed when using different cleaning materials and procedures inside an airplane's interior?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1053,7 +1053,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What considerations should be taken into account when using external 24-volt DC power for engine starting and ground maintenance, and how does the system prevent incorrect connections?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1071,7 +1071,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the role of the negative ground connection and polarity reversal protection when using an external 24-volt DC power unit for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1089,13 +1089,13 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What precautions should be taken to ensure safety and effectiveness when selecting cleaning materials and procedures for an airplane's interior?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What precautions should be observed when connecting a 24-volt DC external power source with negative ground to ensure proper polarity and safe operation during engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1113,7 +1113,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What should be considered when choosing cleaning procedures and materials for the airplane's interior to ensure safety and effectiveness?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1137,7 +1137,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system's polarity reversal protection ensure correct connection when supplying external 24-volt DC power for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1149,7 +1149,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the recommended procedures for connecting external 24-volt DC power for cold weather starting and ground maintenance, and how does the system ensure proper polarity connection?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1185,7 +1185,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the key safety features of the ground power system that ensure correct connection and prevent damage during external 24-volt DC power supply for engine starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1221,7 +1221,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What precautions should be followed regarding cleaning materials and procedures inside an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1239,7 +1239,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What is the purpose of connecting a 24-volt DC external power unit with negative ground, and how does the system ensure proper polarity during cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1263,13 +1263,13 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What factors should be considered to ensure safe and effective interior cleaning of an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What precautions should be observed to ensure safety and effectiveness when cleaning the interior of an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1335,7 +1335,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "What are the recommended practices for ensuring safety and proper airflow during interior cleaning procedures on an airplane?",
-        "answer": "This section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
+        "answer": "CAUTION: Before beginning any fastener removal, verify that the fuselage skin is isolated and secured. {Mistake} may result in unnecessary rework or component leakage.\n\nThis section recommends different types of cleaning materials and cleaning procedures for the interior of the airplane. WARNING: Do these cleaning operations in an area with good airflow. Use the applicable safety precautions for each cleaning material that you use."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
@@ -1365,7 +1365,7 @@
         "chapter": "CHAPTER 12 - SERVICING",
         "title": "INTERIOR - CLEANING/PAINTING",
         "question": "How does the ground power system ensure safe connection and proper polarity when supplying 24-volt DC power for cold weather starting and ground maintenance?",
-        "answer": "Connect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
+        "answer": "CAUTION: Incorrect use of solvent cleaners during panel replacement may lead to scratching on the wing root. Only use protective materials and ensure that ambient temperature is met before proceeding.\n\nConnect to 24-volt DC, negative ground power unit with a maximum output of 28.8 volts, for cold weather starting, and lengthy ground maintenance of the airplane electrical equipment, with exception of electronic equipment.  Refer to Pilot's Operating Handbook and FAA Approved Airplane Flight Manual for engine starting instructions with auxiliary power. NOTE:  The ground power receptacle circuit incorporates a polarity reversal protection. Power from the external power source will flow only if the ground service plug is connected correctly to the airplane."
     },
     {
         "chapter": "CHAPTER 12 - SERVICING",
