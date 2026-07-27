@@ -22,7 +22,7 @@ if __name__ == '__main__':
     # Data processing
     create_qa() if args.create_qa else None
     combine_all_qa() if args.combine_all_qa else None
-    inflate_overshadowing() if args.inflate_overshadowing else None
+    inflate_overshadowing(args.inflation_percentage) if args.inflate_overshadowing else None
     split_qa() if args.split_qa else None
 
     # Analysis

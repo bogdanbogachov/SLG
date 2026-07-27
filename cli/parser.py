@@ -11,7 +11,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("--data_overlap_check", type=bool, default=False)
 
-    parser.add_argument("--inflate_overshadowing", type=bool, default=False)
+    parser.add_argument(
+        "--inflate_overshadowing",
+        nargs="?",
+        const=True,
+        default=False,
+        type=lambda value: str(value).lower() == "true",
+    )
+    parser.add_argument("--inflation_percentage", type=float, default=None)
 
     parser.add_argument("--slg_embeddings", type=bool, default=False)
 

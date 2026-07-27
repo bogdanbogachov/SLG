@@ -39,7 +39,7 @@ python main.py --download_models
 # 2. Generate QA pairs from PDFs
 python main.py --create_qa
 python main.py --combine_all_qa
-python main.py --inflate_overshadowing
+python main.py --inflate_overshadowing --inflation_percentage 25
 python main.py --split_qa
 
 # 3. Optional: Check data overlap

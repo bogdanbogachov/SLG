@@ -146,6 +146,7 @@ data:
   max_length: 1024
   num_questions_per_text: 28
   prefix_length: 5
+  inflation_percentage: 100
 
 # RAG/Embedding constants
 rag:

@@ -50,13 +50,21 @@ def combine_all_qa():
     return None
 
 
-def inflate_overshadowing():
+def inflate_overshadowing(inflation_percentage=None):
     from question_answer.inflate_overshadowing import inflate_qa_answers_with_file_inputs
     files_config = CONFIG['files']
+    data_config = CONFIG['data']
+    percentage = (
+        data_config.get('inflation_percentage', 100)
+        if inflation_percentage is None
+        else inflation_percentage
+    )
     inflate_qa_answers_with_file_inputs(
         files_config['qa_original'],
         files_config['qa_inflating_material'],
-        files_config['qa']
+        files_config['qa'],
+        inflation_percentage=percentage,
+        seed=int(CONFIG['seed']),
     )
 
 
