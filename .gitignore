@@ -1,2 +1,15 @@
 log_file.log
 vevn/
+.idea/
+answers/
+checkpoints/
+data/
+downloaded_models/
+evaluate/poster_plots.py
+evaluate/poster_story_plots.py
+experiments/
+logs/
+paper_assets/
+qa_archive/
+question_answer/cqadupstack_clustered
+venv/
