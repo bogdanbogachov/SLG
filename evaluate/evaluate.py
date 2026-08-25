@@ -355,7 +355,7 @@ def calculate_ai_expert(reference, candidate, api_client):
                 {"role": "system", "content": ai_expert_prompt},
                 {"role": "user", "content": query_expert_prompt.format(text_1=reference, text_2=candidate)},
             ],
-            max_tokens=max_new_tokens,
+            max_completion_tokens=max_new_tokens,
             temperature=temperature
         )
         llm_response = response.choices[0].message.content.strip()

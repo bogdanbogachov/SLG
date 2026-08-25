@@ -38,7 +38,7 @@ def generate(text):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": query_prompt.format(text=text, questions=questions)}
             ],
-            max_tokens=max_new_tokens,
+            max_completion_tokens=max_new_tokens,
             temperature=temperature
         )
         llm_response = response.choices[0].message.content.strip()

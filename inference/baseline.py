@@ -58,7 +58,7 @@ def ask_baseline(file: str, model: str, experiment: str, client) -> None:
                     {"role": "system", "content": CONFIG['inference_prompt']},
                     {"role": "user", "content": item['question']},
                 ],
-                max_tokens=generation_config['max_new_tokens'],
+                max_completion_tokens=generation_config['max_new_tokens'],
                 temperature=generation_config['temperature'],
                 seed=int(CONFIG['seed']),
             )
@@ -328,7 +328,7 @@ class AskRag:
                         {"role": "system", "content": CONFIG['rag_prompt']},
                         {"role": "user", "content": input_text},
                     ],
-                    max_tokens=generation_config['max_new_tokens'],
+                    max_completion_tokens=generation_config['max_new_tokens'],
                     temperature=generation_config['temperature'],
                     seed=int(CONFIG['seed']),
                 )
