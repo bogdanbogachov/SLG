@@ -1,5 +1,6 @@
 import json
 from concurrent.futures import ProcessPoolExecutor, as_completed
+import ast
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from rouge_score import rouge_scorer
 import os
@@ -533,7 +534,7 @@ def extract_log_values(log_file):
         content = f.read()
         content = re.sub(r'\bnan\b', "100000", content)
         content = re.sub(r'\binf\b', "100000", content)
-        data = json.loads(content.replace("'", '"'))
+        data = _extract_last_log_history(content)
 
         second_last_log = data[-2]  # Get the second-to-last dictionary
         last_log = data[-1]  # Get the last dictionary
@@ -544,6 +545,52 @@ def extract_log_values(log_file):
             'eval_loss': last_log['eval_loss'],
             'epochs': last_log['epoch']
         }
+
+
+def _extract_list_literals(content: str):
+    literals = []
+    depth = 0
+    start = None
+    quote = None
+    escape = False
+
+    for index, char in enumerate(content):
+        if quote:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == quote:
+                quote = None
+            continue
+
+        if char in ("'", '"'):
+            quote = char
+            continue
+
+        if char == "[":
+            if depth == 0:
+                start = index
+            depth += 1
+        elif char == "]" and depth > 0:
+            depth -= 1
+            if depth == 0 and start is not None:
+                literals.append(content[start:index + 1])
+                start = None
+
+    return literals
+
+
+def _extract_last_log_history(content: str):
+    for literal in reversed(_extract_list_literals(content)):
+        try:
+            data = ast.literal_eval(literal)
+        except (SyntaxError, ValueError):
+            continue
+        if isinstance(data, list) and data and all(isinstance(item, dict) for item in data):
+            return data
+
+    raise ValueError("Could not parse trainer log history list.")
 
 
 def pull_training_metrics(base_folder):
