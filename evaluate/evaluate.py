@@ -536,15 +536,22 @@ def extract_log_values(log_file):
         content = re.sub(r'\binf\b', "100000", content)
         data = _extract_last_log_history(content)
 
-        second_last_log = data[-2]  # Get the second-to-last dictionary
-        last_log = data[-1]  # Get the last dictionary
+        train_log = _last_log_with_keys(data, "train_loss", "train_runtime")
+        eval_log = _last_log_with_keys(data, "eval_loss", "epoch")
 
         return {
-            'train_loss': second_last_log['train_loss'],
-            'train_runtime': second_last_log['train_runtime'],
-            'eval_loss': last_log['eval_loss'],
-            'epochs': last_log['epoch']
+            'train_loss': train_log['train_loss'],
+            'train_runtime': train_log['train_runtime'],
+            'eval_loss': eval_log['eval_loss'],
+            'epochs': eval_log['epoch']
         }
+
+
+def _last_log_with_keys(data, *keys):
+    for item in reversed(data):
+        if all(key in item for key in keys):
+            return item
+    raise KeyError(f"Could not find log entry with keys: {', '.join(keys)}")
 
 
 def _extract_list_literals(content: str):
