@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
@@ -9,18 +8,36 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
 #SBATCH --gpus=h100_3g.40gb:1
+#SBATCH --signal=B:USR1@600
+#SBATCH --export=ALL
 
+set -euo pipefail
+if [[ -z "${OPENAI_API_KEY:-}" || "$OPENAI_API_KEY" == "dummy" ]]; then
+  echo "OPENAI_API_KEY must be exported (and cannot be 'dummy') before submitting this bundle." >&2
+  exit 2
+fi
+if [[ $# -eq 1 && "$1" == "post_analysis" ]]; then
+  job_mode=post_analysis
+elif [[ $# -eq 3 && "$1" == "smoke_test" ]]; then
+  job_mode=smoke_test
+elif [[ $# -eq 2 ]]; then
+  job_mode=bundle
+else
+  echo "Usage: sbatch job.sh DATASET SEED | sbatch job.sh smoke_test DATASET SEED | sbatch job.sh post_analysis" >&2
+  exit 2
+fi
 module load python/3.11.5
 module load rust
 module load gcc cuda/12.2
 module load scipy-stack
 module load gcc arrow
-
-# Activate venv
 source ENV/bin/activate
 
-# Export a dummy variable for Open AI API
-export OPENAI_API_KEY="dummy"
-
-# Run the Python script
-python main.py --finetune=True --infer_finetuned=True --infer_slg=True --router="finetuned"
+trap 'scontrol requeue "$SLURM_JOB_ID"' USR1
+if [[ "$job_mode" == post_analysis ]]; then
+  python main.py --post_analysis
+elif [[ "$job_mode" == smoke_test ]]; then
+  python -m commands.smoke_test "$2" "$3"
+else
+  python main.py --bundle --dataset "$1" --seed "$2"
+fi

@@ -11,79 +11,6 @@ from utils.model_loader import load_model_with_adapter, cleanup_model_memory
 from utils.path_utils import ensure_dir
 
 
-def ask_baseline(file: str, model: str, experiment: str, client) -> None:
-    """
-    Generate responses using baseline model (OpenAI API).
-    Supports resume on failure.
-    
-    Args:
-        file: Path to JSON file with questions
-        model: Model name (from CONFIG)
-        experiment: Experiment name for output directory
-        client: OpenAI client instance
-    """
-    from utils.path_utils import validate_file_exists, ensure_dir
-    
-    validate_file_exists(file)
-    
-    logger.info(f"Asking baseline model: {model}.")
-
-    with open(file, 'r') as f:
-        data = json.load(f)
-
-    paths_config = CONFIG['paths']
-    output_dir = os.path.join(paths_config['answers'], experiment)
-    ensure_dir(output_dir)
-    output_path = os.path.join(output_dir, f"{model}.json")
-
-    # Load existing progress if available
-    if os.path.exists(output_path):
-        with open(output_path, 'r') as f:
-            answers_list = json.load(f)
-        start_index = len(answers_list)
-        logger.info(f"Resuming from index {start_index}/{len(data)}.")
-    else:
-        answers_list = []
-        start_index = 0
-        logger.info("Starting fresh run.")
-
-    for index, item in enumerate(data[start_index:], start=start_index):
-        logger.info(f'Answering {index} out of {len(data)} questions.')
-
-        try:
-            generation_config = CONFIG['generation']
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": CONFIG['inference_prompt']},
-                    {"role": "user", "content": item['question']},
-                ],
-                max_completion_tokens=generation_config['max_new_tokens'],
-                temperature=generation_config['temperature'],
-                seed=int(CONFIG['seed']),
-            )
-            llm_response = response.choices[0].message.content.strip()
-
-        except Exception as e:
-            logger.info(f"API call failed at index {index}: {e}")
-            llm_response = "API call failed."
-
-        new_dict = {
-            "chapter": item['chapter'],
-            "title": item['title'],
-            "question": item['question'],
-            "answer": llm_response
-        }
-        answers_list.append(new_dict)
-
-        # Save progress incrementally
-        with open(output_path, 'w') as f:
-            json.dump(answers_list, f, indent=4)
-
-    logger.info("All questions processed.")
-    return None
-
-
 def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> None:
     """
     Generate responses using a fine-tuned model.
@@ -96,6 +23,8 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
     """
     from utils.path_utils import validate_file_exists
     from utils.prompt_utils import apply_chat_template, create_user_message
+    import time
+    import torch
     
     validate_file_exists(file)
     
@@ -114,22 +43,35 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
     paths_config = CONFIG['paths']
     output_dir = os.path.join(paths_config['answers'], experiment)
     ensure_dir(output_dir)
-    output_file = os.path.join(output_dir, f"{os.path.basename(adapter)}.json")
+    output_file = os.path.join(output_dir, f"{os.path.basename(adapter)}.jsonl")
 
     # Load existing progress if available
+    answers = {}
     if os.path.exists(output_file):
-        with open(output_file, 'r') as f:
-            answers = json.load(f)
-        start_index = len(answers)
-        logger.info(f"Resuming fine-tuned inference from index {start_index}/{len(data)}.")
-    else:
-        answers = []
-        start_index = 0
-        logger.info("Starting fresh fine-tuned inference run.")
+        with open(output_file, encoding='utf-8') as f:
+            for line in f:
+                try:
+                    if line.strip():
+                        record = json.loads(line)
+                        if record.get('qid'):
+                            answers[record['qid']] = record
+                except json.JSONDecodeError:
+                    logger.warning("Ignoring an incomplete final inference line while resuming.")
+        logger.info("Resuming fine-tuned inference: %s/%s qids already present.", len(answers), len(data))
+        with open(output_file, 'w', encoding='utf-8') as repaired:
+            for row in data:
+                record = answers.get(row.get('qid'))
+                if record is not None:
+                    repaired.write(json.dumps(record, ensure_ascii=False) + '\n')
+    pending = [(i, item) for i, item in enumerate(data) if item.get('qid') not in answers]
     
     try:
-        for i, item in enumerate(data[start_index:], start=start_index):
+        with open(output_file, 'a', encoding='utf-8') as out_file:
+          for i, item in pending:
             logger.info(f'Answering {i + 1}/{len(data)} questions.')
+            started = time.perf_counter()
+            if torch.cuda.is_available():
+                torch.cuda.reset_peak_memory_stats()
             messages = [create_user_message(item['question'])]
             
             # Apply chat template
@@ -145,7 +87,7 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
                 **inputs,
                 max_new_tokens=generation_config['max_new_tokens'],
                 num_return_sequences=1,
-                temperature=generation_config['temperature'],
+                do_sample=False,
                 eos_token_id=tokenizer.convert_tokens_to_ids("<|eot_id|>"),
             )
             
@@ -153,16 +95,17 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
             output = text.split("assistant")[1] if "assistant" in text else text
 
             new_dict = {
+                "qid": item.get("qid"),
                 "chapter": item['chapter'],
                 "title": item['title'],
                 "question": item['question'],
-                "answer": output
+                "answer": output,
+                "latency_s": time.perf_counter() - started,
+                "peak_gpu_memory_mb": torch.cuda.max_memory_allocated() / (1024 ** 2) if torch.cuda.is_available() else None,
             }
-            answers.append(new_dict)
-
-            # Save incrementally
-            with open(output_file, 'w') as f:
-                json.dump(answers, f, indent=4)
+            answers[item.get('qid')] = new_dict
+            out_file.write(json.dumps(new_dict, ensure_ascii=False) + '\n')
+            out_file.flush()
     
     finally:
         # Always cleanup memory
@@ -172,182 +115,99 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
 
 
 class AskRag:
-    """
-    This is used to operate RAG.
-    """
-    def __init__(self, documents_file: str, questions_file: str, experiment: str, client):
-        """
-        Initialize RAG system.
-        
-        Args:
-            documents_file: Path to documents JSON file
-            questions_file: Path to questions JSON file
-            experiment: Experiment name
-            client: OpenAI client instance
-        """
+    """Local FAISS retrieval with the base Llama 3.1 8B Instruct generator."""
+    def __init__(self, documents_file: str, questions_file: str, experiment: str, model_path: str):
         from utils.path_utils import validate_file_exists
-        
         validate_file_exists(documents_file)
         validate_file_exists(questions_file)
-        
         self.documents_file = documents_file
         self.questions_file = questions_file
         self.experiment = experiment
-        self.client = client
+        self.model_path = model_path
 
-    def _retrieve_documents(self, chunk_size: int = None, chunk_overlap: int = None):
-        """
-        Retrieves documents from passed in question-answer pairs file.
-        Splits long documents into chunks and embeds each chunk.
-        """
-
+    def _retrieve_documents(self):
         import faiss
-
-        rag_config = CONFIG['rag']
-        if chunk_size is None:
-            chunk_size = rag_config['chunk_size']
-        if chunk_overlap is None:
-            chunk_overlap = rag_config['chunk_overlap']
-
-        logger.info("Asking RAG.")
-        with open(self.documents_file, 'r') as file:
-            data = json.load(file)
-
-        raw_answers = [document['answer'] for document in data if document['answer'] != ""]
-        documents = list(dict.fromkeys(raw_answers))
-        if len(documents) < len(raw_answers):
-            logger.info(
-                f"Deduplicated corpus answers: {len(raw_answers)} rows -> {len(documents)} unique."
-            )
-        models_config = CONFIG['models']
-        embedding_model = models_config['embedding_model']
-
-        embedding_dimension = rag_config['embedding_dimension']
-        index = faiss.IndexFlatL2(embedding_dimension)  # L2 distance index
-
-        def chunk_text(text: str, size: int = chunk_size, overlap: int = chunk_overlap):
-            words = text.split()
-            for j in range(0, len(words), size - overlap):
-                yield " ".join(words[j:j + size])
-
-        chunked_docs = []
-        doc_ids = []  # keep mapping to original document index
-        for doc_id, doc in enumerate(documents):
-            for chunk in chunk_text(doc):
-                chunked_docs.append(chunk)
-                doc_ids.append(doc_id)
-
-        logger.info(f"Prepared {len(chunked_docs)} chunks from {len(documents)} documents.")
-
-        rag_batch_size = rag_config['batch_size']
-        for i in range(0, len(chunked_docs), rag_batch_size):
-            batch = chunked_docs[i:i + rag_batch_size]
-            response = self.client.embeddings.create(
-                model=embedding_model,
-                input=batch
-            )
-            batch_embeddings = np.array(
-                [item.embedding for item in response.data],
-                dtype="float32"
-            )
-            index.add(batch_embeddings)
-
-        logger.info("RAG has finished embedding chunks.")
-
-        # Return both original docs and chunks (with mapping)
-        return chunked_docs, index
-
-    @staticmethod
-    def _retrieve_answers(query: str, documents: List[str], index, client, k: int = None) -> List[str]:
-        """
-        Retrieval model.
-        """
-        if k is None:
-            rag_config = CONFIG['rag']
-            k = rag_config['k_retrievals']
-
-        models_config = CONFIG['models']
-        embedding_model = models_config['embedding_model']
-        response = client.embeddings.create(model=embedding_model, input=query)
-
-        query_embedding = np.array(response.data[0].embedding, dtype="float32").reshape(1, -1)
-        distances, indices = index.search(query_embedding, k)
-
-        return [documents[i] for i in indices[0]]
+        from sentence_transformers import SentenceTransformer
+        cfg = CONFIG['rag']
+        with open(self.documents_file, encoding='utf-8') as f:
+            rows = json.load(f)
+        corpus = list(dict.fromkeys(r['answer'] for r in rows if r.get('answer')))
+        size, overlap = int(cfg['chunk_size']), int(cfg['chunk_overlap'])
+        chunks = []
+        for answer in corpus:
+            words = answer.split()
+            chunks.extend(' '.join(words[i:i + size]) for i in range(0, max(1, len(words)), size - overlap) if words[i:i + size])
+        paths = CONFIG['paths']
+        encoder_path = os.path.join(paths['downloaded_models'], paths['models']['jina_embeddings'])
+        encoder = SentenceTransformer(encoder_path, trust_remote_code=True)
+        vectors = encoder.encode(chunks, batch_size=int(cfg['batch_size']), convert_to_numpy=True, show_progress_bar=False).astype('float32')
+        index = faiss.IndexFlatL2(int(cfg['embedding_dimension']))
+        index.add(vectors)
+        return chunks, index, encoder
 
     def generate_responses(self):
-        """
-        Pass question and retrieved docs to an LLM to aggregate a response.
-        Supports resume on failure (continues where it left off).
-        """
-        with open(self.questions_file, 'r') as file:
-            data = json.load(file)
-
-        from utils.path_utils import ensure_dir
-        
-        paths_config = CONFIG['paths']
-        output_dir = os.path.join(paths_config['answers'], self.experiment)
-        ensure_dir(output_dir)
-        output_path = os.path.join(output_dir, "rag.json")
-
-        # Load existing progress if available
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        with open(self.questions_file, encoding='utf-8') as f:
+            rows = json.load(f)
+        out_dir = os.path.join(CONFIG['paths']['answers'], self.experiment)
+        ensure_dir(out_dir)
+        output_path = os.path.join(out_dir, 'rag.jsonl')
+        completed = {}
         if os.path.exists(output_path):
-            with open(output_path, 'r') as f:
-                answers_list = json.load(f)
-            start_index = len(answers_list)
-            logger.info(f"Resuming from index {start_index}/{len(data)}.")
-        else:
-            answers_list = []
-            start_index = 0
-            logger.info("Starting fresh run.")
-
-        # Build FAISS index once (not on every resume)
-        documents, index = self._retrieve_documents()
-
-        for i, item in enumerate(data[start_index:], start=start_index):
-            logger.info(f"Answering {i + 1}/{len(data)}")
-
-            rag_config = CONFIG['rag']
-            retrieved_docs = self._retrieve_answers(
-                query=item['question'],
-                documents=documents,
-                index=index,
-                client=self.client,
-                k=rag_config['k_retrievals']
-            )
-
-            context = " ".join(retrieved_docs)
-            input_text = f"Context: {context}\nQuestion: {item['question']}\nAnswer:"
-
-            try:
-                models_config = CONFIG['models']
-                generation_config = CONFIG['generation']
-                response = self.client.chat.completions.create(
-                    model=models_config['gpt_4_1'],
-                    messages=[
-                        {"role": "system", "content": CONFIG['rag_prompt']},
-                        {"role": "user", "content": input_text},
-                    ],
-                    max_completion_tokens=generation_config['max_new_tokens'],
-                    temperature=generation_config['temperature'],
-                    seed=int(CONFIG['seed']),
-                )
-                llm_response = response.choices[0].message.content.strip()
-            except Exception as e:
-                logger.info(f"API call failed at index {i}: {e}")
-                llm_response = "API call failed."
-
-            new_dict = {
-                "chapter": item['chapter'],
-                "title": item['title'],
-                "question": item['question'],
-                "answer": llm_response
-            }
-            answers_list.append(new_dict)
-
-            # Save progress incrementally
-            with open(output_path, 'w') as f:
-                json.dump(answers_list, f, indent=4)
-
-        logger.info("All questions processed.")
-        return answers_list
+            with open(output_path, encoding='utf-8') as f:
+                for line in f:
+                    if line.strip():
+                        item = json.loads(line)
+                        if item.get('qid'):
+                            completed[item['qid']] = item
+            with open(output_path, 'w', encoding='utf-8') as repaired:
+                for row in rows:
+                    record = completed.get(row.get('qid'))
+                    if record is not None:
+                        repaired.write(json.dumps(record, ensure_ascii=False) + '\n')
+        pending = [r for r in rows if r.get('qid') not in completed]
+        if not pending:
+            return list(completed.values())
+        chunks, index, encoder = self._retrieve_documents()
+        tokenizer = AutoTokenizer.from_pretrained(self.model_path, local_files_only=True)
+        tokenizer.padding_side = "left"
+        model = AutoModelForCausalLM.from_pretrained(
+            self.model_path, torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
+            device_map='auto', local_files_only=True,
+        )
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        model.eval()
+        device = model.get_input_embeddings().weight.device
+        cfg = CONFIG['rag']
+        gen = CONFIG['generation']
+        batch_size = int(cfg.get('generation_batch_size', 4))
+        with open(output_path, 'a', encoding='utf-8') as out:
+            for offset in range(0, len(pending), batch_size):
+                batch = pending[offset:offset + batch_size]
+                query_vectors = encoder.encode([r['question'] for r in batch], convert_to_numpy=True).astype('float32')
+                distances, indices = index.search(query_vectors, int(cfg['k_retrievals']))
+                prompts = []
+                start_times = []
+                for row, hits in zip(batch, indices):
+                    context = ' '.join(chunks[int(i)] for i in hits if i >= 0)
+                    messages = [
+                        {'role': 'system', 'content': CONFIG['rag_prompt']},
+                        {'role': 'user', 'content': f"Context: {context}\nQuestion: {row['question']}\nAnswer:"},
+                    ]
+                    prompts.append(tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True))
+                    start_times.append(__import__('time').perf_counter())
+                inputs = tokenizer(prompts, return_tensors='pt', padding=True, truncation=True).to(device)
+                if torch.cuda.is_available():
+                    torch.cuda.reset_peak_memory_stats()
+                with torch.inference_mode():
+                    generated = model.generate(**inputs, max_new_tokens=int(gen['max_new_tokens']), do_sample=False, pad_token_id=tokenizer.pad_token_id)
+                texts = tokenizer.batch_decode(generated[:, inputs['input_ids'].shape[1]:], skip_special_tokens=True)
+                peak_mb = torch.cuda.max_memory_allocated() / (1024 ** 2) if torch.cuda.is_available() else None
+                for row, answer, started in zip(batch, texts, start_times):
+                    record = {k: row.get(k) for k in ('qid', 'chapter', 'title', 'question')}
+                    record.update(answer=answer.strip(), latency_s=__import__('time').perf_counter() - started, peak_gpu_memory_mb=peak_mb)
+                    out.write(json.dumps(record, ensure_ascii=False) + '\n')
+                out.flush()
+        return list(completed.values())

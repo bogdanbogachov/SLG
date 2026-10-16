@@ -9,6 +9,7 @@ Pipeline:
 """
 
 import functools
+import hashlib
 import json
 import math
 import os
@@ -49,12 +50,16 @@ class SmallLanguageGraph:
         experts_location: str,
         experiment: str,
         router_method: str = None,
+        router_override: str = None,
     ):
         self.experts_location = experts_location
         self.experiment = experiment
         self.router_method = router_method or CONFIG.get("routing", {}).get(
             "method", ROUTER_COSINE
         )
+        if router_override not in (None, "oracle", "wrong"):
+            raise ValueError("router_override must be one of: oracle, wrong")
+        self.router_override = router_override
         if self.router_method not in SUPPORTED_ROUTER_METHODS:
             supported = ", ".join(sorted(SUPPORTED_ROUTER_METHODS))
             raise ValueError(
@@ -345,6 +350,22 @@ class SmallLanguageGraph:
         """Pick the highest-probability fine-tuned router expert."""
         return self._rank_question_by_finetuned_router(question)[0]["expert"]
 
+    def _apply_router_override(self, state: Dict[str, Any]) -> None:
+        if not self.router_override:
+            return
+        expected = state.get("expected_expert")
+        if self.router_override == "oracle":
+            if expected not in set(self.expert_nodes):
+                raise ValueError(f"Gold expert {expected!r} is missing from the trained expert set")
+            state["selected_expert"] = expected
+        else:
+            alternatives = [expert for expert in self.expert_nodes if expert != expected]
+            if not alternatives:
+                raise ValueError("Cannot choose a wrong expert when no alternative expert exists")
+            seed_material = f"{CONFIG.get('seed', 42)}\0{state.get('qid', state.get('question', ''))}".encode("utf-8")
+            rng = __import__("random").Random(int(hashlib.sha256(seed_material).hexdigest()[:16], 16))
+            state["selected_expert"] = rng.choice(alternatives)
+
     def _task_analysis_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Route the question to the main expert."""
         question = state["question"]
@@ -355,6 +376,7 @@ class SmallLanguageGraph:
             state["selected_expert"] = ranked[0]["expert"]
             state["routing_candidates"] = ranked
             state["routing_latency_seconds"] = time.perf_counter() - start
+            self._apply_router_override(state)
             return state
 
         on_disk = set(self.expert_nodes)
@@ -367,6 +389,7 @@ class SmallLanguageGraph:
         state["selected_expert"] = ranked[0]["expert"]
         state["routing_candidates"] = ranked
         state["routing_latency_seconds"] = time.perf_counter() - start
+        self._apply_router_override(state)
         return state
 
     @staticmethod
@@ -410,7 +433,6 @@ class SmallLanguageGraph:
                 **inputs,
                 max_new_tokens=generation_config["max_new_tokens"],
                 num_return_sequences=1,
-                temperature=generation_config["temperature"],
                 eos_token_id=eos_id,
                 do_sample=False,
                 output_scores=True,
@@ -555,8 +577,10 @@ class SmallLanguageGraph:
 
     def _slg_output_basename(self) -> str:
         if self.router_method == ROUTER_COSINE:
-            return "slg"
-        return f"slg_{self.router_method}_router"
+            basename = "slg"
+        else:
+            basename = f"slg_{self.router_method}_router"
+        return f"{basename}_{self.router_override}" if self.router_override else basename
 
     def _other_router_report_path(self, report_path: str) -> str:
         other_basename = (
@@ -1051,9 +1075,9 @@ class SmallLanguageGraph:
         output_dir = os.path.join(paths_config["answers"], self.experiment)
         ensure_dir(output_dir)
         output_basename = self._slg_output_basename()
-        output_name = f"{output_basename}.json"
+        output_name = f"{output_basename}.jsonl"
         output_path = os.path.join(output_dir, output_name)
-        routing_report_dir = os.path.join(output_dir, "routing_reports")
+        routing_report_dir = os.path.join(paths_config["experiments"], self.experiment, "routing_reports")
         ensure_dir(routing_report_dir)
         routing_report_path = os.path.join(
             routing_report_dir,
@@ -1063,7 +1087,13 @@ class SmallLanguageGraph:
         # Load existing progress if available
         if os.path.exists(output_path):
             with open(output_path, "r", encoding="utf-8") as f:
-                answers_list: List[Dict[str, Any]] = json.load(f)
+                answers_list = []
+                for line in f:
+                    try:
+                        if line.strip():
+                            answers_list.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        logger.warning("Ignoring an incomplete final SLG answer line while resuming.")
             start_index = len(answers_list)
             logger.info(f"Resuming SLG inference from index {start_index}/{len(data)}.")
         else:
@@ -1094,6 +1124,9 @@ class SmallLanguageGraph:
             answers_list = answers_list[:consistent_index]
             routing_records = routing_records[:consistent_index]
             start_index = consistent_index
+            with open(output_path, "w", encoding="utf-8") as f:
+                for record in answers_list:
+                    f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
         graph = self._get_graph()
 
@@ -1101,24 +1134,31 @@ class SmallLanguageGraph:
             logger.info(f"Answering {i + 1}/{len(data)} questions.")
             logger.info(f"Inference of the title: {item['title']}")
             initial_state = self._initial_state(item["question"])
+            initial_state["qid"] = item.get("qid")
+            initial_state["expected_expert"] = self._expected_expert_id_from_title(item.get("title", ""))
+            if torch.cuda.is_available():
+                torch.cuda.reset_peak_memory_stats()
             question_start = time.perf_counter()
             result = graph.invoke(initial_state)
             result["total_latency_seconds"] = time.perf_counter() - question_start
 
             answers_list.append(
                 {
+                    "qid": item.get("qid"),
                     "chapter": item["chapter"],
                     "title": item["title"],
                     "question": item["question"],
                     "answer": result.get("final_answer"),
                     "router_method": self.router_method,
+                    "latency_s": result.get("total_latency_seconds"),
+                    "peak_gpu_memory_mb": torch.cuda.max_memory_allocated() / (1024 ** 2) if torch.cuda.is_available() else None,
                 }
             )
             routing_records.append(self._build_routing_record(i, item, result))
 
             # Save progress incrementally so we can resume after interruptions.
-            with open(output_path, "w", encoding="utf-8") as f:
-                json.dump(answers_list, f, indent=4)
+            with open(output_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(answers_list[-1], ensure_ascii=False) + "\n")
             self._save_routing_report(
                 report_path=routing_report_path,
                 answer_path=output_path,

@@ -21,56 +21,60 @@ pip install --upgrade --upgrade-strategy eager -r requirements.txt
 
 ## Configuration
 
-1. Copy `config.yaml` and set paths, model names, and hyperparameters
-2. Set environment variables:
+1. Set model names and hyperparameters in `config.yaml`.
+2. Export `OPENAI_API_KEY` before submitting compute jobs; it is used only for evaluation metrics:
    ```bash
    export OPENAI_API_KEY='your-key'
    ```
-3. Set experiment name in `config.yaml`: `experiment: 'your_experiment_name'`
+   Model downloads and dataset construction do not require this key.
 
 ## Usage
 
 ### Workflow
 
 ```bash
-# 1. Download models
+# 1. On the login node, prepare shared model weights and all dataset splits
 python main.py --download_models
+python main.py --build_datasets
 
-# 2. Generate QA pairs from PDFs
-python main.py --create_qa
-python main.py --combine_all_qa
-python main.py --inflate_overshadowing --inflation_percentage 25
-python main.py --split_qa
+# 2. Export OPENAI_API_KEY, then run a tiny full-pipeline check first
+export OPENAI_API_KEY='your-key'
+bash smoke_test.sh                 # defaults to s_avia_100, seed 42
+# Or: bash smoke_test.sh cqad20 53
 
-# 3. Optional: Check data overlap
-python main.py --data_overlap_check
+# Submit one complete end-to-end bundle
+sbatch job.sh l_avia 42
 
-# 4. Fine-tune models
-python main.py --finetune
-# Enable training_components.train_slg_router in config.yaml to train the SLG classifier router.
+# Submit the default 7 datasets × 3 seeds as 21 independent jobs. Each bundle
+# also runs oracle and wrong-router inference/evaluation after the main models.
+# A dependent post-analysis job runs paired significance tests and paper tables
+# after all 21 bundles finish, followed by activation patching.
+# It uses up to 200 selected questions per cell; across the four avia inflation
+# levels it reuses the same qids within each seed. Budget about 21 GPU-hours.
+bash submit_all.sh
 
-# 5. Run inference
-python main.py --infer_baseline       # OpenAI GPT-4.1
-python main.py --infer_rag            # RAG with GPT-4.1-nano
-python main.py --infer_finetuned      # Fine-tuned LLaMA models
-python main.py --infer_slg            # Small Language Graph, using routing.method from config.yaml
-python main.py --infer_slg --router cosine
-python main.py --infer_slg --router finetuned
-python main.py --interactive_slg True --router finetuned # Interactive Small Language Graph REPL
-python -m interactive_slg             # Same REPL as a package entry point
-python -m interactive_slg --router finetuned --question "How should I classify wing damage?"
+# Restrict the submission matrix
+bash submit_all.sh --datasets s_avia_100 --seeds 53
 
-# 6. Evaluate results
-python main.py --evaluate
-python main.py --evaluate --training_metrics  # Include training metrics
+# Run paired, answer-clustered statistics after all three seeds have scores
+python main.py --stats --dataset s_avia_100
+
+# Build the paper's latency, memory, and training-cost table after bundle results exist
+python main.py --deployment_table
+
+# Build paper quality summaries from per-question scores (means and sample SD across seeds)
+python main.py --paper_assets
+
+# Run a router counterfactual without training
+python main.py --bundle --dataset s_avia_100 --seed 42 --router_override oracle
 ```
 
 ## CQADupStack Clustered QA Dataset
 
-The clustered CQADupStack QA dataset is stored at:
+The min-20 clustered CQADupStack source used by dataset construction is:
 
 ```text
-question_answer/cqadupstack_clustered/qa.json
+question_answer/cqadupstack_clustered/qa_min20.json
 ```
 
 It was created by combining BEIR CQADupStack with StackExchange answer dumps:
@@ -96,7 +100,7 @@ For CQADupStack rows, `title` intentionally mirrors `chapter` so title-based
 splitting uses the CQADupStack domain as the class label. The original cluster
 source title is preserved in `clusters.csv`.
 
-Current `qa.json` dataset size:
+The min-20 source contains:
 
 ```text
 3,435 QA rows
@@ -104,7 +108,7 @@ Current `qa.json` dataset size:
 at least 20 questions per answer
 ```
 
-The broader version with at least 4 questions per answer is preserved at:
+See [docs/CQADupStack.md](docs/CQADupStack.md) for download and conversion provenance, exact commands, and cleanup guidance. The broader version with at least 4 questions per answer is preserved at:
 
 ```text
 question_answer/cqadupstack_clustered/qa_min4_full.json

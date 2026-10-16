@@ -1,6 +1,7 @@
 """Fine-tuning module for language models."""
 import torch
 import os
+import glob
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
 from datasets import load_dataset
 from peft import LoraConfig
@@ -33,6 +34,18 @@ def finetune(
     """
     if not torch.cuda.is_available():
         raise RuntimeError("No GPU found! Please ensure you have a CUDA-compatible GPU.")
+
+    paths_config = CONFIG['paths']
+    experiments_dir = paths_config['experiments']
+    if slg:
+        slg_subdir = CONFIG.get('slg_formation', {}).get('slg_dir', 'slg')
+        save_path = os.path.join(experiments_dir, slg_subdir, adapter_name)
+    else:
+        save_path = os.path.join(experiments_dir, adapter_name)
+    done_path = os.path.join(save_path, '.done')
+    if os.path.isfile(done_path) and os.path.isfile(os.path.join(save_path, "adapter_config.json")):
+        logger.info("Skipping completed training: %s", adapter_name)
+        return
 
     # Load model and tokenizer using utility function
     model, tokenizer = load_base_model_and_tokenizer(model_to_tune)
@@ -103,7 +116,6 @@ def finetune(
     label_smoothing_factor = training_config['label_smoothing_factor']
 
     # Create checkpoint directory
-    paths_config = CONFIG['paths']
     checkpoints_dir = paths_config['checkpoints']
     checkpoint_dir = os.path.join(checkpoints_dir, experiment_number, adapter_name)
     ensure_dir(checkpoint_dir)
@@ -154,35 +166,20 @@ def finetune(
     )
 
     # Train the model (keep full model on CUDA; load_best_model_at_end reload can leave some weights on CPU)
-    trainer.train()
+    checkpoints = glob.glob(os.path.join(checkpoint_dir, 'checkpoint-*'))
+    latest_checkpoint = max(checkpoints, key=lambda p: int(p.rsplit('-', 1)[-1])) if checkpoints else None
+    trainer.train(resume_from_checkpoint=latest_checkpoint if latest_checkpoint else None)
     trainer.model.to(torch.device("cuda"))
     trainer.evaluate()
 
     # Save the model and tokenizer
-    experiments_dir = CONFIG['paths']['experiments']
-    
-    if slg:
-        slg_subdir = CONFIG.get('slg_formation', {}).get('slg_dir', 'slg')
-        slg_dir = os.path.join(experiments_dir, experiment_number, slg_subdir)
-        ensure_dir(slg_dir)
-        save_path = os.path.join(slg_dir, adapter_name)
-        
-        trainer.model.save_pretrained(save_path, save_adapter=True)
-        tokenizer.save_pretrained(save_path)
-        
-        training_log_path = os.path.join(save_path, 'training_log.txt')
-        with open(training_log_path, "a") as log_file:
-            log_file.write(str(trainer.state.log_history))
-    else:
-        experiment_dir = os.path.join(experiments_dir, experiment_number)
-        ensure_dir(experiment_dir)
-        save_path = os.path.join(experiment_dir, adapter_name)
-        
-        trainer.model.save_pretrained(save_path, save_adapter=True)
-        tokenizer.save_pretrained(save_path)
-        
-        training_log_path = os.path.join(save_path, 'training_log.txt')
-        with open(training_log_path, "a") as log_file:
-            log_file.write(str(trainer.state.log_history))
+    ensure_dir(save_path)
+    trainer.model.save_pretrained(save_path, save_adapter=True)
+    tokenizer.save_pretrained(save_path)
+    training_log_path = os.path.join(save_path, 'training_log.txt')
+    with open(training_log_path, "a") as log_file:
+        log_file.write(str(trainer.state.log_history))
+    with open(done_path, 'w', encoding='utf-8') as f:
+        f.write('done\n')
 
     return None

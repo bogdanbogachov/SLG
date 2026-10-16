@@ -1,6 +1,6 @@
-from download_llama.download import download_llama_3_2_1b, download_llama_3_1_8b
 from config import CONFIG
 import os
+from huggingface_hub import snapshot_download
 
 
 def download_models() -> None:
@@ -13,11 +13,10 @@ def download_models() -> None:
     model_dir_3_2_1b = os.path.join(downloaded_models_dir, models_paths['3_2_1b'])
     model_dir_3_1_8b = os.path.join(downloaded_models_dir, models_paths['3_1_8b'])
     
-    download_llama_3_2_1b(
-        model_name=models_config['3_2_1b'],
-        save_directory=model_dir_3_2_1b
-    )
-    download_llama_3_1_8b(
-        model_name=models_config['3_1_8b'],
-        save_directory=model_dir_3_1_8b
-    )
+    for repo_id, destination in (
+        (models_config['3_2_1b'], model_dir_3_2_1b),
+        (models_config['3_1_8b'], model_dir_3_1_8b),
+        (models_config['jina_embeddings'], os.path.join(downloaded_models_dir, models_paths['jina_embeddings'])),
+    ):
+        os.makedirs(destination, exist_ok=True)
+        snapshot_download(repo_id=repo_id, local_dir=destination)

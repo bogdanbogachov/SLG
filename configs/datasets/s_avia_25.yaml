@@ -1,0 +1,26 @@
+dataset:
+  name: s_avia_25
+  inflation_percentage: 25
+  ai_expert_prompt: You are an expert in Aerospace Engineering evaluating whether
+    two answers express the same meaning.
+  maintenance_chapters:
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+  - 26
+  - 27
+  - 28
+  - 30
+  - 31
+  - 32

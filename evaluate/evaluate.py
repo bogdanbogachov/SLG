@@ -26,11 +26,17 @@ def load_data(predictions_file, ground_truth_file):
     """
     Load predictions and ground truth answers from JSON files.
     """
-    with open(predictions_file, 'r') as f:
-        predictions = json.load(f)
+    def read_rows(path):
+        with open(path, encoding='utf-8') as f:
+            content = f.read()
+        try:
+            value = json.loads(content)
+            return value if isinstance(value, list) else [value]
+        except json.JSONDecodeError:
+            return [json.loads(line) for line in content.splitlines() if line.strip()]
+    predictions = read_rows(predictions_file)
 
-    with open(ground_truth_file, 'r') as f:
-        ground_truth = json.load(f)
+    ground_truth = read_rows(ground_truth_file)
 
     return predictions, ground_truth
 
@@ -165,13 +171,19 @@ def _empty_score_lists():
 def _score_records_to_lists(score_records):
     bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts = _empty_score_lists()
     for scores in score_records:
-        bleu_scores.append(scores['BLEU'])
+        if 'BLEU' in scores:
+            bleu_scores.append(scores['BLEU'])
         for key in rouge_scores.keys():
-            rouge_scores[key].append(scores['ROUGE'][key])
-        exact_matches.append(scores['Exact Match'])
-        meteor_scores.append(scores['METEOR'])
-        entailment_scores.append(scores['Entailment'])
-        ai_experts.append(scores['AI Expert'])
+            if key in scores.get('ROUGE', {}):
+                rouge_scores[key].append(scores['ROUGE'][key])
+        if 'Exact Match' in scores:
+            exact_matches.append(scores['Exact Match'])
+        if 'METEOR' in scores:
+            meteor_scores.append(scores['METEOR'])
+        if 'Entailment' in scores:
+            entailment_scores.append(scores['Entailment'])
+        if 'AI Expert' in scores:
+            ai_experts.append(scores['AI Expert'])
     return bleu_scores, rouge_scores, exact_matches, meteor_scores, entailment_scores, ai_experts
 
 
@@ -299,8 +311,8 @@ def _get_eval_client():
 
 
 def _score_eval_pair(task):
-    i, pred, truth = task
-    if pred['question'] != truth['question']:
+    i, pred, truth, requested = task
+    if pred['question'] != truth['question'] or (truth.get('qid') and pred.get('qid') != truth.get('qid')):
         return {
             'index': i,
             'matched': False,
@@ -312,29 +324,36 @@ def _score_eval_pair(task):
 
     gt_answer = _normalise_answer(truth['answer'])
     pred_answer = _normalise_answer(pred['answer'])
-    client = _get_eval_client()
-
-    bleu = calculate_bleu(gt_answer, pred_answer)
-    rouge = calculate_rouge(gt_answer, pred_answer)
-    exact_match = calculate_exact_match(gt_answer, pred_answer)
-    meteor = calculate_meteor_score(gt_answer, pred_answer)
-    entailment = check_entailment(gt_answer, pred_answer, api_client=client)
-    ai_expert = calculate_ai_expert(gt_answer, pred_answer, api_client=client)
+    requested = set(requested)
+    full = not requested
+    scores = {}
+    if full or "BLEU" in requested:
+        scores["BLEU"] = calculate_bleu(gt_answer, pred_answer)
+    if full or requested.intersection({"ROUGE-1", "ROUGE-2", "ROUGE-L", "ROUGE"}):
+        rouge = calculate_rouge(gt_answer, pred_answer)
+        scores["ROUGE"] = {"rouge1": rouge["rouge1"].fmeasure, "rouge2": rouge["rouge2"].fmeasure, "rougeL": rouge["rougeL"].fmeasure}
+    if full or requested.intersection({"EM", "Exact Match"}):
+        scores["Exact Match"] = calculate_exact_match(gt_answer, pred_answer)
+    if full or "METEOR" in requested:
+        scores["METEOR"] = calculate_meteor_score(gt_answer, pred_answer)
+    if full or requested.intersection({"Entailment", "E"}):
+        scores["Entailment"] = float(check_entailment(gt_answer, pred_answer, api_client=_get_eval_client()))
+    if full or requested.intersection({"AI_Expert", "AI Expert", "AIE"}):
+        scores["AI Expert"] = calculate_ai_expert(gt_answer, pred_answer, api_client=_get_eval_client())
 
     return {
         'index': i,
         'matched': True,
+        'qid': truth.get('qid'),
+        'question': truth.get('question'),
+        'gold_answer': gt_answer,
+        'prediction': pred_answer,
         'scores': {
-            'BLEU': bleu,
-            'ROUGE': {
-                'rouge1': rouge['rouge1'].fmeasure,
-                'rouge2': rouge['rouge2'].fmeasure,
-                'rougeL': rouge['rougeL'].fmeasure,
-            },
-            'Exact Match': exact_match,
-            'METEOR': meteor,
-            'Entailment': float(entailment),
-            'AI Expert': ai_expert,
+            'qid': truth.get('qid'),
+            'question': truth.get('question'),
+            'gold_answer': gt_answer,
+            'prediction': pred_answer,
+            **scores,
         },
     }
 
@@ -375,7 +394,9 @@ def calculate_ai_expert(reference, candidate, api_client):
 def _record_eval_result(result, score_by_index, skipped_indices):
     i = result['index']
     if result['matched']:
-        score_by_index[i] = result['scores']
+        merged = dict(score_by_index.get(i, {}))
+        merged.update(result['scores'])
+        score_by_index[i] = merged
         return
 
     skipped_indices.add(i)
@@ -418,13 +439,14 @@ def evaluate(
     ground_truth,
     checkpoint_path: Optional[str] = None,
     eval_workers: Optional[int] = None,
+    metrics_to_compute: Optional[list[str]] = None,
 ):
     """
     Evaluate predictions against ground truth using BLEU, ROUGE, and Exact Match.
 
     If ``checkpoint_path`` is set, progress is saved periodically and the run resumes
-    from the last checkpoint after an interruption. The checkpoint is removed when
-    evaluation finishes successfully. Delete the checkpoint file manually to start over.
+    from the last checkpoint after an interruption. The retained checkpoint is also
+    the source for the final per-question score JSONL and can be selectively rescored.
     """
     eval_cfg = CONFIG.get('evaluation') or {}
     checkpoint_every = int(eval_cfg.get('checkpoint_every', 10))
@@ -447,10 +469,12 @@ def evaluate(
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
             logger.warning('Could not load evaluation checkpoint (%s); starting from scratch.', e)
 
+    if metrics_to_compute and len(score_by_index) != n_pairs:
+        raise ValueError("Metric-only rescoring requires a complete existing evaluation checkpoint.")
     pending_tasks = [
-        (i, predictions[i], ground_truth[i])
+        (i, predictions[i], ground_truth[i], metrics_to_compute or [])
         for i in range(n_pairs)
-        if i not in score_by_index and i not in skipped_indices
+        if (metrics_to_compute or i not in score_by_index) and i not in skipped_indices
     ]
 
     logger.info('Evaluation has started with %s worker process(es).', workers)
@@ -518,13 +542,6 @@ def evaluate(
     result = _aggregate_score_records(score_by_index)
     logger.info('Evaluation has been completed.')
     logger.info(40 * '-')
-
-    if checkpoint_path and os.path.isfile(checkpoint_path):
-        try:
-            os.remove(checkpoint_path)
-            logger.info('Removed evaluation checkpoint (completed).')
-        except OSError as e:
-            logger.warning('Could not remove evaluation checkpoint: %s', e)
 
     return result
 
@@ -602,6 +619,8 @@ def _extract_last_log_history(content: str):
 
 def pull_training_metrics(base_folder):
     metrics = []
+    visible = os.environ.get("CUDA_VISIBLE_DEVICES", "")
+    gpu_count = len([x for x in visible.split(",") if x.strip()]) if visible and visible != "NoDevFiles" else 1
     for folder in os.listdir(base_folder):
         folder_path = os.path.join(base_folder, folder)
         if folder == 'slg':
@@ -630,6 +649,7 @@ def pull_training_metrics(base_folder):
                     'avg_train_loss_slg': all_train_loss / count,
                     'avg_eval_loss_slg': all_eval_loss / count,
                     'total_train_runtime_slg': total_train_runtime,
+                    'training_gpu_hours_slg': total_train_runtime * gpu_count / 3600.0,
                     'avg_epochs_slg': total_epochs / count
                 }
             )
@@ -643,6 +663,7 @@ def pull_training_metrics(base_folder):
                         f'train_loss_{folder}': log_values['train_loss'],
                         f'all_eval_loss_{folder}': log_values['eval_loss'],
                         f'train_runtime_{folder}': log_values['train_runtime'],
+                        f'training_gpu_hours_{folder}': log_values['train_runtime'] * gpu_count / 3600.0,
                         f'epochs_{folder}': log_values['epochs']
                     }
                 )

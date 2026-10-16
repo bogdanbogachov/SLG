@@ -1,0 +1,5 @@
+dataset:
+  name: cqad20
+  inflation_percentage: 0
+  ai_expert_prompt: "You are a careful evaluator. Decide whether the candidate answer is semantically equivalent to the reference answer, regardless of subject area."
+  maintenance_chapters: []

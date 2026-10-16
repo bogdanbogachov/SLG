@@ -3,22 +3,21 @@ import argparse
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--download_models", type=bool, default=False)
-
-    parser.add_argument("--create_qa", type=bool, default=False)
-    parser.add_argument("--combine_all_qa", type=bool, default=False)
-    parser.add_argument("--split_qa", type=bool, default=False)
-
-    parser.add_argument("--data_overlap_check", type=bool, default=False)
-
-    parser.add_argument(
-        "--inflate_overshadowing",
-        nargs="?",
-        const=True,
-        default=False,
-        type=lambda value: str(value).lower() == "true",
-    )
-    parser.add_argument("--inflation_percentage", type=float, default=None)
+    parser.add_argument("--download_models", action="store_true")
+    parser.add_argument("--build_datasets", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--dataset", default=None)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--bundle", action="store_true")
+    parser.add_argument("--router_override", choices=["oracle", "wrong"], default=None)
+    parser.add_argument("--slg_all", action="store_true")
+    parser.add_argument("--scalability", action="store_true")
+    parser.add_argument("--score_metrics", nargs="+", default=None)
+    parser.add_argument("--stats", action="store_true")
+    parser.add_argument("--deployment_table", action="store_true")
+    parser.add_argument("--paper_assets", action="store_true")
+    parser.add_argument("--activation_patching", action="store_true")
+    parser.add_argument("--post_analysis", action="store_true")
 
     parser.add_argument("--slg_embeddings", type=bool, default=False)
 
@@ -30,7 +29,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--show_routing", type=bool, default=False)
     parser.add_argument("--router", choices=["cosine", "finetuned"], default=None)
 
-    parser.add_argument("--infer_baseline", type=bool, default=False)
     parser.add_argument("--infer_rag", type=bool, default=False)
 
     parser.add_argument("--evaluate", type=bool, default=False)

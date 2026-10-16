@@ -1,30 +1,19 @@
 import os
-from openai import OpenAI
 from logging_config import logger
 from config import CONFIG
 from utils.path_utils import ensure_dir
 
 
-def run_baseline(experiment: str):
-    from inference.baseline import ask_baseline
-    client = OpenAI(api_key=CONFIG['open_ai_api_key'])
-    paths_config = CONFIG['paths']
-    answers_dir = paths_config['answers']
-    ensure_dir(os.path.join(answers_dir, experiment))
-    files_config = CONFIG['files']
-    model = CONFIG['models']['gpt_4_1']
-    ask_baseline(file=files_config['qa_test'], model=model, experiment=experiment, client=client)
-
-
 def run_rag(experiment: str):
     from inference.baseline import AskRag
-    client = OpenAI(api_key=CONFIG['open_ai_api_key'])
+    paths_config = CONFIG['paths']
+    model_path = os.path.join(paths_config['downloaded_models'], paths_config['models']['3_1_8b'])
     files_config = CONFIG['files']
     rag = AskRag(
         documents_file=files_config['qa_train'],
         questions_file=files_config['qa_test'],
         experiment=experiment,
-        client=client
+        model_path=model_path,
     )
     rag.generate_responses()
 
@@ -58,7 +47,7 @@ def run_finetuned(experiment: str):
                       experiment=experiment)
 
 
-def run_slg(experiment: str, router_method: str = None):
+def run_slg(experiment: str, router_method: str = None, router_override: str = None):
     from inference.slg import SmallLanguageGraph
     paths_config = CONFIG['paths']
     answers_dir = paths_config['answers']
@@ -68,6 +57,7 @@ def run_slg(experiment: str, router_method: str = None):
         experts_location=experiment,
         experiment=experiment,
         router_method=router_method,
+        router_override=router_override,
     )
     slg.ask_slg(file=files_config['qa_test'])
 

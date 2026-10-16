@@ -32,19 +32,10 @@ class Config(BaseModel):
             if parameters is None:
                 raise ConfigError(f"Config file {config_file} is empty or invalid")
             
-            # Require API keys from environment variables only (no fallback)
-            required_api_keys = {
-                'OPENAI_API_KEY': 'open_ai_api_key'
-            }
-
-            for env_var, config_key in required_api_keys.items():
-                value = os.getenv(env_var)
-                if not value:
-                    raise ConfigError(
-                        f"Required environment variable '{env_var}' is not set. "
-                        f"Please export it before running the application."
-                    )
-                parameters[config_key] = value
+            # Keys are read only from the environment and validated by the
+            # stage that needs them. Dataset builds and local inference do not
+            # need network credentials.
+            parameters['open_ai_api_key'] = os.getenv('OPENAI_API_KEY')
             
             # Optional environment variable overrides
             optional_overrides = {

@@ -1,6 +1,7 @@
 """Fine-tune the SLG question router as a sequence classifier."""
 
 import json
+import glob
 import os
 import random
 from typing import Dict, List
@@ -169,6 +170,12 @@ def finetune_slg_router(
     """Fine-tune Llama 3.2 1B Instruct as question -> SLG expert classifier."""
     if not torch.cuda.is_available():
         raise RuntimeError("No GPU found! Please ensure you have a CUDA-compatible GPU.")
+
+    final_dir = os.path.join(CONFIG["paths"]["experiments"], experiment_number, adapter_name)
+    done_path = os.path.join(final_dir, ".done")
+    if os.path.isfile(done_path) and os.path.isfile(os.path.join(final_dir, ROUTER_METADATA_FILE)):
+        logger.info("Skipping completed SLG router training.")
+        return
 
     rows, label2id = _collect_router_rows(split_by_title_dir)
     id2label = {idx: label for label, idx in label2id.items()}
@@ -366,7 +373,9 @@ def finetune_slg_router(
         compute_metrics=_compute_accuracy,
     )
 
-    trainer.train()
+    saved = glob.glob(os.path.join(checkpoint_dir, "checkpoint-*"))
+    latest = max(saved, key=lambda path: int(path.rsplit("-", 1)[-1])) if saved else None
+    trainer.train(resume_from_checkpoint=latest if latest else None)
     trainer.model.to(torch.device("cuda"))
     eval_metrics = trainer.evaluate(
         eval_dataset=tokenized_dataset["eval"],
@@ -407,3 +416,5 @@ def finetune_slg_router(
         log_file.write(json.dumps(eval_metrics, indent=2))
         log_file.write("\n\nFinal test metrics on qa_test:\n")
         log_file.write(json.dumps(test_metrics, indent=2))
+    with open(done_path, "w", encoding="utf-8") as f:
+        f.write("done\n")
