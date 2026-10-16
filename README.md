@@ -10,13 +10,14 @@ A fine-tuning and inference pipeline optimized for resource-constrained environm
 ## Installation
 
 ```bash
-# Create virtual environment on Linux
-python -m venv venv
+# Match the Python module and environment directory used by job.sh
+module load python/3.11.5
+python -m venv ENV
+source ENV/bin/activate
 
 # Install dependencies
-pip uninstall -y -r <(pip freeze)
 pip install --upgrade pip setuptools wheel
-pip install --upgrade --upgrade-strategy eager -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Configuration
