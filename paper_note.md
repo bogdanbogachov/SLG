@@ -57,7 +57,7 @@ Each full bundle covers one dataset and one seed. It trains the 1B and 8B baseli
 
 Evaluation retains per-question score records keyed by `qid`. The paired significance analysis reads these records, resamples answer groups within each seed, combines the three seed-level estimates, and reports 95% percentile intervals and two-sided bootstrap p-values. Holm correction is applied within dataset. The generated paper quality tables report the sample standard deviation (`ddof=1`) across seeds.
 
-For the full default matrix, `bash submit_all.sh` submits 21 independent train/inference bundle jobs (7 datasets × 3 seeds). Once they finish, run `bash evaluate_all.sh` on a login node. After evaluation has created the per-question score files, submit the GPU-dependent paired significance, paper/deployment tables, and activation patching with `sbatch job.sh post_analysis`. `submit_all.sh` does not submit evaluation or post-analysis automatically.
+For the full default matrix, `bash submit_all.sh` submits 21 independent train/inference bundle jobs (7 datasets × 3 seeds), named `slg-<dataset>-s<seed>` in Slurm. Once they finish, run `bash evaluate_all.sh` on a login node. After evaluation has created the per-question score files, submit the GPU-dependent paired significance, paper/deployment tables, and activation patching with `sbatch --job-name=slg-post-analysis job.sh post_analysis`. `submit_all.sh` does not submit evaluation or post-analysis automatically.
 
 Activation patching selects up to 200 test questions per cell where the 1B baseline has ROUGE-L ≤ 0.3 and SLG has ROUGE-L ≥ 0.8. For the four Avia inflation levels, it selects qids from `s_avia_100` and reuses those qids at each level for the same seed. It measures teacher-forced log probability of the first 16 gold-answer tokens while replacing prompt-position residual states, layer by layer, and includes an unrelated-question control. The analysis uses forward passes only. The documented planning estimate is about one GPU-hour per cell, up to roughly 21 GPU-hours for the full matrix; actual runtime depends on qualifying examples and hardware.
 
@@ -76,11 +76,11 @@ After all bundle jobs finish:
 ```bash
 export OPENAI_API_KEY='...'
 bash evaluate_all.sh
-sbatch job.sh post_analysis
+sbatch --job-name=slg-post-analysis job.sh post_analysis
 ```
 
 The dataset builder is deterministic and skips existing outputs unless `--force` is passed. Jobs require prepared split files and do not build or split data themselves.
 
 ## Quick pipeline smoke run
 
-`bash smoke_test.sh [dataset] [seed]` submits one isolated Slurm validation job. It defaults to `s_avia_100`, seed 42. The job selects two section titles, 5 train questions per title, and up to 2 test questions per title, then runs both baseline fine-tunes, two SLG experts and the router, four standard inference models, oracle/wrong routing, and one activation-patching example. Smoke artifacts go under `data/_smoke/` and `results/smoke/`; they do not overwrite final experiment cells. The patching output only checks that the code path executes; it is not a paper result. API evaluation is not run in the compute job; use the login-node evaluation workflow for full results. Model weights must already be downloaded.
+`bash smoke_test.sh [dataset] [seed]` submits one isolated Slurm validation job named `slg-smoke-<dataset>-s<seed>`. It defaults to `s_avia_100`, seed 42. The job selects two section titles, 5 train questions per title, and up to 2 test questions per title, then runs both baseline fine-tunes, two SLG experts and the router, four standard inference models, oracle/wrong routing, and one activation-patching example. Smoke artifacts go under `data/_smoke/` and `results/smoke/`; they do not overwrite final experiment cells. The patching output only checks that the code path executes; it is not a paper result. API evaluation is not run in the compute job; use the login-node evaluation workflow for full results. Model weights must already be downloaded.

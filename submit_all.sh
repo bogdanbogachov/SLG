@@ -11,7 +11,8 @@ while (($#)); do
 done
 for dataset in "${datasets[@]}"; do
   for seed in "${seeds[@]}"; do
-    sbatch --parsable job.sh "$dataset" "$seed"
+    job_name="slg-${dataset}-s${seed}"
+    sbatch --parsable --job-name="$job_name" job.sh "$dataset" "$seed"
   done
 done
 echo "Submitted bundle jobs. After they finish, run 'bash evaluate_all.sh' on a login node; then submit post-analysis with 'sbatch job.sh post_analysis'."

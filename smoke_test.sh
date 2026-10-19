@@ -22,4 +22,4 @@ for model_dir in downloaded_models/downloaded_3_2_1b downloaded_models/downloade
     exit 2
   }
 done
-sbatch --parsable job.sh smoke_test "$dataset" "$seed"
+sbatch --parsable --job-name="slg-smoke-${dataset}-s${seed}" job.sh smoke_test "$dataset" "$seed"

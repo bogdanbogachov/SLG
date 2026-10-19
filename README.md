@@ -40,7 +40,7 @@ export OPENAI_API_KEY='your-actual-key'
 ./evaluate_all.sh
 
 # After evaluation completes, submit paired statistics, paper tables, and activation patching
-sbatch job.sh post_analysis
+sbatch --job-name=slg-post-analysis job.sh post_analysis
 ```
 
 For the isolated smoke-test cell, evaluate its small output set on the login node with:
@@ -52,7 +52,9 @@ export OPENAI_API_KEY='your-actual-key'
 
 The `--smoke` option reads from `results/smoke/<dataset>/seed_<seed>/` and uses the corresponding test split under `data/_smoke/`.
 
-`submit_all.sh` is a shell script that runs the `sbatch job.sh <dataset> <seed>` command once for each dataset and seed. Run it directly with `./submit_all.sh` on the login node; do not prefix it with `sbatch`. Slurm runs each submitted `job.sh` as a separate compute job.
+`submit_all.sh` is a shell script that runs `sbatch --job-name=slg-<dataset>-s<seed> job.sh <dataset> <seed>` once for each dataset and seed. Run it directly with `./submit_all.sh` on the login node; do not prefix it with `sbatch`. The dataset and seed appear in each job's name in the Slurm portal.
+
+For one smoke-test job, use `./smoke_test.sh s_avia_100 42` on the login node. To submit one full bundle directly, use `sbatch --job-name=slg-s_avia_100-s42 job.sh s_avia_100 42`.
 
 ## CQADupStack Clustered QA Dataset
 
