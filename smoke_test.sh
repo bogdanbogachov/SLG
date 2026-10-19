@@ -11,10 +11,6 @@ case "$seed" in
   42|53|64) ;;
   *) echo "Seed must be one of: 42, 53, 64" >&2; exit 2 ;;
 esac
-if [[ -z "${OPENAI_API_KEY:-}" || "$OPENAI_API_KEY" == "dummy" ]]; then
-  echo "Export OPENAI_API_KEY before submitting the smoke run." >&2
-  exit 2
-fi
 split_dir="data/$dataset/splits/seed_$seed"
 [[ -f "$split_dir/train.json" && -f "$split_dir/test.json" ]] || {
   echo "Prepared split missing at $split_dir; run python main.py --build_datasets first." >&2

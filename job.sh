@@ -12,10 +12,6 @@
 #SBATCH --export=ALL
 
 set -euo pipefail
-if [[ -z "${OPENAI_API_KEY:-}" || "$OPENAI_API_KEY" == "dummy" ]]; then
-  echo "OPENAI_API_KEY must be exported (and cannot be 'dummy') before submitting this bundle." >&2
-  exit 2
-fi
 if [[ $# -eq 1 && "$1" == "post_analysis" ]]; then
   job_mode=post_analysis
 elif [[ $# -eq 3 && "$1" == "smoke_test" ]]; then

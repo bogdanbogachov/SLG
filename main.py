@@ -39,13 +39,9 @@ def configure_bundle(dataset, seed):
 def run_bundle(args):
     from commands.train import run_training
     from commands.inference import run_rag, run_finetuned, run_slg
-    from commands.evaluation import run_evaluation
     configure_bundle(args.dataset, args.seed)
-    if not os.environ.get("OPENAI_API_KEY") or os.environ["OPENAI_API_KEY"] == "dummy":
-        raise SystemExit("OPENAI_API_KEY must be set to a valid key before a bundle starts.")
     if args.router_override:
         run_slg("", router_method="finetuned", router_override=args.router_override)
-        run_evaluation("", eval_workers=args.eval_workers, metrics_to_compute=args.score_metrics)
         return
     cell = Path(CONFIG["paths"]["experiments"])
     done = cell / ".done"
@@ -53,8 +49,7 @@ def run_bundle(args):
     stages = [
         ("train", lambda: run_training("")),
         ("infer_1b_8b_slg_rag", lambda: (run_finetuned(""), run_slg("", router_method="finetuned", router_override=args.router_override), run_rag(""))),
-        ("evaluate", lambda: run_evaluation("", include_training_metrics=True, eval_workers=args.eval_workers, metrics_to_compute=args.score_metrics)),
-        ("router_counterfactuals", lambda: run_router_counterfactuals(run_slg, run_evaluation, args.eval_workers)),
+        ("router_counterfactuals", lambda: run_router_counterfactuals(run_slg)),
     ]
     for name, action in stages:
         marker = done / name
@@ -64,12 +59,31 @@ def run_bundle(args):
         marker.write_text("done\n", encoding="utf-8")
 
 
-def run_router_counterfactuals(run_slg, run_evaluation, eval_workers=None):
+def run_router_counterfactuals(run_slg):
     """Run oracle and wrong-expert inference for every bundle cell."""
     for mode in ("oracle", "wrong"):
         run_slg("", router_method="finetuned", router_override=mode)
-        # Preserve training GPU-time records when rewriting the aggregate metrics file.
-        run_evaluation("", include_training_metrics=True, eval_workers=eval_workers)
+
+
+def run_evaluate_all(args):
+    from commands.evaluation import run_evaluation
+
+    datasets = (args.dataset,) if args.dataset else (
+        "l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20"
+    )
+    seeds = (args.seed,) if args.seed is not None else (42, 53, 64)
+    if not os.environ.get("OPENAI_API_KEY") or os.environ["OPENAI_API_KEY"] == "dummy":
+        raise SystemExit("OPENAI_API_KEY must be set to a valid key before login-node evaluation.")
+
+    for dataset in datasets:
+        for seed in seeds:
+            print(f"Evaluating {dataset}, seed {seed}", flush=True)
+            configure_bundle(dataset, seed)
+            run_evaluation(
+                "", include_training_metrics=True,
+                eval_workers=args.eval_workers,
+                metrics_to_compute=args.score_metrics,
+            )
 
 
 if __name__ == '__main__':
@@ -83,6 +97,10 @@ if __name__ == '__main__':
 
     if args.bundle:
         run_bundle(args)
+        raise SystemExit(0)
+
+    if args.evaluate_all:
+        run_evaluate_all(args)
         raise SystemExit(0)
 
     if args.activation_patching:

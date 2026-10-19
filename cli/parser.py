@@ -9,6 +9,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dataset", default=None)
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--bundle", action="store_true")
+    parser.add_argument("--evaluate_all", action="store_true")
     parser.add_argument("--router_override", choices=["oracle", "wrong"], default=None)
     parser.add_argument("--slg_all", action="store_true")
     parser.add_argument("--scalability", action="store_true")

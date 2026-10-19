@@ -5,25 +5,21 @@ A fine-tuning and inference pipeline optimized for resource-constrained environm
 
 - Python 3.10+
 - CUDA-compatible GPU
-- Environment variables: `OPENAI_API_KEY`
+- Environment variable for login-node evaluation: `OPENAI_API_KEY`
 
 ## Installation
 
 ```bash
 # Match the Python module and environment directory used by job.sh
 module load python/3.11.5
-python -m venv ENV
-source ENV/bin/activate
-
-# Install dependencies
-pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt
+uv venv --python "$(command -v python)" --seed ENV
+uv pip sync --python ENV/bin/python --index-url https://pypi.org/simple requirements.txt
 ```
 
 ## Configuration
 
 1. Set model names and hyperparameters in `config.yaml`.
-2. Export `OPENAI_API_KEY` before submitting compute jobs; it is used only for evaluation metrics:
+2. Export `OPENAI_API_KEY` before running evaluation on a login node; compute jobs do not call OpenAI:
    ```bash
    export OPENAI_API_KEY='your-key'
    ```
@@ -31,44 +27,23 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Workflow
+### Full experiment commands
+
+Run these from the project directory on the login node. This assumes the environment, model weights, and prepared datasets are already in place. The loop submits 21 separate Slurm compute jobs. Wait for them to finish before evaluating: Rorqual compute nodes cannot reach the OpenAI API, so evaluation runs directly on the login node.
 
 ```bash
-# 1. On the login node, prepare shared model weights and all dataset splits
-python main.py --download_models
-python main.py --build_datasets
+# Submit all 7 datasets × all 3 seeds (21 separate Slurm jobs)
+./submit_all.sh
 
-# 2. Export OPENAI_API_KEY, then run a tiny full-pipeline check first
-export OPENAI_API_KEY='your-key'
-bash smoke_test.sh                 # defaults to s_avia_100, seed 42
-# Or: bash smoke_test.sh cqad20 53
+# After all 21 jobs have completed, evaluate all answer files on the login node
+export OPENAI_API_KEY='your-actual-key'
+./evaluate_all.sh
 
-# Submit one complete end-to-end bundle
-sbatch job.sh l_avia 42
-
-# Submit the default 7 datasets × 3 seeds as 21 independent jobs. Each bundle
-# also runs oracle and wrong-router inference/evaluation after the main models.
-# A dependent post-analysis job runs paired significance tests and paper tables
-# after all 21 bundles finish, followed by activation patching.
-# It uses up to 200 selected questions per cell; across the four avia inflation
-# levels it reuses the same qids within each seed. Budget about 21 GPU-hours.
-bash submit_all.sh
-
-# Restrict the submission matrix
-bash submit_all.sh --datasets s_avia_100 --seeds 53
-
-# Run paired, answer-clustered statistics after all three seeds have scores
-python main.py --stats --dataset s_avia_100
-
-# Build the paper's latency, memory, and training-cost table after bundle results exist
-python main.py --deployment_table
-
-# Build paper quality summaries from per-question scores (means and sample SD across seeds)
-python main.py --paper_assets
-
-# Run a router counterfactual without training
-python main.py --bundle --dataset s_avia_100 --seed 42 --router_override oracle
+# After evaluation completes, submit paired statistics, paper tables, and activation patching
+sbatch job.sh post_analysis
 ```
+
+`submit_all.sh` is a shell script that runs the `sbatch job.sh <dataset> <seed>` command once for each dataset and seed. Run it directly with `./submit_all.sh` on the login node; do not prefix it with `sbatch`. Slurm runs each submitted `job.sh` as a separate compute job.
 
 ## CQADupStack Clustered QA Dataset
 

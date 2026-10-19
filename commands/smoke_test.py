@@ -89,28 +89,21 @@ def run_smoke_test(dataset: str, seed: int):
           f"train={len(train_rows)}, test={len(test_rows)}; output={cell}")
     from commands.train import run_training
     from commands.inference import run_finetuned, run_slg, run_rag
-    from commands.evaluation import run_evaluation
 
     run_training("")
     run_finetuned("")
     run_slg("", router_method="finetuned")
     run_rag("")
-    run_evaluation("", include_training_metrics=True, eval_workers=1)
-    run_router_counterfactuals(run_slg, run_evaluation, eval_workers=1)
+    run_router_counterfactuals(run_slg)
 
-    from evaluate.paired_bootstrap import run as run_stats
-    from evaluate.paper_assets import build as build_paper_assets
-    from evaluate.deployment_table import build as build_deployment_table
     from evaluate.activation_patching import run as run_patching
 
     stats_dir = ROOT / "results" / "smoke" / "stats"
     smoke_results = ROOT / "results" / "smoke"
     smoke_data = ROOT / "data" / "_smoke"
-    print(f"Smoke paired bootstrap -> {run_stats(dataset, replicates=200, seeds=(seed,), results_root=smoke_results, output_dir=stats_dir, include_inflation_contrast=False)}")
-    print(f"Smoke paper quality table -> {build_paper_assets([dataset], seeds=(seed,), results_root=smoke_results, output_dir=stats_dir)}")
-    print(f"Smoke deployment table -> {build_deployment_table([dataset], seeds=(seed,), results_root=smoke_results, output_dir=stats_dir)}")
     patch_qid = test_rows[0]["qid"]
     print(f"Smoke activation patching -> {run_patching(limit=1, datasets=(dataset,), seeds=(seed,), results_root=smoke_results, data_root=smoke_data, output_dir=stats_dir, qids_by_cell={(dataset, seed): [patch_qid]})}")
+    print("Smoke training/inference/patching finished. API-based evaluation must run on a login node.")
 
 
 def main():
