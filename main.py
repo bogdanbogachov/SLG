@@ -75,10 +75,28 @@ def run_evaluate_all(args):
     if not os.environ.get("OPENAI_API_KEY") or os.environ["OPENAI_API_KEY"] == "dummy":
         raise SystemExit("OPENAI_API_KEY must be set to a valid key before login-node evaluation.")
 
+    if args.smoke and (not args.dataset or args.seed is None):
+        raise SystemExit("Smoke evaluation requires both --dataset DATASET and --seed SEED.")
+
     for dataset in datasets:
         for seed in seeds:
             print(f"Evaluating {dataset}, seed {seed}", flush=True)
             configure_bundle(dataset, seed)
+            if args.smoke:
+                root = Path(__file__).resolve().parent
+                smoke_cell = root / "results" / "smoke" / dataset / f"seed_{seed}"
+                smoke_split = root / "data" / "_smoke" / dataset / "splits" / f"seed_{seed}"
+                if not (smoke_cell / "answers").is_dir() or not (smoke_split / "test.json").is_file():
+                    raise SystemExit(
+                        f"Smoke outputs are missing for {dataset} seed {seed}: expected answers in "
+                        f"{smoke_cell / 'answers'} and test split at {smoke_split / 'test.json'}."
+                    )
+                CONFIG["paths"].update({
+                    "experiments": str(smoke_cell),
+                    "answers": str(smoke_cell / "answers"),
+                    "checkpoints": str(smoke_cell / "checkpoints"),
+                })
+                CONFIG["files"]["qa_test"] = str(smoke_split / "test.json")
             run_evaluation(
                 "", include_training_metrics=True,
                 eval_workers=args.eval_workers,
