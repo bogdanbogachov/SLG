@@ -322,7 +322,7 @@ def finetune_slg_router(
         bf16=use_bf16,
         use_cpu=False,
         dataloader_pin_memory=True,
-        report_to="tensorboard",
+        report_to="none",
         log_level="info",
         logging_dir=logging_dir,
         per_device_train_batch_size=per_device_train_batch_size,

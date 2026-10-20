@@ -134,7 +134,7 @@ def finetune(
         fp16=True,
         use_cpu=False,
         dataloader_pin_memory=True,
-        report_to="tensorboard",
+        report_to="none",
         log_level="info",
         logging_dir=logging_dir,
         per_device_train_batch_size=training_config['per_device_train_batch_size'],
