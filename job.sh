@@ -7,7 +7,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
-#SBATCH --gpus=a100:1
+#SBATCH --gpus=nvidia_h100_80gb_hbm3_3g.40gb:1
 #SBATCH --signal=B:USR1@600
 #SBATCH --export=ALL
 
