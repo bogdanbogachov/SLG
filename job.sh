@@ -2,12 +2,12 @@
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
 #SBATCH --account=def-adml2021
-#SBATCH --time 30:00:00
+#SBATCH --time 01:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
-#SBATCH --gpus=h100_3g.40gb:1
+#SBATCH --gpus=a100:1
 #SBATCH --signal=B:USR1@600
 #SBATCH --export=ALL
 
