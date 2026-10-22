@@ -159,7 +159,9 @@ rag:
   embedding_dimension: 768
   chunk_size: 500
   chunk_overlap: 50
-  batch_size: 100
+  # Keep small: attention memory scales with batch size, and long
+  # code/LaTeX-heavy chunks (~2500 tokens) can OOM at batch_size=100.
+  batch_size: 16
   k_retrievals: 5
 
 # SLG formation (jina-v2-base-en local embeddings → 768-dim vectors)
