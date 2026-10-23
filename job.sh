@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --mail-user=bogdan.bogachov@mail.mcgill.ca
 #SBATCH --mail-type=ALL
-#SBATCH --account=def-adml2021
-#SBATCH --time 07:30:00
+#SBATCH --account=rrg-adml2021
+#SBATCH --time 12:00:00
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
