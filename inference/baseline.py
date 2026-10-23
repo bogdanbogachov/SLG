@@ -146,6 +146,7 @@ class AskRag:
         return chunks, index, encoder
 
     def generate_responses(self):
+        import gc
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
         with open(self.questions_file, encoding='utf-8') as f:
@@ -170,11 +171,15 @@ class AskRag:
         if not pending:
             return list(completed.values())
         chunks, index, encoder = self._retrieve_documents()
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         tokenizer = AutoTokenizer.from_pretrained(self.model_path, local_files_only=True)
         tokenizer.padding_side = "left"
+        device_map = {'': 0} if torch.cuda.is_available() else 'cpu'
         model = AutoModelForCausalLM.from_pretrained(
             self.model_path, torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
-            device_map='auto', local_files_only=True,
+            device_map=device_map, local_files_only=True,
         )
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
@@ -186,6 +191,7 @@ class AskRag:
         with open(output_path, 'a', encoding='utf-8') as out:
             for offset in range(0, len(pending), batch_size):
                 batch = pending[offset:offset + batch_size]
+                logger.info(f'Answering RAG {offset + 1}-{offset + len(batch)}/{len(pending)} questions.')
                 query_vectors = encoder.encode([r['question'] for r in batch], convert_to_numpy=True).astype('float32')
                 distances, indices = index.search(query_vectors, int(cfg['k_retrievals']))
                 prompts = []
