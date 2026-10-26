@@ -140,7 +140,8 @@ class AskRag:
         paths = CONFIG['paths']
         encoder_path = os.path.join(paths['downloaded_models'], paths['models']['jina_embeddings'])
         encoder = SentenceTransformer(encoder_path, trust_remote_code=True)
-        vectors = encoder.encode(chunks, batch_size=int(cfg['batch_size']), convert_to_numpy=True, show_progress_bar=False).astype('float32')
+        encoder.max_seq_length = int(cfg['encoder_max_seq_length'])
+        vectors =encoder.encode(chunks, batch_size=int(cfg['batch_size']), convert_to_numpy=True, show_progress_bar=False).astype('float32')
         index = faiss.IndexFlatL2(int(cfg['embedding_dimension']))
         index.add(vectors)
         return chunks, index, encoder
@@ -192,7 +193,7 @@ class AskRag:
             for offset in range(0, len(pending), batch_size):
                 batch = pending[offset:offset + batch_size]
                 logger.info(f'Answering RAG {offset + 1}-{offset + len(batch)}/{len(pending)} questions.')
-                query_vectors = encoder.encode([r['question'] for r in batch], convert_to_numpy=True).astype('float32')
+                query_vectors = encoder.encode([r['question'] for r in batch], batch_size=1, convert_to_numpy=True, show_progress_bar=False).astype('float32')
                 distances, indices = index.search(query_vectors, int(cfg['k_retrievals']))
                 prompts = []
                 start_times = []

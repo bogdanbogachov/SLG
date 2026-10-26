@@ -162,6 +162,8 @@ rag:
   # Keep small: attention memory scales with batch size, and long
   # code/LaTeX-heavy chunks (~2500 tokens) can OOM at batch_size=100.
   batch_size: 16
+  # Hard cap on Jina input tokens so one long question/chunk can't OOM the encoder.
+  encoder_max_seq_length: 1024
   k_retrievals: 5
 
 # SLG formation (jina-v2-base-en local embeddings → 768-dim vectors)
