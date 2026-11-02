@@ -377,7 +377,13 @@ def calculate_ai_expert(reference, candidate, api_client):
         max_completion_tokens=int(CONFIG['evaluation']['ai_expert_max_tokens']),
         temperature=temperature,
     )
-    llm_response = (response.choices[0].message.content or "").strip().strip('"\'.')
+    choice = response.choices[0]
+    llm_response = (choice.message.content or "").strip().strip('"\'.')
+    if not llm_response:
+        raise RuntimeError(
+            f"Empty AI_Expert reply (finish_reason={choice.finish_reason!r}, usage={response.usage}, "
+            f"refusal={getattr(choice.message, 'refusal', None)!r})"
+        )
     time.sleep(1)
 
     try:
