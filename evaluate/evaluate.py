@@ -360,29 +360,25 @@ def _score_eval_pair(task):
 
 def calculate_ai_expert(reference, candidate, api_client):
     """
-    Calculate AI expert scores between a reference and a candidate answer using OpenAI GPT-4.1 Nano.
+    Calculate AI expert scores between a reference and a candidate answer using OpenAI GPT-5.6 Luna.
     """
     ai_expert_prompt = CONFIG['ai_expert_prompt']
     query_expert_prompt = CONFIG["query_expert_prompt"]
-    max_new_tokens = CONFIG['generation']['max_new_tokens']
     temperature = CONFIG['generation']['temperature']
 
-    try:
-        models_config = CONFIG['models']
-        response = api_client.chat.completions.create(
-            model=models_config['gpt_4_1_nano'],
-            messages=[
-                {"role": "system", "content": ai_expert_prompt},
-                {"role": "user", "content": query_expert_prompt.format(text_1=reference, text_2=candidate)},
-            ],
-            max_completion_tokens=max_new_tokens,
-            temperature=temperature
-        )
-        llm_response = response.choices[0].message.content.strip()
-        time.sleep(1)
-    except Exception as e:
-        logger.info(f"API call failed: {e}")
-        return 0
+    # API errors propagate: a dead model or rejected parameter must stop the run, not score 0.
+    response = api_client.chat.completions.create(
+        model=CONFIG['models']['gpt_5_6_luna'],
+        messages=[
+            {"role": "system", "content": ai_expert_prompt},
+            {"role": "user", "content": query_expert_prompt.format(text_1=reference, text_2=candidate)},
+        ],
+        reasoning_effort="none",
+        max_completion_tokens=int(CONFIG['evaluation']['ai_expert_max_tokens']),
+        temperature=temperature,
+    )
+    llm_response = (response.choices[0].message.content or "").strip().strip('"\'.')
+    time.sleep(1)
 
     try:
         return int(llm_response)

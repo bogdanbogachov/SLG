@@ -83,7 +83,9 @@ models:
   jina_embeddings: "jinaai/jina-embeddings-v2-base-en"
   embedding_model: "text-embedding-3-small"
   # OpenAI is retained for evaluation-only E/AIE judge calls.
+  # gpt-4.1-nano (shut down 2026-10-23) generated the datasets; luna is the AI_Expert judge.
   gpt_4_1_nano: "gpt-4.1-nano-2025-04-14"
+  gpt_5_6_luna: "gpt-5.6-luna"
   3_2_1b: "meta-llama/Llama-3.2-1B-Instruct"
   3_1_8b: "meta-llama/Llama-3.1-8B-Instruct"
   3_3_70b: "meta-llama/Llama-3.3-70B-Instruct"
@@ -193,6 +195,8 @@ generation:
 evaluation:
   checkpoint_every: 10
   workers: 1
+  # The judge replies "0" or "1" (one token); the cap only bounds a malformed reply.
+  ai_expert_max_tokens: 3
 
 # Adapter names
 adapters:
