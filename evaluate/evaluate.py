@@ -48,7 +48,7 @@ def calculate_bleu(reference, candidate):
     reference_tokens = reference.split()  # BLEU expects a list of references
     candidate_tokens = candidate.split()
     smoothing = SmoothingFunction().method4  # For smoothing BLEU scores
-    return sentence_bleu(references=reference_tokens, hypothesis=candidate_tokens, smoothing_function=smoothing)
+    return sentence_bleu(references=[reference_tokens], hypothesis=candidate_tokens, smoothing_function=smoothing)
 
 
 def calculate_rouge(reference, candidate):
