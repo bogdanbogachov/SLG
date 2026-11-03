@@ -529,6 +529,8 @@ def evaluate(
                         result = future.result()
                     except Exception:
                         maybe_save_checkpoint(force=True)
+                        # Otherwise the pool runs (and bills) every queued task before re-raising.
+                        executor.shutdown(wait=False, cancel_futures=True)
                         raise
                     _record_eval_result(result, score_by_index, skipped_indices)
                     processed_count = len(score_by_index) + len(skipped_indices)
