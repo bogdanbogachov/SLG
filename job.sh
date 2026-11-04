@@ -8,7 +8,6 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=32G
 #SBATCH --gpus=nvidia_h100_80gb_hbm3_3g.40gb:1
-#SBATCH --signal=B:USR1@600
 #SBATCH --export=ALL
 
 set -euo pipefail
@@ -31,7 +30,6 @@ module load scipy-stack
 module load gcc arrow
 source ENV/bin/activate
 
-trap 'scontrol requeue "$SLURM_JOB_ID"' USR1
 if [[ "$job_mode" == hidden_router ]]; then
   python -m hidden_router "${@:2}"
 elif [[ "$job_mode" == post_analysis ]]; then

@@ -91,8 +91,12 @@ class FeatureStore:
             self._features = np.load(self.features_path, mmap_mode="r")
             qids = json.loads(self.qids_path.read_text(encoding="utf-8"))
             if len(qids) != len(self._features):
-                raise ValueError(f"Corrupt feature cache in {self.dir}: {len(qids)} qids vs {len(self._features)} rows")
-            self._index = {q: i for i, q in enumerate(qids)}
+                # Interrupted between writing features.npy and qids.json: start the cache again.
+                logger.warning("Feature cache in %s is inconsistent (%s qids vs %s rows); rebuilding it.",
+                               self.dir, len(qids), len(self._features))
+                self._features = None
+            else:
+                self._index = {q: i for i, q in enumerate(qids)}
 
     def missing(self, qids: Iterable[str]) -> List[str]:
         return [q for q in dict.fromkeys(qids) if q not in self._index]

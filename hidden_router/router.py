@@ -3,7 +3,11 @@
 score_e(h) = log p(e) - 0.5 * (h - mu_e)^T S^-1 (h - mu_e)   (+ a term constant across experts)
            = w_e . h + b_e     with  w_e = S^-1 mu_e,  b_e = -0.5 mu_e . w_e + log p(e)
 p(e | h)   = softmax_e(score_e(h))
-S          = (1 - alpha) * C + alpha * (tr(C) / d) * I      (C = pooled within-expert covariance)
+S          = (1 - alpha) * C + alpha * I      (C = pooled within-expert covariance of z-scored features)
+
+Features are z-scored per dimension first (LLM hidden states have a few "massive activation" dimensions with
+variances orders of magnitude above the rest; without it the shrinkage target would be dominated by them).
+The z-scoring is folded into W, so scoring stays  (h - center) @ W.T + b.
 
 Layer and alpha are selected by top-1 accuracy on a stratified validation slice of the training
 questions; the router is then refit on all training questions with the chosen (layer, alpha).
@@ -50,18 +54,22 @@ class _LayerStats:
         Xc = X - self.center
         counts = torch.bincount(y, minlength=n_classes).to(X.dtype)
         sums = torch.zeros(n_classes, X.shape[1], dtype=X.dtype, device=X.device).index_add_(0, y, Xc)
-        self.means = sums / counts.clamp(min=1).unsqueeze(1)
-        resid = Xc - self.means[y]
+        means = sums / counts.clamp(min=1).unsqueeze(1)
+        resid = Xc - means[y]
+        # Per-dimension scale of the within-expert spread; z-score so shrinkage targets the correlation matrix.
+        self.scale = (resid.pow(2).sum(0) / max(1, X.shape[0] - n_classes)).sqrt().clamp(min=1e-6)
+        self.means = means / self.scale
+        resid = resid / self.scale
         self.cov = resid.T @ resid / max(1, X.shape[0] - n_classes)
         self.log_prior = torch.log(counts / counts.sum())
 
     def weights(self, alpha: float):
         d = self.cov.shape[0]
-        shrunk = (1 - alpha) * self.cov + alpha * (torch.trace(self.cov) / d) * torch.eye(d, dtype=self.cov.dtype, device=self.cov.device)
+        shrunk = (1 - alpha) * self.cov + alpha * torch.eye(d, dtype=self.cov.dtype, device=self.cov.device)
         chol = torch.linalg.cholesky(shrunk)
-        W = torch.cholesky_solve(self.means.T, chol).T  # [C, d] = (S^-1 mu_e)^T
-        b = -0.5 * (self.means * W).sum(1) + self.log_prior
-        return W, b
+        Wz = torch.cholesky_solve(self.means.T, chol).T  # [C, d] = (S^-1 mu_e)^T in z-scored space
+        b = -0.5 * (self.means * Wz).sum(1) + self.log_prior
+        return Wz / self.scale, b  # fold the z-scoring in: score = (h - center) @ W.T + b
 
 
 def _topk_hits(scores: torch.Tensor, y: torch.Tensor, ks=(1, 3, 5)) -> Dict[int, float]:
