@@ -12,7 +12,7 @@ import statistics
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATASETS = ("l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20")
+DATASETS = ("l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20", "cqad20_fine", "cqad20_answer")
 SEEDS = (42, 53, 64)
 MODELS = {
     "1B": "finetuned_3_2_1b", "8B": "finetuned_3_1_8b",

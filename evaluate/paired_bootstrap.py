@@ -10,6 +10,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SEEDS = (42, 53, 64)
+# cqad20 re-partitioned into finer experts (same qids/splits); compared against SLG on cqad20.
+GRANULARITY_VARIANTS = ("cqad20_fine", "cqad20_answer")
 MODELS = {
     "SLG": "slg_finetuned_router",
     "8B": "finetuned_3_1_8b",
@@ -130,6 +132,26 @@ def run(dataset, replicates=10000, rng_seed=20261015, seeds=SEEDS,
                              "seed_sd_sample": statistics.stdev(seed_means) if len(seed_means) > 1 else "",
                              **{f"seed_{seed}_delta": value for seed, value in zip(seeds, seed_means)},
                              "equivalent_within_0.01": ""})
+    if dataset in GRANULARITY_VARIANTS and len(seeds) == len(SEEDS):
+        # Same questions/splits as cqad20, only the expert partition differs: paired SLG_variant - SLG_cqad20.
+        coarse_cells = _load_score_files("cqad20", seeds=seeds, results_root=results_root)
+        for metric in METRICS:
+            seed_differences = []
+            for seed in seeds:
+                fine, coarse = cells[seed]["SLG"], coarse_cells[seed]["SLG"]
+                if set(fine) != set(coarse):
+                    raise ValueError(f"{dataset} and cqad20 qids differ for seed {seed}, cannot compare granularity")
+                seed_differences.append([
+                    (fine[qid].get("gold_answer", ""), float(fine[qid][metric]) - float(coarse[qid][metric]))
+                    for qid in sorted(fine)
+                ])
+            mean, lo, hi, p = _bootstrap_seed_differences(seed_differences, metric, random.Random(rng_seed + 2000), replicates)
+            seed_means = [_seed_mean(records) for records in seed_differences]
+            rows.append({"dataset": dataset, "comparison": "SLG_vs_SLG_cqad20_granularity", "metric": metric,
+                         "mean_delta": mean, "ci95_low": lo, "ci95_high": hi, "p_two_sided": p,
+                         "seed_sd_sample": statistics.stdev(seed_means) if len(seed_means) > 1 else "",
+                         **{f"seed_{seed}_delta": value for seed, value in zip(seeds, seed_means)},
+                         "equivalent_within_0.01": ""})
     adjusted = _holm([r["p_two_sided"] for r in rows])
     for row, p_adj in zip(rows, adjusted):
         row["p_holm"] = p_adj

@@ -20,6 +20,10 @@ PY
   done
   for answers in finetuned_3_2_1b finetuned_3_1_8b rag; do
     cp "$s/answers/$answers.jsonl" "$d/answers/$answers.jsonl"
+    # Evaluation checkpoint (if already scored): evaluate_all then skips this system instead of re-paying for it.
+    if [[ -f "$s/checkpoints/evaluation/$answers.json" ]]; then
+      mkdir -p "$d/checkpoints/evaluation"; cp "$s/checkpoints/evaluation/$answers.json" "$d/checkpoints/evaluation/"
+    fi
   done
   echo "seed $seed: copied 1B/8B adapters and 1B/8B/RAG answers from $s to $d"
 done

@@ -131,6 +131,11 @@ if __name__ == '__main__':
         from evaluate.paper_assets import build as build_paper_assets
         from evaluate.deployment_table import build as build_deployment_table
         datasets = ("l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20")
+        # Granularity variants are optional: include them once all their seeds have been evaluated.
+        datasets += tuple(
+            ds for ds in ("cqad20_fine", "cqad20_answer")
+            if all((Path("results") / ds / f"seed_{s}" / "scores" / "slg_finetuned_router.jsonl").is_file() for s in (42, 53, 64))
+        )
         for dataset in datasets:
             print(f"Paired significance analysis: {dataset} -> {run_stats(dataset)}")
         print(f"Paper quality table -> {build_paper_assets()}")
