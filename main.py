@@ -49,6 +49,9 @@ def run_bundle(args):
     stages = [
         ("train", lambda: run_training("")),
         ("infer_1b_8b_slg_rag", lambda: (run_finetuned(""), run_slg("", router_method="finetuned", router_override=args.router_override), run_rag(""))),
+        # Full (non-shortcut) inference with the closed-form hidden-state router; its own stage so finished
+        # cells only run this when the bundle is resubmitted.
+        ("infer_slg_mahalanobis", lambda: (_fit_hidden_router_if_missing(), run_slg("", router_method="mahalanobis"))),
         ("router_counterfactuals", lambda: run_router_counterfactuals(run_slg)),
     ]
     for name, action in stages:
@@ -57,6 +60,12 @@ def run_bundle(args):
             continue
         action()
         marker.write_text("done\n", encoding="utf-8")
+
+
+def _fit_hidden_router_if_missing():
+    """Cells whose train stage finished before the hidden router existed still get it fitted here."""
+    from hidden_router.pipeline import fit_current_cell
+    fit_current_cell(CONFIG["paths"]["experiments"])
 
 
 def run_router_counterfactuals(run_slg):

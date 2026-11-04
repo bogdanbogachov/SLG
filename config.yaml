@@ -212,3 +212,12 @@ training_components:
   train_slg_router: true             # Train SLG question -> expert classifier router
   train_3_2_1b: true               # Train baseline 3_2_1b model
   train_3_1_8b: true                # Train baseline 3_1_8b model
+  train_hidden_router: true         # Fit the closed-form Mahalanobis router (hidden_router/) after the experts
+
+# Hidden-state (Mahalanobis) router: base 1B question features, mean-pooled per layer.
+# Layer and shrinkage are chosen on a stratified validation slice of the TRAINING questions.
+hidden_router:
+  max_length: 512
+  batch_size: 32
+  val_fraction: 0.2
+  shrinkage_grid: [0.05, 0.2, 0.5]

@@ -14,12 +14,14 @@
 set -euo pipefail
 if [[ $# -eq 1 && "$1" == "post_analysis" ]]; then
   job_mode=post_analysis
+elif [[ $# -ge 2 && "$1" == "hidden_router" ]]; then
+  job_mode=hidden_router
 elif [[ $# -eq 3 && "$1" == "smoke_test" ]]; then
   job_mode=smoke_test
 elif [[ $# -eq 2 ]]; then
   job_mode=bundle
 else
-  echo "Usage: sbatch job.sh DATASET SEED | sbatch job.sh smoke_test DATASET SEED | sbatch job.sh post_analysis" >&2
+  echo "Usage: sbatch job.sh DATASET SEED | sbatch job.sh smoke_test DATASET SEED | sbatch job.sh post_analysis | sbatch job.sh hidden_router {probe,assemble} [--datasets ..] [--seeds ..]" >&2
   exit 2
 fi
 module load python/3.11.5
@@ -30,7 +32,9 @@ module load gcc arrow
 source ENV/bin/activate
 
 trap 'scontrol requeue "$SLURM_JOB_ID"' USR1
-if [[ "$job_mode" == post_analysis ]]; then
+if [[ "$job_mode" == hidden_router ]]; then
+  python -m hidden_router "${@:2}"
+elif [[ "$job_mode" == post_analysis ]]; then
   python main.py --post_analysis
 elif [[ "$job_mode" == smoke_test ]]; then
   python -m commands.smoke_test "$2" "$3"

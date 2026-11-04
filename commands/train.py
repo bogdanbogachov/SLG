@@ -79,6 +79,13 @@ def run_training(experiment: str):
     else:
         logger.info("Skipping SLG system training")
 
+    if training_config.get('train_hidden_router', False) and train_slg_system:
+        logger.info("Fitting the Mahalanobis (hidden-state) SLG router")
+        from hidden_router.pipeline import fit_current_cell
+        fit_current_cell(os.path.join(experiments_dir, experiment))
+    else:
+        logger.info("Skipping Mahalanobis router fitting")
+
     # Baseline 3_2_1b
     if train_3_2_1b:
         logger.info("Training baseline model: 3_2_1b")

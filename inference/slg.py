@@ -41,7 +41,9 @@ from utils.prompt_utils import apply_chat_template, create_user_message
 
 ROUTER_COSINE = "cosine"
 ROUTER_FINETUNED = "finetuned"
-SUPPORTED_ROUTER_METHODS = {ROUTER_COSINE, ROUTER_FINETUNED}
+# Closed-form hidden-state router (hidden_router package); fitted per cell by run_training.
+ROUTER_MAHALANOBIS = "mahalanobis"
+SUPPORTED_ROUTER_METHODS = {ROUTER_COSINE, ROUTER_FINETUNED, ROUTER_MAHALANOBIS}
 
 
 class SmallLanguageGraph:
@@ -101,10 +103,35 @@ class SmallLanguageGraph:
         self.router_metadata_path = None
         self.router_metadata: Dict[str, Any] = {}
 
+        self._hidden_router = None
+        self._hidden_features = None
         if self.router_method == ROUTER_COSINE:
             self._init_cosine_router(paths_config)
+        elif self.router_method == ROUTER_MAHALANOBIS:
+            self._init_mahalanobis_router(paths_config)
         else:
             self._init_finetuned_router(paths_config)
+
+    def _init_mahalanobis_router(self, paths_config: Dict[str, Any]) -> None:
+        from hidden_router.features import FeatureExtractor
+        from hidden_router.router import MahalanobisRouter
+
+        router_dir = os.path.join(paths_config["experiments"], self.experiment, "hidden_router")
+        if not MahalanobisRouter.exists(router_dir):
+            raise FileNotFoundError(
+                f"Mahalanobis router not found in {router_dir}. Fit it with "
+                "training_components.train_hidden_router (run_training) or `python -m hidden_router probe`."
+            )
+        self._hidden_router = MahalanobisRouter.load(router_dir)
+        missing = sorted(set(self._hidden_router.labels) - set(self.expert_nodes))
+        if missing:
+            raise RuntimeError(f"Mahalanobis router knows experts without adapters: {missing[:5]}")
+        # Base 1B stays resident (~2.5 GB fp16) so routing is one forward pass per question.
+        self._hidden_features = FeatureExtractor(batch_size=1)
+
+    def _rank_question_by_mahalanobis_router(self, question: str) -> List[Dict[str, Any]]:
+        features = self._hidden_features.encode([question], log_every=0)
+        return self._hidden_router.rank(features)[0]
 
     def _init_cosine_router(self, paths_config: Dict[str, Any]) -> None:
         self.index_dir = get_slg_index_dir(self.experts_location, self.experiments_dir)
@@ -371,8 +398,12 @@ class SmallLanguageGraph:
         question = state["question"]
         start = time.perf_counter()
 
-        if self.router_method == ROUTER_FINETUNED:
-            ranked = self._rank_question_by_finetuned_router(question)
+        if self.router_method in (ROUTER_FINETUNED, ROUTER_MAHALANOBIS):
+            ranked = (
+                self._rank_question_by_finetuned_router(question)
+                if self.router_method == ROUTER_FINETUNED
+                else self._rank_question_by_mahalanobis_router(question)
+            )
             state["selected_expert"] = ranked[0]["expert"]
             state["routing_candidates"] = ranked
             state["routing_latency_seconds"] = time.perf_counter() - start
@@ -550,7 +581,7 @@ class SmallLanguageGraph:
 
     def _route_after_expert(self, state: Dict[str, Any]) -> str:
         if state.get("phase") == "main":
-            if self.router_method == ROUTER_FINETUNED:
+            if self.router_method in (ROUTER_FINETUNED, ROUTER_MAHALANOBIS):
                 return "aggregator"
             return "confidence_router"
 
@@ -584,9 +615,9 @@ class SmallLanguageGraph:
 
     def _other_router_report_path(self, report_path: str) -> str:
         other_basename = (
-            "slg_finetuned_router"
-            if self.router_method == ROUTER_COSINE
-            else "slg"
+            "slg"
+            if self.router_method == ROUTER_FINETUNED
+            else "slg_finetuned_router"
         )
         return os.path.join(
             os.path.dirname(report_path),
