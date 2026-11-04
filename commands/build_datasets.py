@@ -94,6 +94,51 @@ def _inflate(rows, confusers, percentage):
     return result
 
 
+FINE_MAX_ANSWERS_PER_EXPERT = 4  # Avia's typical answers per expert; fixed a priori, not tuned on cqad20 results.
+# Granularity variants of cqad20 (same questions/qids/splits; only the expert label changes):
+# 11 sites -> <=4 answers per expert -> one expert per answer.
+CQAD_GRANULARITY = {"cqad20_fine": FINE_MAX_ANSWERS_PER_EXPERT, "cqad20_answer": 1}
+
+
+def _fine_titles(rows, max_answers=FINE_MAX_ANSWERS_PER_EXPERT):
+    """Map (title, answer) -> finer expert title: within each title, group similar answers, <= max_answers each.
+
+    Uses only answer text (TF-IDF cosine), independent of seed and of any model output. Groups are
+    balanced: ceil(n / max_answers) groups whose sizes differ by at most one. Each group starts from the
+    first unassigned answer in a stable hash order and takes its most similar unassigned answers.
+    """
+    import numpy as np
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    by_title = defaultdict(set)
+    for row in rows:
+        by_title[row["title"]].add(row["_original_answer"])
+    mapping = {}
+    for title in sorted(by_title):
+        answers = sorted(by_title[title], key=lambda a: hashlib.sha256(a.encode("utf-8")).hexdigest())
+        n = len(answers)
+        groups = math.ceil(n / max_answers)
+        if groups == 1:
+            mapping.update({(title, a): title for a in answers})
+            continue
+        sizes = [n // groups + (1 if i < n % groups else 0) for i in range(groups)]
+        vectors = TfidfVectorizer(sublinear_tf=True).fit_transform(answers)
+        sim = (vectors @ vectors.T).toarray()
+        unassigned = list(range(n))
+        for g, size in enumerate(sizes, start=1):
+            anchor = unassigned[0]
+            rest = sorted(unassigned[1:], key=lambda j: (-sim[anchor, j], j))
+            members = [anchor] + rest[:size - 1]
+            for j in members:
+                mapping[(title, answers[j])] = f"{title} {g}"
+            unassigned = [j for j in unassigned if j not in set(members)]
+    return mapping
+
+
+def _relabel_fine(rows, mapping):
+    return [dict(r, title=mapping[(r["title"], r.get("_original_answer", r["answer"]))]) for r in rows]
+
+
 def _chapter_num(row):
     m = re.match(r"\s*CHAPTER\s+(\d+)", str(row.get("chapter", "")), re.I)
     return int(m.group(1)) if m else None
@@ -158,6 +203,8 @@ def build_datasets(force=False):
     cqad, cqad_removed = _dedup(cqad_raw, threshold)
     datasets = {"l_avia": (avia, 0, avia_removed), "s_avia": (small, 0, avia_removed),
                 "cqad20": (cqad, 0, cqad_removed)}
+    for variant, max_answers in CQAD_GRANULARITY.items():
+        datasets[variant] = (_relabel_fine(cqad, _fine_titles(cqad, max_answers)), 0, cqad_removed)
     inflated_qids, inflated_answers = {}, {}
     for level in (25, 50, 75, 100):
         inflated = _inflate(small, confusers, level)
@@ -198,12 +245,21 @@ def build_datasets(force=False):
                     train, test = _read(train_path), _read(test_path)
                 except (json.JSONDecodeError, OSError):
                     have_split = False
-            if force or not have_split:
+            if name in CQAD_GRANULARITY and (force or not have_split):
+                # Reuse the exact cqad20 split (as already used on the cluster) and only relabel experts.
+                base_dir = ROOT / "data" / "cqad20" / "splits" / f"seed_{seed}"
+                base_train, base_test = _read(base_dir / "train.json"), _read(base_dir / "test.json")
+                fine_by_qid = {r["qid"]: r["title"] for r in rows}
+                train = [dict(r, title=fine_by_qid[r["qid"]]) for r in base_train]
+                test = [dict(r, title=fine_by_qid[r["qid"]]) for r in base_test]
+                _write_json(train_path, train)
+                _write_json(test_path, test)
+            elif force or not have_split:
                 train, test = train_test_split(rows, test_size=0.2, random_state=seed)
                 train, test = sorted(train, key=lambda x: x["qid"]), sorted(test, key=lambda x: x["qid"])
                 _write_json(train_path, [{k: v for k, v in row.items() if k != "_original_answer"} for row in train])
                 _write_json(test_path, [{k: v for k, v in row.items() if k != "_original_answer"} for row in test])
-            if name == "s_avia" or name in {f"s_avia_{level}" for level in (25, 50, 75, 100)}:
+            if name in {"s_avia", "cqad20", *CQAD_GRANULARITY} or name in {f"s_avia_{level}" for level in (25, 50, 75, 100)}:
                 split_qids[(name, seed)] = {r["qid"] for r in test}
             by_title = defaultdict(list)
             for row in train:
@@ -234,6 +290,9 @@ def build_datasets(force=False):
         variant_qids = [split_qids[(f"s_avia_{level}", seed)] for level in (25, 50, 75, 100)]
         if any(qids != base_qids for qids in variant_qids):
             raise AssertionError(f"Base and inflated test splits have different qids for seed {seed}")
+        for variant in CQAD_GRANULARITY:
+            if split_qids[("cqad20", seed)] != split_qids[(variant, seed)]:
+                raise AssertionError(f"cqad20 and {variant} test splits have different qids for seed {seed}")
 
 
 def main():
