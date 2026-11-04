@@ -56,6 +56,16 @@ The `--smoke` option reads from `results/smoke/<dataset>/seed_<seed>/` and uses 
 
 For one smoke-test job, use `./smoke_test.sh s_avia_100 42` on the login node. To submit one full bundle directly, use `sbatch --job-name=slg-s_avia_100-s42 job.sh s_avia_100 42`.
 
+### Mahalanobis hidden-state router
+
+`python -m hidden_router {probe,tfidf,assemble} [--datasets a,b] [--seeds 42,53,64]` (or `sbatch job.sh hidden_router ...`):
+
+- `probe`: extract and cache question hidden states, fit a router per cell (layer and shrinkage chosen on a training validation slice), test it, compare it with the classifier router and estimate the SLG scores. Needs a small GPU (1g.10gb, ~15 min). Writes `results/hidden_router/probe_summary.md`.
+- `tfidf`: lexical baseline, the same classifier on TF-IDF+SVD features (CPU, ~7 min). Writes `results/hidden_router/tfidf_summary.md`.
+- `assemble`: build `answers/slg_mahalanobis_router.jsonl` from existing single-expert answers, after a reuse check, and generate the rest (GPU).
+
+In a fresh full run, the router is fitted during training and used by the bundle stage `infer_slg_mahalanobis`. Post-analysis treats `slg_mahalanobis_router` as "SLG", `slg_finetuned_router` as "SLG-classifier" and the oracle run as "SLG-oracle", and writes `results/stats/routing.{csv,tex}`. See `paper_note.md` for the method, results and caveats.
+
 ## CQADupStack Clustered QA Dataset
 
 The min-20 clustered CQADupStack source used by dataset construction is:
@@ -127,7 +137,7 @@ eng_llm/
 - **LoRA Fine-tuning**: Efficient fine-tuning of LLaMA 3.2-1B and 3.1-8B models
 - **RAG**: Retrieval-augmented generation with FAISS vector search
 - **SLG**: Small Language Graph with expert routing and multi-model inference
-- **SLG router selection**: cosine similarity routing or a fine-tuned LLaMA 3.2 1B classifier router
+- **SLG router selection**: Mahalanobis hidden-state router (final; closed-form discriminant on frozen Llama-3.2-1B hidden states, `hidden_router/`), fine-tuned LLaMA 3.2 1B classifier router (ablation), or cosine similarity routing (legacy)
 - **Evaluation**: ROUGE, METEOR, Exact Match, semantic similarity, AI Expert
 
 ## Output Structure

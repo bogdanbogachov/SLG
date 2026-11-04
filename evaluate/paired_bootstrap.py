@@ -12,8 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 SEEDS = (42, 53, 64)
 # cqad20 re-partitioned into finer experts (same qids/splits); compared against SLG on cqad20.
 GRANULARITY_VARIANTS = ("cqad20_fine", "cqad20_answer")
+# "SLG" is the final system (Mahalanobis hidden-state router). "SLG-classifier" is the same experts with the
+# finetuned 1B classifier router (router ablation); "SLG-oracle" always uses the title-matched expert (upper bound).
 MODELS = {
-    "SLG": "slg_finetuned_router",
+    "SLG": "slg_mahalanobis_router",
+    "SLG-classifier": "slg_finetuned_router",
+    "SLG-oracle": "slg_finetuned_router_oracle",
     "8B": "finetuned_3_1_8b",
     "1B": "finetuned_3_2_1b",
     "RAG": "rag",
@@ -87,7 +91,7 @@ def run(dataset, replicates=10000, rng_seed=20261015, seeds=SEEDS,
     if not seeds:
         raise ValueError("At least one seed is required for paired bootstrap statistics.")
     cells = _load_score_files(dataset, seeds=seeds, results_root=results_root)
-    comparisons = (("SLG", "8B"), ("SLG", "1B"), ("SLG", "RAG"))
+    comparisons = (("SLG", "8B"), ("SLG", "1B"), ("SLG", "RAG"), ("SLG", "SLG-classifier"), ("SLG", "SLG-oracle"))
     rows = []
     for left, right in comparisons:
         for metric in METRICS:

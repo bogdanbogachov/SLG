@@ -7,12 +7,14 @@ import statistics
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATASETS = ("l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20")
+DATASETS = ("l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20", "cqad20_fine", "cqad20_answer")
 SEEDS = (42, 53, 64)
 MODELS = {
     "1B": ("finetuned_3_2_1b", ("training_gpu_hours_finetuned_3_2_1b",), "~1B"),
     "8B": ("finetuned_3_1_8b", ("training_gpu_hours_finetuned_3_1_8b",), "~8B"),
-    "SLG": ("slg_finetuned_router", ("training_gpu_hours_slg", "training_gpu_hours_slg_router_3_2_1b"), "~1B active expert"),
+    # SLG = Mahalanobis router: closed-form fit (seconds), so only the experts' GPU-hours count.
+    "SLG": ("slg_mahalanobis_router", ("training_gpu_hours_slg",), "~1B active expert"),
+    "SLG-classifier": ("slg_finetuned_router", ("training_gpu_hours_slg", "training_gpu_hours_slg_router_3_2_1b"), "~1B active expert"),
     "RAG": ("rag", (), "~8B"),
 }
 

@@ -16,7 +16,8 @@ DATASETS = ("l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_1
 SEEDS = (42, 53, 64)
 MODELS = {
     "1B": "finetuned_3_2_1b", "8B": "finetuned_3_1_8b",
-    "SLG": "slg_finetuned_router", "RAG": "rag",
+    "SLG": "slg_mahalanobis_router", "RAG": "rag",
+    "SLG-classifier": "slg_finetuned_router", "SLG-oracle": "slg_finetuned_router_oracle",
 }
 METRICS = ("BLEU", "ROUGE-1", "ROUGE-2", "ROUGE-L", "EM", "METEOR", "Entailment", "AI_Expert")
 

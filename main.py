@@ -78,7 +78,7 @@ def run_evaluate_all(args):
     from commands.evaluation import run_evaluation
 
     datasets = (args.dataset,) if args.dataset else (
-        "l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20"
+        "l_avia", "s_avia", "s_avia_25", "s_avia_50", "s_avia_75", "s_avia_100", "cqad20", "cqad20_fine", "cqad20_answer"
     )
     seeds = (args.seed,) if args.seed is not None else (42, 53, 64)
     if not os.environ.get("OPENAI_API_KEY") or os.environ["OPENAI_API_KEY"] == "dummy":
@@ -143,12 +143,14 @@ if __name__ == '__main__':
         # Granularity variants are optional: include them once all their seeds have been evaluated.
         datasets += tuple(
             ds for ds in ("cqad20_fine", "cqad20_answer")
-            if all((Path("results") / ds / f"seed_{s}" / "scores" / "slg_finetuned_router.jsonl").is_file() for s in (42, 53, 64))
+            if all((Path("results") / ds / f"seed_{s}" / "scores" / "slg_mahalanobis_router.jsonl").is_file() for s in (42, 53, 64))
         )
         for dataset in datasets:
             print(f"Paired significance analysis: {dataset} -> {run_stats(dataset)}")
         print(f"Paper quality table -> {build_paper_assets()}")
         print(f"Deployment table -> {build_deployment_table()}")
+        from evaluate.routing_table import build as build_routing_table
+        print(f"Routing table -> {build_routing_table()}")
         from evaluate.activation_patching import run as run_patching
         print(f"Activation patching -> {run_patching()}")
         raise SystemExit(0)
