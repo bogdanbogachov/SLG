@@ -33,13 +33,6 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
 
     logger.info(f"Model used to infer: {adapter}")
 
-    # Load model with adapter using utility function
-    finetuned_model, tokenizer = load_model_with_adapter(
-        base_model_path=base_model,
-        adapter_path=adapter,
-        resize_token_embeddings=False
-    )
-    
     paths_config = CONFIG['paths']
     output_dir = os.path.join(paths_config['answers'], experiment)
     ensure_dir(output_dir)
@@ -64,7 +57,18 @@ def ask_finetuned(file: str, base_model: str, adapter: str, experiment: str) -> 
                 if record is not None:
                     repaired.write(json.dumps(record, ensure_ascii=False) + '\n')
     pending = [(i, item) for i, item in enumerate(data) if item.get('qid') not in answers]
-    
+    if not pending:
+        # Skip loading the model entirely (e.g. reused baseline answers): avoids putting the 8B on a small GPU.
+        logger.info("All %s qids already answered for %s; skipping model load.", len(data), adapter)
+        return None
+
+    # Load model with adapter using utility function
+    finetuned_model, tokenizer = load_model_with_adapter(
+        base_model_path=base_model,
+        adapter_path=adapter,
+        resize_token_embeddings=False
+    )
+
     try:
         with open(output_file, 'a', encoding='utf-8') as out_file:
           for i, item in pending:
