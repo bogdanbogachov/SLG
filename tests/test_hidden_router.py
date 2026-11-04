@@ -164,6 +164,22 @@ def test_probe_and_assemble_end_to_end():
             cells_mod.RESULTS, cells_mod.DATA, probe_mod.RESULTS, probe_mod.FEATURES_DIR = saved
 
 
+def test_tfidf_baseline():
+    from hidden_router import tfidf as tfidf_mod
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _toy_cell(root)
+        saved = (cells_mod.RESULTS, cells_mod.DATA, tfidf_mod.RESULTS)
+        cells_mod.RESULTS, cells_mod.DATA, tfidf_mod.RESULTS = root / "results", root / "data", root / "results"
+        try:
+            tfidf_mod.run(["toy"], [42], svd_dim=8)
+            row = json.loads((root / "results" / "toy" / "seed_42" / "hidden_router" / "tfidf_baseline.json").read_text())
+            assert row["tfidf_top1"] == 1.0, row  # topic token "tX" is in every question
+            assert (root / "results" / "hidden_router" / "tfidf_summary.md").is_file()
+        finally:
+            cells_mod.RESULTS, cells_mod.DATA, tfidf_mod.RESULTS = saved
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

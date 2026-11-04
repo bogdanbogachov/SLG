@@ -20,7 +20,7 @@ elif [[ $# -eq 3 && "$1" == "smoke_test" ]]; then
 elif [[ $# -eq 2 ]]; then
   job_mode=bundle
 else
-  echo "Usage: sbatch job.sh DATASET SEED | sbatch job.sh smoke_test DATASET SEED | sbatch job.sh post_analysis | sbatch job.sh hidden_router {probe,assemble} [--datasets ..] [--seeds ..]" >&2
+  echo "Usage: sbatch job.sh DATASET SEED | sbatch job.sh smoke_test DATASET SEED | sbatch job.sh post_analysis | sbatch job.sh hidden_router {probe,assemble,tfidf} [--datasets ..] [--seeds ..]" >&2
   exit 2
 fi
 module load python/3.11.5
