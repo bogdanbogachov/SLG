@@ -142,6 +142,22 @@ Observations:
 
 Outputs: `results/<ds>/seed_<s>/hidden_router/tfidf_baseline.json` and `results/hidden_router/tfidf_summary.{csv,md}`.
 
+### Classifier baselines on the same hidden states
+
+`python -m hidden_router.routing_baselines` (CPU, about 15 min for all cells; needs cached features). Each method uses the Mahalanobis router's validation-selected layer and the same train/test split. Test top-1, mean ± SD over seeds 42/53/64:
+
+| Dataset | centroid cos | centroid euclid | kNN-10 cos | logreg probe (trained) | TF-IDF centroid | Mahalanobis |
+|---|---|---|---|---|---|---|
+| l_avia | 0.674 ±0.032 | 0.666 ±0.033 | 0.844 ±0.017 | 0.953 ±0.001 | 0.900 ±0.006 | 0.942 ±0.004 |
+| s_avia | 0.749 ±0.052 | 0.744 ±0.053 | 0.889 ±0.029 | 0.960 ±0.008 | 0.919 ±0.004 | 0.961 ±0.002 |
+| cqad20 | 0.918 ±0.007 | 0.911 ±0.010 | 0.984 ±0.001 | 0.998 ±0.001 | 0.983 ±0.000 | 0.998 ±0.002 |
+| cqad20_fine | 0.792 ±0.021 | 0.781 ±0.026 | 0.879 ±0.015 | 0.938 ±0.004 | 0.879 ±0.003 | 0.939 ±0.009 |
+| cqad20_answer | 0.823 ±0.018 | 0.817 ±0.022 | 0.847 ±0.006 | 0.914 ±0.011 | 0.866 ±0.005 | 0.923 ±0.006 |
+
+- The shared shrunk covariance is the key component: without it (nearest centroid) top-1 drops by 8–28 points. kNN is 1–10 points lower.
+- A gradient-trained multinomial logistic probe is within about one point: ahead on l_avia (+0.011), level on s_avia/cqad20/cqad20_fine, behind on cqad20_answer (−0.009). Claim: the closed-form router matches a trained linear probe without gradient training. Do NOT claim it beats the probe.
+- Outputs: `results/hidden_router/routing_baselines.{csv,md}`. Paper: Table `tab:router_variants`.
+
 ### How the Mahalanobis-SLG answers were produced (important for the methods section)
 
 Generation with SLG is deterministic for a given (question, expert) pair:
@@ -186,7 +202,7 @@ These are planning estimates only. Use `results/stats/paper_quality.csv` and the
 
 Each full bundle covers one dataset and one seed. It trains the 1B and 8B baselines plus SLG, then runs inference for 1B, 8B, SLG, and local RAG. It also runs oracle and wrong-expert router inference. Evaluation is a separate login-node step because the Rorqual compute nodes cannot reach the OpenAI API. On the login node, `bash evaluate_all.sh` evaluates every available model answer file for all 9 datasets and 3 seeds (answer files that already have a complete evaluation checkpoint are skipped, so only new files such as `slg_mahalanobis_router.jsonl` are scored); `--dataset` and `--seed` can restrict it. The API key is required only for this scoring step and is read from `OPENAI_API_KEY`.
 
-Evaluation retains per-question score records keyed by `qid`; the eight reported metrics are BLEU, ROUGE-1/2/L, exact match, METEOR, Entailment, and AI_Expert. BLEU uses whitespace tokenization and smoothing method 4. ROUGE uses stemming and F-measures. Exact match compares stripped strings. METEOR uses NLTK tokenization and WordNet resources. “Entailment” is operationalized as cosine similarity between OpenAI `text-embedding-3-small` embeddings, transformed from [-1, 1] to [0, 1]; it is an embedding-similarity proxy rather than a textual entailment classifier. AI_Expert is a binary GPT-4.1-nano judgment using the dataset-specific judge prompt (aerospace-specific for Avia, domain-neutral for CQAD). The API key is read from `OPENAI_API_KEY`; API-based evaluation runs on the login node because the compute nodes used for bundle jobs have no network access.
+Evaluation retains per-question score records keyed by `qid`; the eight reported metrics are BLEU, ROUGE-1/2/L, exact match, METEOR, Entailment, and AI_Expert. BLEU uses whitespace tokenization and smoothing method 4. ROUGE uses stemming and F-measures. Exact match compares stripped strings. METEOR uses NLTK tokenization and WordNet resources. “Entailment” is operationalized as cosine similarity between OpenAI `text-embedding-3-small` embeddings, transformed from [-1, 1] to [0, 1]; it is an embedding-similarity proxy rather than a textual entailment classifier. AI_Expert is a binary judgment by OpenAI `gpt-5.6-luna` (the recommended replacement for the shut-down gpt-4.1-nano; all reported AI_Expert scores come from this judge) using the dataset-specific judge prompt (aerospace-specific for Avia, domain-neutral for CQAD). The API key is read from `OPENAI_API_KEY`; API-based evaluation runs on the login node because the compute nodes used for bundle jobs have no network access.
 
 The paired significance analysis reads only per-question score records and checks that the four primary models have matching qid sets in each cell. For each dataset and each of the eight metrics, it compares SLG (Mahalanobis router) with 8B, 1B, RAG, SLG-classifier (router ablation) and SLG-oracle (remaining routing gap); all six systems must have identical qid sets. In each of 10,000 bootstrap replicates it samples answer groups with replacement independently within each seed, computes a question-weighted mean difference for that seed, then averages the three seed means with equal seed weight. It reports the observed mean difference, a percentile 95% interval, a two-sided sign-tail bootstrap p-value, and Holm-adjusted p-values. The bootstrap's fixed RNG seed is 20261015. The comparison of SLG with 8B is treated as equivalence only for ROUGE-L and AI_Expert, using a ±0.01 interval criterion; other metrics have no equivalence declaration. The output includes CSV and LaTeX files.
 
