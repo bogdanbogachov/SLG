@@ -63,6 +63,7 @@ For one smoke-test job, use `./smoke_test.sh s_avia_100 42` on the login node. T
 - `probe`: extract and cache question hidden states, fit a router per cell (layer and shrinkage chosen on a training validation slice), test it, compare it with the classifier router and estimate the SLG scores. Needs a small GPU (1g.10gb, ~15 min). Writes `results/hidden_router/probe_summary.md`.
 - `tfidf`: lexical baseline, the same classifier on TF-IDF+SVD features (CPU, ~7 min). Writes `results/hidden_router/tfidf_summary.md`.
 - `python -m hidden_router.routing_baselines`: other classifiers on the same cached features and layer (nearest centroid, kNN, logistic probe, TF-IDF centroid; CPU, ~15 min). Writes `results/hidden_router/routing_baselines.{csv,md}`.
+- How the router computes its features, covariance and weights, step by step on a toy example: [docs/mahalanobis_router_example.md](docs/mahalanobis_router_example.md).
 - `assemble`: build `answers/slg_mahalanobis_router.jsonl` from existing single-expert answers, after a reuse check, and generate the rest (GPU).
 
 In a fresh full run, the router is fitted during training and used by the bundle stage `infer_slg_mahalanobis`. Post-analysis treats `slg_mahalanobis_router` as "SLG", `slg_finetuned_router` as "SLG-classifier" and the oracle run as "SLG-oracle", and writes `results/stats/routing.{csv,tex}`. See `paper_note.md` for the method, results and caveats.

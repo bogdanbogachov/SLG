@@ -126,9 +126,9 @@ def fig_route_vs_patch(out: Path):
 def fig_router_accuracy(out: Path):
     rows = {r["dataset"]: r for r in _rows(STATS / "routing.csv")}
     sets = ["l_avia", "s_avia", "cqad20", "cqad20_fine", "cqad20_answer"]
-    series = [("classifier_top1", "Fine-tuned 1B classifier router", "#b9b8b3"),
+    series = [("classifier_top1", "LM-classifier router (fine-tuned 1B)", "#b9b8b3"),
               ("tfidf_top1", "Mahalanobis on TF-IDF (lexical)", ORANGE),
-              ("mahalanobis_top1", "Mahalanobis on hidden states (ours)", BLUE)]
+              ("mahalanobis_top1", "Mahalanobis router on hidden states (proposed)", BLUE)]
     fig, ax = plt.subplots(figsize=(7.2, 2.7))
     w = 0.26
     x = np.arange(len(sets))
@@ -140,7 +140,7 @@ def fig_router_accuracy(out: Path):
             for xi, v in zip(x, m):
                 ax.text(xi + w, v + 0.012, f"{v:.3f}", ha="center", fontsize=7, color=INK)
     t5 = [float(rows[d]["mahalanobis_top5_mean"]) for d in sets]
-    ax.scatter(x + w, t5, marker="_", s=120, color=INK, linewidth=1.4, zorder=3, label="ours, top-5")
+    ax.scatter(x + w, t5, marker="_", s=120, color=INK, linewidth=1.4, zorder=3, label="Mahalanobis router, top-5")
     ax.set_xticks(x, ["L-Avia", "S-Avia\n(all levels)", "CQAD\n(11 experts)", "CQAD-fine\n(24)", "CQAD-answer\n(72)"])
     ax.set_ylim(0.6, 1.04)
     ax.set_ylabel("Routing accuracy (test)")
@@ -175,7 +175,7 @@ def fig_inflation(out: Path):
             sd = [float(q[d][key][metric + "_sd_sample"] or 0) for d, _ in levels]
             ax.errorbar(xs, ys, yerr=sd, color=color, marker=mk, markersize=4.5, linewidth=1.6, capsize=2, label=name)
         cls = [float(q[d]["SLG-classifier"][metric + "_mean"]) for d, _ in levels]
-        ax.plot([p for _, p in levels], cls, color=BLUE, linestyle=":", linewidth=1.3, label="SLG (classifier router)")
+        ax.plot([p for _, p in levels], cls, color=BLUE, linestyle=":", linewidth=1.3, label="SLG (LM-classifier router)")
         ax.set_title(title, loc="left")
         ax.set_xlabel("Inflated answers (%)")
         ax.grid(color=GRID, linewidth=0.6)
@@ -197,12 +197,12 @@ def fig_granularity(out: Path):
     sets = [("cqad20", 11), ("cqad20_fine", 24), ("cqad20_answer", 72)]
     xs = [n for _, n in sets]
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.6))
-    for col, name, color, ls in (("classifier_top1", "Classifier router", "#8d8c87", "--"),
-                                 ("mahalanobis_top1", "Mahalanobis router (ours)", BLUE, "-")):
+    for col, name, color, ls in (("classifier_top1", "LM-classifier router", "#8d8c87", "--"),
+                                 ("mahalanobis_top1", "Mahalanobis router (proposed)", BLUE, "-")):
         a1.plot(xs, [float(rt[d][col + "_mean"]) for d, _ in sets], color=color, linestyle=ls, marker="o", markersize=4.5, linewidth=1.8, label=name)
     a1.set_ylabel("Routing top-1")
     a1.set_title("(a) Routing as experts get finer", loc="left")
-    for key, name, color, ls in (("SLG", "SLG, Mahalanobis router", BLUE, "-"), ("SLG-classifier", "SLG, classifier router", "#8d8c87", "--"),
+    for key, name, color, ls in (("SLG", "SLG, Mahalanobis router", BLUE, "-"), ("SLG-classifier", "SLG, LM-classifier router", "#8d8c87", "--"),
                                  ("SLG-oracle", "SLG, oracle routing", BLUE, ":")):
         a2.plot(xs, [float(q[d][key]["ROUGE-L_mean"]) for d, _ in sets], color=color, linestyle=ls, marker="o", markersize=4.5, linewidth=1.8, label=name)
     for key, name, color in (("8B", "Fine-tuned 8B", ORANGE), ("1B", "Fine-tuned 1B", AQUA)):
@@ -225,6 +225,92 @@ def fig_granularity(out: Path):
     _save(fig, out, "fig_granularity")
 
 
+def _toy_router():
+    """2-D toy data for the geometric illustration: three experts with one shared, tilted covariance."""
+    rng = np.random.default_rng(20261109)
+    ang = np.pi / 6
+    u, v = np.array([np.cos(ang), np.sin(ang)]), np.array([-np.sin(ang), np.cos(ang)])
+    true_means = [-0.6 * v, 2.0 * u + 0.6 * v, -2.6 * u + 2.4 * v]
+    X, y = [], []
+    for k, m in enumerate(true_means):
+        g = rng.standard_normal((16, 2))
+        X.append(m + 2.0 * g[:, :1] * u + 0.5 * g[:, 1:] * v)
+        y += [k] * 16
+    X, y = np.vstack(X), np.array(y)
+    mu = np.stack([X[y == k].mean(0) for k in range(3)])
+    R = X - mu[y]
+    S = R.T @ R / (len(X) - 3)
+    alpha = 0.05
+    Sa = (1 - alpha) * S + alpha * np.trace(S) / 2 * np.eye(2)
+    q = mu[0] + 2.6 * u + 0.3 * v  # a normal A paraphrase, far along A's long axis
+    return X, y, mu, Sa, q
+
+
+def fig_router_geometry(out: Path):
+    X, y, mu, Sa, q = _toy_router()
+    Si = np.linalg.inv(Sa)
+    lam, E = np.linalg.eigh(Sa)
+    Wh = (E / np.sqrt(lam)) @ E.T * np.sqrt(np.sqrt(lam.prod()))  # symmetric S^-1/2, scaled to keep the size
+    c0 = X.mean(0)
+    white = lambda P: (P - c0) @ Wh.T + c0  # noqa: E731
+    d_e = np.linalg.norm(mu - q, axis=1)
+    d_m = np.sqrt(np.einsum("ki,ij,kj->k", mu - q, Si, mu - q))
+    assert d_e.argmin() == 1 and d_m.argmin() == 0, (d_e, d_m)
+    cols, marks, names = [BLUE, ORANGE, AQUA], ["o", "s", "^"], ["A", "B", "C"]
+
+    def regions(ax, metric, P2world, xs, ys):
+        gx, gy = np.meshgrid(xs, ys)
+        G = P2world(np.c_[gx.ravel(), gy.ravel()])
+        D = G[:, None, :] - mu[None, :, :]
+        dist = np.einsum("nki,ij,nkj->nk", D, metric, D)
+        lab = dist.argmin(1).reshape(gx.shape)
+        for k in range(3):
+            ax.contourf(gx, gy, (lab == k).astype(float), levels=[0.5, 1.5], colors=[cols[k]], alpha=0.10)
+        ax.contour(gx, gy, lab, levels=[0.5, 1.5], colors=INK2, linewidths=0.8)
+
+    def ellipse(M, center, r):
+        t = np.linspace(0, 2 * np.pi, 120)
+        L = np.linalg.cholesky(M)
+        return center + r * (np.c_[np.cos(t), np.sin(t)] @ L.T)
+
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.55))
+    panels = [("(a) Euclidean distance", "euclid"), ("(b) Mahalanobis distance (LDA)", "maha"),
+              ("(c) Whitened view: nearest centre", "white")]
+    xs, ys = np.linspace(-8.5, 5.5, 360), np.linspace(-3.8, 5.2, 240)
+    for ax, (title, mode) in zip(axes, panels):
+        tf = white if mode == "white" else (lambda P: P)  # noqa: E731
+        inv_tf = (lambda P: (P - c0) @ np.linalg.inv(Wh).T + c0) if mode == "white" else (lambda P: P)  # noqa: E731
+        metric = np.eye(2) if mode == "euclid" else Si
+        regions(ax, metric, inv_tf, xs, ys)
+        for k in range(3):
+            P = tf(X[y == k])
+            ax.scatter(P[:, 0], P[:, 1], s=11, marker=marks[k], color=cols[k], edgecolors="white", linewidths=0.4, zorder=3)
+            if mode != "euclid":
+                for r, lw, ls in ((1, 1.1, "-"), (2, 0.7, "--")):
+                    e = tf(ellipse(Sa, mu[k], r))
+                    ax.plot(e[:, 0], e[:, 1], color=cols[k], lw=lw, ls=ls, zorder=2)
+            m = tf(mu[k][None])[0]
+            ax.scatter(*m, s=55, marker=marks[k], color=cols[k], edgecolors=INK, linewidths=0.9, zorder=5)
+            ax.annotate(r"$\mu_{%s}$" % names[k], m, xytext=(5, 5), textcoords="offset points", fontsize=8, color=INK, zorder=6)
+        win = 1 if mode == "euclid" else 0
+        qq, mw = tf(q[None])[0], tf(mu[win][None])[0]
+        ax.plot([qq[0], mw[0]], [qq[1], mw[1]], color=INK, lw=1.2, zorder=4)
+        ax.scatter(*qq, s=60, marker="o", facecolor="white", edgecolor=INK, linewidths=1.6, zorder=7)
+        ax.annotate("$q$", qq, xytext=(6, -10), textcoords="offset points", fontsize=8.5, color=INK, zorder=8)
+        dist = d_e if mode == "euclid" else d_m
+        verdict = "routes to B (wrong)" if mode == "euclid" else "routes to A"
+        ax.text(0.02, 0.03, f"d(q,A) = {dist[0]:.2f}, d(q,B) = {dist[1]:.2f}\n{verdict}", transform=ax.transAxes,
+                fontsize=7, color=INK, va="bottom", bbox=dict(boxstyle="round,pad=0.25", fc="white", ec=GRID, lw=0.6))
+        ax.set_title(title, loc="left")
+        ax.set_xlim(xs[0], xs[-1]); ax.set_ylim(ys[0], ys[-1]); ax.set_aspect("equal")
+        ax.set_xticks([]); ax.set_yticks([])
+        for sp in ax.spines.values():
+            sp.set_color(GRID)
+    fig.tight_layout(w_pad=0.6)
+    _save(fig, out, "fig_router_geometry")
+    return d_e, d_m
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--out", default=str(ROOT.parent / "SLG-AEI" / "figures"))
@@ -233,6 +319,8 @@ def main():
     fig_router_accuracy(out)
     fig_inflation(out)
     fig_granularity(out)
+    d_e, d_m = fig_router_geometry(out)
+    print("toy router distances: Euclidean", d_e.round(2), "Mahalanobis", d_m.round(2))
     print("figures written to", out)
 
 
