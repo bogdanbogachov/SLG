@@ -99,10 +99,6 @@ def fig_route_vs_patch(out: Path):
     vmax = 1.0
     im2 = a2.imshow(np.clip(P, -2.5, vmax), aspect="auto", cmap=DIV, norm=TwoSlopeNorm(vmin=-2.5, vcenter=0, vmax=vmax))
     a2.imshow(np.where(np.isnan(P), 1, np.nan), aspect="auto", cmap=LinearSegmentedColormap.from_list("na", [MID, MID]))
-    for i in range(len(p_sets)):
-        for l in range(1, n_states):
-            if not np.isnan(P[i, l]) and P[i, l] > 0:
-                a2.text(l, i, f"{P[i, l]:.2f}", ha="center", va="center", fontsize=6, color=INK)
     a2.set_yticks(range(len(p_sets)), [LABEL[d] for d in p_sets])
     a2.set_xticks(range(n_states), ["emb"] + [str(i) for i in range(1, n_states)])
     a2.set_xlabel("Hidden state of Llama-3.2-1B (emb = token embeddings, i = output of decoder block i)")

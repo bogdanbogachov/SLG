@@ -15,8 +15,10 @@ def generate(text):
         Returns:
             - a tuple with all generated questions.
     """
-    client = OpenAI(api_key=CONFIG['open_ai_api_key'])
-    
+    # Questions are generated with Llama-3.3-70B-Instruct served by Together AI
+    # through its OpenAI-compatible endpoint.
+    client = OpenAI(api_key=CONFIG['together_ai_api_key'], base_url=CONFIG['question_generation']['base_url'])
+
     models_config = CONFIG['models']
     system_prompt = CONFIG['system_prompt']
     query_prompt = CONFIG["query_prompt"]
@@ -33,7 +35,7 @@ def generate(text):
     for i in range(0, number_of_questions):
         logger.info(f"Working on question # {i}")
         response = client.chat.completions.create(
-            model=models_config['gpt_4_1_nano'],
+            model=models_config['question_generator'],
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": query_prompt.format(text=text, questions=questions)}

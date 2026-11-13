@@ -82,10 +82,10 @@ logging:
 models:
   jina_embeddings: "jinaai/jina-embeddings-v2-base-en"
   embedding_model: "text-embedding-3-small"
-  # OpenAI is retained for evaluation-only E/AIE judge calls.
-  # gpt-4.1-nano (shut down 2026-10-23) generated the datasets; luna is the AI_Expert judge.
-  gpt_4_1_nano: "gpt-4.1-nano-2025-04-14"
+  # OpenAI is used only for evaluation: embeddings and the AI_Expert judge (luna).
   gpt_5_6_luna: "gpt-5.6-luna"
+  # Aviation questions: Llama-3.3-70B-Instruct served by Together AI.
+  question_generator: "meta-llama/Llama-3.3-70B-Instruct-Turbo"
   3_2_1b: "meta-llama/Llama-3.2-1B-Instruct"
   3_1_8b: "meta-llama/Llama-3.1-8B-Instruct"
   3_3_70b: "meta-llama/Llama-3.3-70B-Instruct"
@@ -187,6 +187,9 @@ routing:
   method: "cosine"
 
 # Generation constants
+question_generation:
+  base_url: "https://api.together.xyz/v1"
+
 generation:
   max_new_tokens: 750
   temperature: 0

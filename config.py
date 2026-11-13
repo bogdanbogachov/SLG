@@ -36,6 +36,7 @@ class Config(BaseModel):
             # stage that needs them. Dataset builds and local inference do not
             # need network credentials.
             parameters['open_ai_api_key'] = os.getenv('OPENAI_API_KEY')
+            parameters['together_ai_api_key'] = os.getenv('TOGETHER_AI_API_KEY')
             
             # Optional environment variable overrides
             optional_overrides = {
